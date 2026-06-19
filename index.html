@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แอ๊นท์ — Darunee Pamonata · AI Work Portfolio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Noto+Sans+Thai:wght@300;400;600;700&display=swap');
+
+:root{
+  --ink:#0D1B2A; --blue:#1B4F72; --blue2:#2471A3;
+  --sky:#C8E6F5; --sky2:#A8D4ED; --skydeep:#3A8FC8;
+  --gold:#F0C940; --white:#FEFEFE; --off:#F4F7FA;
+  --muted:#5A6E82;
+  --ff-head:'Playfair Display',Georgia,serif;
+  --ff-body:'Noto Sans Thai','Sarabun',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--off);color:var(--ink);font-family:var(--ff-body);overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px 52px;background:rgba(13,27,42,0.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(200,230,245,0.07);}
+.nav-logo{font-family:var(--ff-head);font-size:1.15rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{color:rgba(255,255,255,0.68);font-size:0.78rem;font-weight:600;text-decoration:none;padding:6px 15px;border-radius:20px;transition:all 0.2s;}
+.nav-links a:hover{background:rgba(200,230,245,0.14);color:#fff;}
+
+/* HERO */
+.hero{min-height:100vh;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:120px 52px 80px;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;pointer-events:none;}
+.b1{width:500px;height:500px;background:radial-gradient(circle,rgba(58,143,200,0.15) 0%,transparent 70%);top:-100px;right:10%;animation:blob 14s ease-in-out infinite;}
+.b2{width:320px;height:320px;background:radial-gradient(circle,rgba(240,201,64,0.09) 0%,transparent 70%);bottom:-50px;left:10%;animation:blob 18s ease-in-out infinite reverse;}
+@keyframes blob{0%,100%{transform:translate(0,0);}40%{transform:translate(22px,-16px);}70%{transform:translate(-14px,10px);}}
+
+.hero-inner{max-width:800px;text-align:center;position:relative;z-index:2;}
+.hero-eyebrow{font-size:0.62rem;font-weight:800;letter-spacing:0.34em;text-transform:uppercase;color:var(--sky2);margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--skydeep);}
+.hero-name{font-family:var(--ff-head);font-size:clamp(3rem,6vw,5.5rem);font-weight:900;color:#fff;line-height:0.96;margin-bottom:10px;animation:su 0.9s cubic-bezier(.16,1,.3,1) both;}
+.hero-nick{font-family:var(--ff-head);font-size:1rem;font-style:italic;color:rgba(255,255,255,0.4);margin-bottom:16px;animation:su 0.9s 0.1s cubic-bezier(.16,1,.3,1) both;}
+.hero-desc{font-size:0.95rem;color:rgba(255,255,255,0.65);max-width:560px;margin:0 auto 36px;line-height:1.8;animation:su 0.9s 0.2s cubic-bezier(.16,1,.3,1) both;}
+@keyframes su{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
+.hero-cta{display:inline-block;background:var(--gold);color:var(--ink);font-size:0.78rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:14px 36px;border-radius:4px;text-decoration:none;transition:all 0.2s;}
+.hero-cta:hover{background:#fff;transform:translateY(-2px);}
+
+/* SECTION */
+.sec-white{background:var(--white);}
+.sec-dark{background:var(--ink);}
+.wrap{max-width:1100px;margin:0 auto;padding:80px 52px;}
+
+.sec-lbl{display:flex;align-items:center;gap:14px;font-size:0.6rem;font-weight:800;letter-spacing:0.34em;text-transform:uppercase;color:var(--skydeep);margin-bottom:44px;}
+.sec-lbl::before{content:'';width:30px;height:2px;background:var(--skydeep);flex-shrink:0;}
+.sec-lbl-lt{color:rgba(200,230,245,0.52);}
+.sec-lbl-lt::before{background:rgba(200,230,245,0.32);}
+
+/* GRID CARDS */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px;}
+
+.pcard{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(13,27,42,0.07);transition:transform 0.3s cubic-bezier(.34,1.4,.64,1),box-shadow 0.3s;}
+.pcard:hover{transform:translateY(-8px);box-shadow:0 20px 48px rgba(13,27,42,0.14);}
+
+.pcard-top{height:8px;background:linear-gradient(90deg,var(--skydeep),var(--blue2));}
+
+.pbody{padding:24px;}
+.pnum{font-size:0.58rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--sky2);background:var(--ink);display:inline-block;padding:3px 10px;border-radius:6px;margin-bottom:12px;}
+.ptitle{font-family:var(--ff-head);font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.25;}
+.pdesc{font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.ptags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.tag{font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--sky);color:var(--blue);border:1px solid var(--sky2);}
+.plink{display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:var(--skydeep);background:var(--off);padding:8px 16px;border-radius:8px;text-decoration:none;border:1px solid var(--sky2);transition:all 0.2s;}
+.plink:hover{background:var(--skydeep);color:#fff;border-color:var(--skydeep);}
+.plink svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* ABOUT */
+.about-q{font-family:var(--ff-head);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:700;color:var(--blue);line-height:1.12;margin-bottom:22px;}
+.about-q em{font-style:italic;color:var(--skydeep);}
+.about-p{font-size:0.93rem;line-height:1.88;color:var(--muted);margin-bottom:12px;}
+
+/* CONTACT */
+.contact-wrap{text-align:center;}
+.contact-h{font-family:var(--ff-head);font-size:clamp(2rem,4vw,3.5rem);font-weight:900;color:#fff;line-height:1.06;margin-bottom:12px;}
+.contact-h em{font-style:italic;color:var(--gold);}
+.contact-sub{font-size:0.93rem;color:rgba(255,255,255,0.55);margin-bottom:40px;line-height:1.8;}
+.crow{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-bottom:30px;}
+.ccard{background:rgba(200,230,245,0.07);border:1px solid rgba(200,230,245,0.13);border-radius:13px;padding:18px 22px;text-decoration:none;transition:all 0.22s;min-width:150px;}
+.ccard:hover{background:rgba(200,230,245,0.15);transform:translateY(-3px);}
+.cicon{font-size:1.4rem;display:block;margin-bottom:6px;}
+.clbl{font-size:0.56rem;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.42);display:block;margin-bottom:3px;}
+.cval{font-size:0.82rem;color:var(--gold);display:block;font-weight:600;}
+
+footer{background:#07111B;padding:22px 52px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(200,230,245,0.05);}
+footer p{font-size:0.68rem;color:rgba(255,255,255,0.3);}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.rv.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:0.1s;}.d2{transition-delay:0.2s;}.d3{transition-delay:0.3s;}.d4{transition-delay:0.4s;}.d5{transition-delay:0.5s;}.d6{transition-delay:0.6s;}
+
+@media(max-width:768px){
+  nav{padding:14px 20px;}.nav-links{display:none;}
+  .hero{padding:100px 24px 60px;}
+  .wrap{padding:60px 24px;}
+  footer{padding:20px 24px;flex-direction:column;gap:8px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top" class="nav-logo">ANT ✦</a>
+  <div class="nav-links">
+    <a href="#projects">ผลงาน</a>
+    <a href="#about">เกี่ยวกับ</a>
+    <a href="#contact">ติดต่อ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">AI-Powered Work Portfolio</div>
+    <h1 class="hero-name">DARUNEE<br>PAMONATA</h1>
+    <p class="hero-nick">แอ๊นท์ · Secretary &amp; Coordinating Assistant</p>
+    <p class="hero-desc">รวมผลงานระบบและเครื่องมือที่สร้างจริงในที่ทำงาน ด้วยความช่วยเหลือของ AI — จาก Supplier Portal ถึง KOL Dashboard ทุกชิ้นแก้ปัญหาจริง</p>
+    <a href="#projects" class="hero-cta">ดูผลงานทั้งหมด</a>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<div class="sec-white" id="projects">
+  <div class="wrap">
+    <div class="sec-lbl rv">ผลงาน · AI Work Projects</div>
+
+    <div class="projects-grid">
+
+      <!-- 01 -->
+      <div class="pcard rv d1">
+        <div class="pcard-top"></div>
+        <div class="pbody">
+          <span class="pnum">01 · Supplier</span>
+          <h3 class="ptitle">Supplier Portal</h3>
+          <p class="pdesc">ระบบรวบรวมข้อมูลซัพพลายเออร์ — ซัพพลายเออร์กรอกข้อมูลเข้าได้เลยผ่านฟอร์มออนไลน์ มีหน้า Admin Dashboard แบบมีรหัสผ่าน สร้างด้วย AI ช่วย</p>
+          <div class="ptags">
+            <span class="tag">Admin Board</span>
+            <span class="tag">Form</span>
+            <span class="tag">Database</span>
+          </div>
+          <a href="01_SupplierPortal.html" class="plink">
+            เปิดดูระบบ
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="pcard rv d2">
+        <div class="pcard-top"></div>
+        <div class="pbody">
+          <span class="pnum">02 · DATA Sales</span>
+          <h3 class="ptitle">Sales Dashboard</h3>
+          <p class="pdesc">ดึงข้อมูลจาก ZORT ทุกเช้าด้วย AI — ยอดขาย สต๊อก สินค้าขายดี และช่วงเวลาขายดีของแต่ละสาขา แสดงผลเป็น Dashboard แบบเรียลไทม์</p>
+          <div class="ptags">
+            <span class="tag">AI Daily</span>
+            <span class="tag">Data Viz</span>
+            <span class="tag">Multi-branch</span>
+          </div>
+          <a href="02_SalesDashboard.html" class="plink">
+            เปิดดูระบบ
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="pcard rv d3">
+        <div class="pcard-top"></div>
+        <div class="pbody">
+          <span class="pnum">03 · Content</span>
+          <h3 class="ptitle">Content Manager</h3>
+          <p class="pdesc">แพลตฟอร์มสำหรับทีม Marketing Content และ E-Commerce ทำงานร่วมกัน — วางแผน ติดตาม และจัดการคอนเทนต์ในที่เดียว</p>
+          <div class="ptags">
+            <span class="tag">Marketing</span>
+            <span class="tag">E-Commerce</span>
+            <span class="tag">Team Collab</span>
+          </div>
+          <a href="03_ContentManager.html" class="plink">
+            เปิดดูระบบ
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="pcard rv d4">
+        <div class="pcard-top"></div>
+        <div class="pbody">
+          <span class="pnum">04 · Creator Profile</span>
+          <h3 class="ptitle">Influencer Profile Form</h3>
+          <p class="pdesc">แบบฟอร์มกรอก MBTI และความสนใจด้านคอนเทนต์ของ Influencer — ช่วยทีมเข้าใจสไตล์น้อง เพื่อวางแผนการเติบโตได้ตรงจุด</p>
+          <div class="ptags">
+            <span class="tag">MBTI</span>
+            <span class="tag">Creator</span>
+            <span class="tag">Growth Plan</span>
+          </div>
+          <a href="04_InfluencerProfileForm.html" class="plink">
+            เปิดดูระบบ
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 05 -->
+      <div class="pcard rv d5">
+        <div class="pcard-top"></div>
+        <div class="pbody">
+          <span class="pnum">05 · DATA Creator</span>
+          <h3 class="ptitle">Creator Dashboard</h3>
+          <p class="pdesc">รวม Engagement และยอดวิวของ Influencer แต่ละคน เปรียบเทียบ OKR การเติบโต เป้าหมาย และ SKU ที่น้องได้รับ สำหรับผู้บริหาร</p>
+          <div class="ptags">
+            <span class="tag">OKR</span>
+            <span class="tag">Engagement</span>
+            <span class="tag">SKU Link</span>
+          </div>
+          <a href="05_CreatorDashboard.html" class="plink">
+            เปิดดูระบบ
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 06 -->
+      <div class="pcard rv d6">
+        <div class="pcard-top"></div>
+        <div class="pbody">
+          <span class="pnum">06 · Recruitment</span>
+          <h3 class="ptitle">Influencer Application</h3>
+          <p class="pdesc">ระบบรับสมัคร Influencer — น้องกรอกใบสมัครได้เลย มีหน้า Admin Board แบบมีรหัสผ่าน ให้ทีมดูรายชื่อและจัดการได้ง่าย</p>
+          <div class="ptags">
+            <span class="tag">Recruitment</span>
+            <span class="tag">Admin Board</span>
+            <span class="tag">KOL</span>
+          </div>
+          <a href="06_InfluencerApplicationForm.html" class="plink">
+            เปิดดูระบบ
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="sec-white" id="about" style="border-top:1px solid rgba(200,230,245,0.3);">
+  <div class="wrap">
+    <div class="sec-lbl rv">เกี่ยวกับ</div>
+    <h2 class="about-q rv">สร้างระบบจากปัญหา<br>จริงในการ<em>ทำงาน</em></h2>
+    <p class="about-p rv">ทุกโปรเจกต์ในพอร์ตนี้เกิดจากความต้องการจริงในที่ทำงาน — ไม่ใช่ demo ทดลอง ทำงานจริง ใช้งานได้จริง โดยใช้ AI เป็นตัวช่วยออกแบบและพัฒนา</p>
+    <p class="about-p rv">ตำแหน่ง Secretary &amp; Coordinating Assistant ที่ Inspiration Design Co., Ltd. (Nineties Design) — ดูแลงาน Admin, KOL/Influencer, VM, HR, Content และหลายสาขา ประสบการณ์ 5+ ปี</p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="sec-dark" id="contact">
+  <div class="wrap">
+    <div class="contact-wrap">
+      <div class="sec-lbl sec-lbl-lt rv" style="justify-content:center;">ติดต่อ</div>
+      <h2 class="contact-h rv">พร้อมร่วมงาน<br><em>และเติบโตไปด้วยกัน</em></h2>
+      <p class="contact-sub rv">สนใจดูรายละเอียดเพิ่มเติม หรือติดต่อสอบถามได้เลยค่ะ</p>
+      <div class="crow rv">
+        <a href="tel:0611293757" class="ccard"><span class="cicon">📞</span><span class="clbl">โทรศัพท์</span><span class="cval">061-129-3757</span></a>
+        <a href="mailto:darunee.pamo@hotmail.com" class="ccard"><span class="cicon">✉️</span><span class="clbl">อีเมล</span><span class="cval">darunee.pamo@hotmail.com</span></a>
+        <a href="#" class="ccard"><span class="cicon">💬</span><span class="clbl">LINE ID</span><span class="cval">0611293757</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>ดารุณี ปะโมนะตา (แอ๊นท์)</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in')}),{threshold:0.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
