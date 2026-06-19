@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Profile Form — ตัวอย่างผลงาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#D32F2F;--red2:#B71C1C;--red-pale:#FFEBEE;--red-light:#FFCDD2;
+  --ink:#1a1a1a;--white:#ffffff;--paper:#FFF5F5;--cream:#FFF0F0;
+  --bdr:#FFCDD2;--muted:#999;--gold:#b8924a;--r:14px;
+}
+body{font-family:'Noto Sans Thai',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;padding-bottom:80px}
+
+/* ── Header ── */
+.hdr{background:var(--red2);padding:32px 22px 26px;text-align:center;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,255,255,.03) 30px,rgba(255,255,255,.03) 31px)}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--white)}
+
+/* Lollipop logo */
+.logo-wrap{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;position:relative}
+.lollipop{position:relative;display:inline-block}
+.lollipop-head{width:38px;height:38px;background:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.4);box-shadow:0 0 0 3px rgba(255,255,255,.15)}
+.lollipop-inner{width:22px;height:22px;background:var(--red);border-radius:50%;border:3px solid var(--white)}
+.lollipop-stick{width:3px;height:22px;background:var(--white);margin:0 auto;border-radius:0 0 2px 2px;opacity:.8}
+.brand-text{}
+.brand-name{font-family:'Playfair Display',serif;font-size:22px;color:var(--white);line-height:1;letter-spacing:1px}
+.brand-sub{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,.6);text-transform:uppercase;margin-top:2px}
+.hdr h2{font-size:16px;color:rgba(255,255,255,.9);font-weight:500;margin-bottom:6px;position:relative}
+.hdr p{font-size:12px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.7;position:relative}
+
+/* ── Progress ── */
+.prog{background:var(--red2)}
+.pbar{background:rgba(255,255,255,.15);height:4px}
+.pfill{background:var(--white);height:4px;transition:width .5s ease}
+.pmeta{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 14px}
+.ptxt{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1.5px}
+.pdots{display:flex;gap:5px}
+.pd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s}
+.pd.d{background:rgba(255,255,255,.6)}
+.pd.a{background:var(--white);width:16px;border-radius:3px}
+
+/* ── Steps ── */
+.step{display:none}.step.show{display:block;animation:up .3s ease}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stag{display:inline-flex;background:var(--red-pale);border:1px solid var(--red-light);color:var(--red2);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin:22px 16px 0}
+.stitle{font-family:'Playfair Display',serif;font-size:20px;padding:8px 16px 3px;line-height:1.3;color:var(--red2)}
+.ssub{font-size:12px;color:var(--muted);padding:0 16px 14px;font-weight:300;line-height:1.6}
+
+/* ── Question card ── */
+.qc{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);margin:0 12px 10px;transition:box-shadow .2s}
+.qc:focus-within{box-shadow:0 0 0 2px var(--red)}
+.qh{padding:14px 16px 0}
+.ql{font-size:13px;font-weight:600;line-height:1.5;display:flex;gap:7px;align-items:flex-start}
+.qn{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:50%;flex-shrink:0;margin-top:1px}
+.qhint{font-size:11px;color:var(--muted);margin:3px 0 6px 27px;font-weight:300;line-height:1.5}
+.qb{padding:4px 16px 14px}
+
+/* ── Choices ── */
+.chs{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ch{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:11px;cursor:pointer;background:var(--cream);text-align:left;width:100%;transition:all .15s}
+.ch:active{transform:scale(.98)}.ch.on{border-color:var(--red);background:var(--red-pale)}
+.chi{font-size:17px;width:24px;text-align:center;flex-shrink:0;margin-top:1px}
+.cht{flex:1}.chm{font-size:13px;font-weight:600;line-height:1.4}
+.chs2{font-size:11px;color:var(--muted);font-weight:300;margin-top:1px;line-height:1.4}
+.chd{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--bdr);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ch.on .chd{background:var(--red);border-color:var(--red)}
+.ch.on .chd::after{content:'';width:5px;height:5px;background:#fff;border-radius:50%}
+
+/* ── Chips ── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{padding:7px 14px;border:1.5px solid var(--bdr);border-radius:99px;font-size:12px;font-weight:500;cursor:pointer;background:var(--cream);color:var(--ink);font-family:'Noto Sans Thai',sans-serif;transition:all .15s}
+.chip:active{transform:scale(.95)}.chip.on{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ── Text input ── */
+.qi{width:100%;border:1.5px solid var(--bdr);border-radius:11px;padding:11px 13px;font-size:13px;font-family:'Noto Sans Thai',sans-serif;background:var(--cream);color:var(--ink);outline:none;resize:none;line-height:1.7;transition:border-color .15s;margin-top:8px}
+.qi:focus{border-color:var(--red);background:#fff}.qi::placeholder{color:#ccc}
+
+/* ── MBTI Banner ── */
+.mbti-box{background:var(--ink);border-radius:var(--r);margin:0 12px 10px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.mbti-ico{font-size:28px;flex-shrink:0}
+.mbti-content h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
+.mbti-content p{font-size:11px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.5;margin-bottom:10px}
+.mbti-btn{display:inline-flex;align-items:center;gap:5px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:7px 16px;border-radius:99px;text-decoration:none;font-family:'Noto Sans Thai',sans-serif}
+.mbti-skip{font-size:11px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:300}
+
+/* ── Nav ── */
+.nav{display:flex;gap:10px;padding:18px 12px 0}
+.bbk{padding:12px 16px;border:1.5px solid var(--bdr);border-radius:11px;background:var(--white);font-size:13px;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;color:var(--muted)}
+.bnx{flex:1;padding:12px;border:none;border-radius:11px;background:var(--red);color:#fff;font-size:14px;font-weight:700;font-family:'Noto Sans Thai',sans-serif;cursor:pointer}
+.bnx:active,.bbk:active{transform:scale(.97)}
+
+/* ══════════════════════ RESULT ══════════════════════ */
+.res{display:none}
+
+/* Hero */
+.res-hero{background:var(--red2);padding:40px 22px 32px;text-align:center;position:relative}
+.res-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--white)}
+.rico{font-size:52px;margin-bottom:12px}
+.rtype{font-family:'Playfair Display',serif;font-size:22px;color:var(--white);margin-bottom:5px}
+.rnick{font-size:12px;color:rgba(255,255,255,.5);font-weight:300}
+.rdesc{font-size:13px;color:rgba(255,255,255,.75);margin-top:10px;font-weight:300;line-height:1.7;padding:0 10px}
+.rtags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:14px}
+.rtag{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:600;letter-spacing:.5px;padding:4px 11px;border-radius:99px}
+
+/* Meaning box */
+.meaning-wrap{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);margin:16px 12px 0;overflow:hidden}
+.meaning-hdr{background:var(--red);padding:12px 16px;display:flex;align-items:center;gap:8px}
+.meaning-hdr-txt{font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase}
+.meaning-body{padding:14px 16px}
+.mrow{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start}
+.mrow:last-child{margin-bottom:0}
+.mico{font-size:16px;width:24px;flex-shrink:0;margin-top:2px;text-align:center}
+.mlabel{font-size:10px;font-weight:700;color:var(--red);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.mval{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.mexplain{font-size:12px;color:#555;font-weight:300;line-height:1.6}
+
+/* Divider */
+.sec-div{display:flex;align-items:center;gap:10px;padding:16px 12px 4px}
+.sec-div-line{flex:1;height:1px;background:var(--bdr)}
+.sec-div-txt{font-size:10px;letter-spacing:2px;color:var(--red);text-transform:uppercase;font-weight:700}
+
+/* Answer cards */
+.rcard{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 15px;margin:0 12px 8px}
+.rcard-q{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px}
+.rcard-a{font-size:13px;font-weight:500;line-height:1.6;color:var(--ink)}
+.rcard-a.empty{color:#ccc;font-weight:300;font-style:italic}
+
+/* Send button */
+.sbtn{display:block;width:calc(100% - 24px);margin:14px 12px 8px;padding:15px;border:none;border-radius:11px;font-size:14px;font-weight:700;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;transition:all .15s}
+.sbtn.main{background:var(--red);color:#fff}
+.sbtn.ok{background:#2e7d32;color:#fff}
+.sbtn.err{background:#333;color:#fff}
+.sbtn:active{transform:scale(.97)}
+.resnote{text-align:center;font-size:11px;color:var(--muted);padding:2px 20px 28px;font-weight:300;line-height:1.7}
+
+/* Footer brand */
+.res-footer{background:var(--red2);padding:20px;text-align:center;margin-top:10px}
+.res-footer-logo{display:flex;align-items:center;justify-content:center;gap:10px}
+.res-footer .lollipop-head{width:28px;height:28px}
+.res-footer .lollipop-inner{width:16px;height:16px}
+.res-footer .lollipop-stick{height:16px}
+.res-footer-name{font-family:'Playfair Display',serif;font-size:16px;color:rgba(255,255,255,.7)}
+
+/* Overlay */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:999}
+.ov.show{display:flex}
+.ovbox{background:#fff;border-radius:20px;padding:28px 24px;text-align:center;max-width:280px;width:90%}
+.ovspin{font-size:32px;margin-bottom:12px;animation:spin 1s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<style>
+.portfolio-banner{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:8px 16px;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;box-shadow:0 2px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.portfolio-banner span.tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:11px;letter-spacing:2px;}
+.portfolio-banner span.pipe{opacity:.4;}
+body{padding-top:40px !important;}
+</style>
+<div class="portfolio-banner">
+  <span class="tag">PORTFOLIO</span>
+  <span class="pipe">|</span>
+  ✦ ตัวอย่างผลงาน — ข้อมูลจำลองเพื่อการนำเสนอ ✦
+  <span class="pipe">|</span>
+  <span class="tag">MOCK-UP</span>
+</div>
+
+
+<div class="ov" id="ov">
+  <div class="ovbox"><div class="ovspin">⏳</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:4px">กำลังส่งข้อมูล...</div>
+    <div style="font-size:11px;color:#999">รอแป๊บนึงนะครับ</div>
+  </div>
+</div>
+
+<!-- ── Header ── -->
+<div class="hdr">
+  <div class="logo-wrap">
+    <div class="lollipop">
+      <div class="lollipop-head"><div class="lollipop-inner"></div></div>
+      <div class="lollipop-stick"></div>
+    </div>
+    <div class="brand-text">
+      <div class="brand-name">Creator Hub</div>
+      <div class="brand-sub">Influencer Platform</div>
+    </div>
+  </div>
+  <h2>Creator Profile ✦</h2>
+  <p>ตอบตามความรู้สึกแรก ไม่มีผิดหรือถูก<br>แบรนด์อยากรู้จักน้องจริงๆ</p>
+</div>
+
+<!-- ── Progress ── -->
+<div class="prog">
+  <div class="pbar"><div class="pfill" id="pf" style="width:0%"></div></div>
+  <div style="background:#B71C1C;text-align:center;padding:7px 16px;font-size:11px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.5px">⚠️ กรุณาตอบทุกข้อ — ถ้าตอบไม่ครบจะกดถัดไปไม่ได้</div>
+<div class="pmeta">
+    <div class="ptxt" id="pl">ส่วนที่ 1 จาก 7</div>
+    <div class="pdots" id="pd"></div>
+  </div>
+</div>
+
+<!-- ═══ S1: พื้นฐาน ═══ -->
+<div class="step show" id="s1">
+  <div class="stag">01 · ข้อมูลพื้นฐาน</div>
+  <div class="stitle">แนะนำตัวก่อนนะ 👋</div>
+  <div class="ssub">ข้อมูลเบื้องต้นที่แบรนด์ต้องการ</div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">1</span>ชื่อเล่น</div></div>
+  <div class="qb"><input class="qi" id="a_nick" placeholder="เช่น ฟิล์ม, ยูริน, เวียร์" style="margin-top:4px"></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">2</span>IG และ TikTok</div></div>
+  <div class="qb"><input class="qi" id="a_social" placeholder="@IG / @TikTok" style="margin-top:4px"></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">3</span>อยู่แถวไหน?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="loc" data-v="กรุงเทพฯ" onclick="pick(this)"><span class="chi">🏙️</span><div class="cht"><div class="chm">กรุงเทพฯ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="loc" data-v="ปริมณฑล" onclick="pick(this)"><span class="chi">🛣️</span><div class="cht"><div class="chm">ปริมณฑล</div><div class="chs2">นนทบุรี / ปทุมธานี / สมุทรปราการ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="loc" data-v="ต่างจังหวัด" onclick="pick(this);document.getElementById('a_province').style.display='block'"><span class="chi">🌿</span><div class="cht"><div class="chm">ต่างจังหวัด</div><div class="chs2">กรุณาระบุจังหวัดด้านล่าง</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="loc" data-v="กรุงเทพฯ" onclick="pick(this);document.getElementById('a_province').style.display='none'" style="display:none"></button>
+  </div>
+  <input class="qi" id="a_province" placeholder="ระบุจังหวัด เช่น เชียงใหม่, ขอนแก่น, สุราษฎร์ธานี..." style="display:none;margin-top:8px">
+  </div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">4</span>ตอนนี้เรียน หรือทำงานอะไร?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="s1_status" data-v="นักเรียน / นักศึกษา" onclick="pick(this)"><span class="chi">🎓</span><div class="cht"><div class="chm">นักเรียน / นักศึกษา</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="s1_status" data-v="ทำงานประจำ" onclick="pick(this)"><span class="chi">💼</span><div class="cht"><div class="chm">ทำงานประจำ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="s1_status" data-v="Freelance" onclick="pick(this)"><span class="chi">💻</span><div class="cht"><div class="chm">Freelance / งานอิสระ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="s1_status" data-v="ทำ Content เป็นหลัก" onclick="pick(this)"><span class="chi">🎬</span><div class="cht"><div class="chm">ทำ Content เป็นหลัก</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="nav"><button class="bnx" onclick="go(2)">ถัดไป →</button></div>
+</div>
+
+<!-- ═══ S2: MBTI + บุคลิก ═══ -->
+<div class="step" id="s2">
+  <div class="stag">02 · บุคลิกและตัวตน</div>
+  <div class="stitle">น้องเป็นคนแบบไหน? 🪞</div>
+  <div class="ssub">เลือกที่ใกล้เคียงที่สุด เชื่อความรู้สึกแรก</div>
+
+  <div class="mbti-box">
+    <div class="mbti-ico">🧠</div>
+    <div class="mbti-content">
+      <h4>รู้ MBTI ของตัวเองไหม?</h4>
+      <p>ถ้ายังไม่รู้ กดทำได้เลย ใช้เวลาแค่ 10 นาที<br>แล้วเอาผลมาใส่ด้านล่างได้เลย</p>
+      <a class="mbti-btn" href="https://www.16personalities.com/th" target="_blank">🔗 ทำแบบทดสอบ MBTI ภาษาไทย</a>
+      <span class="mbti-skip">ใช้เวลา 10 นาที แล้วกลับมากรอกด้านล่าง ✨</span>
+    </div>
+  </div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">5</span>MBTI ของน้องคืออะไร?</div>
+  <div class="qhint">⚠️ <strong style="color:#D32F2F">กรุณากรอกด้วยนะคะ</strong> — กดลิงก์ด้านบนเพื่อทำแบบทดสอบ 10 นาที แล้วกลับมาใส่ได้เลย</div></div>
+  <div class="qb"><input class="qi" id="a_mbti" placeholder="เช่น ENFP, INTJ, ISFJ, INFP..." style="margin-top:4px;text-transform:uppercase"></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">6</span>เพื่อนบรรยายน้องในคำเดียวว่าอะไร?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="vibe" data-v="ตลก" onclick="pick(this)"><span class="chi">😂</span><div class="cht"><div class="chm">ตลก</div><div class="chs2">ชอบทำคนขำ มีเรื่องเล่า คนรอบข้างสนุกตลอด</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="vibe" data-v="สบายๆ" onclick="pick(this)"><span class="chi">😌</span><div class="cht"><div class="chm">สบายๆ</div><div class="chs2">ใจเย็น ไม่ force ดูทำอะไรก็ง่าย</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="vibe" data-v="มีพลัง" onclick="pick(this)"><span class="chi">⚡</span><div class="cht"><div class="chm">มีพลัง</div><div class="chs2">คึกคัก กระตือรือร้น ไม่อยู่นิ่ง</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="vibe" data-v="จริงใจ" onclick="pick(this)"><span class="chi">💬</span><div class="cht"><div class="chm">จริงใจ</div><div class="chs2">ตรงไปตรงมา พูดจริงคิดจริง เชื่อถือได้</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="vibe" data-v="น่ารัก" onclick="pick(this)"><span class="chi">🌸</span><div class="cht"><div class="chm">น่ารัก</div><div class="chs2">อ่อนโยน ใส่ใจ มีเสน่ห์เงียบๆ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="vibe" data-v="กล้า" onclick="pick(this)"><span class="chi">🔥</span><div class="cht"><div class="chm">กล้า</div><div class="chs2">โดดเด่น ไม่กลัวเป็นตัวเอง ไม่แคร์คำพูด</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">7</span>ชาร์จพลังงานยังไง?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="recharge" data-v="อยู่คนเดียว" onclick="pick(this)"><span class="chi">🛌</span><div class="cht"><div class="chm">อยู่คนเดียว (Introvert)</div><div class="chs2">เงียบๆ ดูซีรีส์ ฟังเพลง นอน recharge</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="recharge" data-v="เจอเพื่อน" onclick="pick(this)"><span class="chi">🎉</span><div class="cht"><div class="chm">เจอเพื่อน (Extrovert)</div><div class="chs2">ออกข้างนอก สังสรรค์ ได้พลังจากคน</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="recharge" data-v="แล้วแต่อารมณ์" onclick="pick(this)"><span class="chi">☯️</span><div class="cht"><div class="chm">แล้วแต่อารมณ์ (Ambivert)</div><div class="chs2">บางทีอยากสังสรรค์ บางทีก็อยากเงียบ</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">8</span>เวลาตัดสินใจ น้องเป็นแบบไหน?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="decide" data-v="ใช้ความรู้สึก / gut" onclick="pick(this)"><span class="chi">❤️</span><div class="cht"><div class="chm">ใช้ความรู้สึก</div><div class="chs2">เชื่อ gut มากกว่าเหตุผล ตัดสินใจเร็ว</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="decide" data-v="คิดวิเคราะห์ก่อน" onclick="pick(this)"><span class="chi">🧠</span><div class="cht"><div class="chm">คิดวิเคราะห์ก่อน</div><div class="chs2">ชั่งน้ำหนัก ดูข้อดีข้อเสีย ไม่รีบ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="decide" data-v="ถามคนรอบข้างก่อน" onclick="pick(this)"><span class="chi">💭</span><div class="cht"><div class="chm">ถามคนรอบข้าง</div><div class="chs2">อยากฟังความเห็นหลายๆ แบบก่อน</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">9</span>มีข้อจำกัดที่อยากให้แบรนด์รู้?</div>
+  <div class="qhint">เช่น ระยะทาง ตารางเรียน บ้านถ่ายไม่สะดวก ค่าเดินทาง</div></div>
+  <div class="qb"><textarea class="qi" id="a_limit" rows="2" placeholder="บอกตรงๆ ได้เลย แบรนด์จะได้เข้ามาช่วยได้ถูกต้อง"></textarea></div></div>
+
+  <div class="nav"><button class="bbk" onclick="go(1)">←</button><button class="bnx" onclick="go(3)">ถัดไป →</button></div>
+</div>
+
+<!-- ═══ S3: สไตล์ + Influencer ═══ -->
+<div class="step" id="s3">
+  <div class="stag">03 · สไตล์และแรงบันดาลใจ</div>
+  <div class="stitle">ตัวตนด้านสไตล์ 👗</div>
+  <div class="ssub">อยากรู้ว่าน้อง "เป็น" ยังไงในชีวิตจริง</div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">10</span>สไตล์แต่งตัวของน้องคือ?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="style" data-v="Feminine — หวาน ผ้าไหล" onclick="pick(this)"><span class="chi">🌸</span><div class="cht"><div class="chm">Feminine</div><div class="chs2">หวาน ผ้าไหล ดูดี มีเสน่ห์</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="style" data-v="Minimal — เรียบ สะอาด ดูแพง" onclick="pick(this)"><span class="chi">🤍</span><div class="cht"><div class="chm">Minimal / Clean</div><div class="chs2">เรียบ สะอาด neutral ดูแพงง่าย</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="style" data-v="Street — สบาย oversized cool" onclick="pick(this)"><span class="chi">🧢</span><div class="cht"><div class="chm">Street / Casual</div><div class="chs2">สบาย oversized ดู cool ไม่แคร์</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="style" data-v="Bold — จัดเต็ม สีสัน โดดเด่น" onclick="pick(this)"><span class="chi">✨</span><div class="cht"><div class="chm">Bold / Statement</div><div class="chs2">จัดเต็ม สีสัน โดดเด่น แตกต่าง</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="style" data-v="Y2K / Retro — vintage ย้อนยุค" onclick="pick(this)"><span class="chi">💿</span><div class="cht"><div class="chm">Y2K / Retro</div><div class="chs2">vintage ย้อนยุค trendy</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="style" data-v="มิกซ์ — แล้วแต่อารมณ์วัน" onclick="pick(this)"><span class="chi">🎨</span><div class="cht"><div class="chm">มิกซ์หลายสไตล์</div><div class="chs2">ไม่ยึดติด แล้วแต่อารมณ์</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">11</span>ถ้าอธิบาย vibe ตัวเองสั้นๆ คืออะไร?</div>
+  <div class="qhint">เช่น "ดาร์คแต่น่ารัก" / "สาวออฟฟิศชอบไปคอนเสิร์ต"</div></div>
+  <div class="qb"><textarea class="qi" id="a_aesthetic" rows="2" placeholder="เขียนได้เลย ไม่ต้องเป็น trend ที่รู้จักก็ได้"></textarea></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">12</span>TikTok / IG ที่น้องชอบดู / เสพบ่อยที่สุด? ใส่ได้ถึง 3 คน</div>
+  <div class="qhint">ใส่ @ชื่อ + บอกสั้นๆ ว่าชอบอะไรในตัวเขา/เธอ</div></div>
+  <div class="qb">
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+      <input class="qi" id="a_watch1" placeholder="@คนที่ 1 — ชอบอะไรในตัวเขา/เธอ?" style="margin-top:0">
+      <input class="qi" id="a_watch2" placeholder="@คนที่ 2 — ชอบอะไร?" style="margin-top:0">
+      <input class="qi" id="a_watch3" placeholder="@คนที่ 3 — ชอบอะไร?" style="margin-top:0">
+    </div>
+  </div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">13</span>TikTok / IG ที่น้องอยากเป็นแบบ หรืออยากมีอะไรแบบเขา/เธอ? ใส่ได้ถึง 3 คน</div>
+  <div class="qhint">บอกว่าอยากได้อะไรจากเขา/เธอ เช่น ฐานแฟน? สไตล์? วิธีพูด? พลังงาน?</div></div>
+  <div class="qb">
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+      <input class="qi" id="a_goali1" placeholder="@คนที่ 1 — อยากได้อะไรจากเขา/เธอ?" style="margin-top:0">
+      <input class="qi" id="a_goali2" placeholder="@คนที่ 2 — อยากได้อะไร?" style="margin-top:0">
+      <input class="qi" id="a_goali3" placeholder="@คนที่ 3 — อยากได้อะไร?" style="margin-top:0">
+    </div>
+  </div></div>
+
+  <div class="nav"><button class="bbk" onclick="go(2)">←</button><button class="bnx" onclick="go(4)">ถัดไป →</button></div>
+</div>
+
+<!-- ═══ S4: สิ่งที่เสพ ═══ -->
+<div class="step" id="s4">
+  <div class="stag">04 · สิ่งที่เสพและไลฟ์สไตล์</div>
+  <div class="stitle">ชีวิตประจำวันของน้อง 🌙</div>
+  <div class="ssub">น้องใช้ชีวิตยังไงนอกจากทำ Content</div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">14</span>Content ที่น้องเสพ / ดูบ่อยที่สุด?</div>
+  <div class="qhint">เลือกได้มากกว่า 1</div></div>
+  <div class="qb"><div class="chips" id="g_consume">
+    <button class="chip" data-v="แฟชั่น/OOTD" onclick="tog(this)">👗 แฟชั่น</button>
+    <button class="chip" data-v="Beauty/Skincare" onclick="tog(this)">💄 Beauty</button>
+    <button class="chip" data-v="ซีรีส์/หนัง" onclick="tog(this)">🎬 ซีรีส์</button>
+    <button class="chip" data-v="เพลง/Concert" onclick="tog(this)">🎵 เพลง</button>
+    <button class="chip" data-v="กีฬา/สุขภาพ" onclick="tog(this)">💪 กีฬา</button>
+    <button class="chip" data-v="อาหาร/คาเฟ่" onclick="tog(this)">☕ อาหาร</button>
+    <button class="chip" data-v="ท่องเที่ยว" onclick="tog(this)">✈️ เที่ยว</button>
+    <button class="chip" data-v="เกม/Anime" onclick="tog(this)">🎮 เกม</button>
+    <button class="chip" data-v="Meme/ตลก" onclick="tog(this)">😂 Meme</button>
+    <button class="chip" data-v="ศิลปะ/Design" onclick="tog(this)">🎨 ศิลปะ</button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">15</span>Platform ที่ใช้เวลาอยู่มากที่สุด?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="platform" data-v="TikTok" onclick="pick(this)"><span class="chi">📱</span><div class="cht"><div class="chm">TikTok</div><div class="chs2">scroll ได้ทั้งวัน เสพ short video</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="platform" data-v="Instagram" onclick="pick(this)"><span class="chi">📸</span><div class="cht"><div class="chm">Instagram</div><div class="chs2">ดูรูปสวย story reels</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="platform" data-v="YouTube" onclick="pick(this)"><span class="chi">▶️</span><div class="cht"><div class="chm">YouTube</div><div class="chs2">คลิปยาว vlog review</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="platform" data-v="X / Twitter" onclick="pick(this)"><span class="chi">🐦</span><div class="cht"><div class="chm">X / Twitter</div><div class="chs2">ตาม trend พูดคุย</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">16</span>วัน Free Day ทั้งวัน น้องจะทำอะไร?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="freeday" data-v="อยู่บ้าน นอน ดูซีรีส์" onclick="pick(this)"><span class="chi">🏠</span><div class="cht"><div class="chm">อยู่บ้าน recharge</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="freeday" data-v="เดินห้าง คาเฟ่ ช้อปปิ้ง" onclick="pick(this)"><span class="chi">🛍️</span><div class="cht"><div class="chm">ออกไปใช้ชีวิต</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="freeday" data-v="นัดเพื่อนออกไปทำกิจกรรม" onclick="pick(this)"><span class="chi">👯</span><div class="cht"><div class="chm">เจอเพื่อน</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="freeday" data-v="ทำ Content เพิ่ม ทดลองไอเดีย" onclick="pick(this)"><span class="chi">🎨</span><div class="cht"><div class="chm">ทำ Content เพิ่ม</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">17</span>ชีวิตประจำวันของน้องเป็นยังไง?</div>
+  <div class="qhint">เล่าสั้นๆ ได้เลย</div></div>
+  <div class="qb"><textarea class="qi" id="a_daily" rows="2" placeholder="เช่น ตื่นมาออกกำลังกาย นั่งคาเฟ่ เย็นออกไปกินข้าวกับเพื่อน"></textarea></div></div>
+
+  <div class="nav"><button class="bbk" onclick="go(3)">←</button><button class="bnx" onclick="go(5)">ถัดไป →</button></div>
+</div>
+
+<!-- ═══ S5: Content + Apps ═══ -->
+<div class="step" id="s5">
+  <div class="stag">05 · Content และเครื่องมือ</div>
+  <div class="stitle">เรื่อง Content ของน้อง 🎬</div>
+  <div class="ssub">บอกตรงๆ แบรนด์จะได้ทำงานด้วยกันได้ดีขึ้น</div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">18</span>Content ที่ทำแล้วรู้สึกเป็นตัวเองมากที่สุด?</div>
+  <div class="qhint">เลือกได้มากกว่า 1</div></div>
+  <div class="qb"><div class="chips" id="g_content">
+    <button class="chip" data-v="OOTD" onclick="tog(this)">👗 OOTD</button>
+    <button class="chip" data-v="GRWM" onclick="tog(this)">💄 GRWM</button>
+    <button class="chip" data-v="Vlog" onclick="tog(this)">📷 Vlog</button>
+    <button class="chip" data-v="ตลก/Trend" onclick="tog(this)">😂 ตลก</button>
+    <button class="chip" data-v="Review" onclick="tog(this)">⭐ Review</button>
+    <button class="chip" data-v="เต้น/Lipsync" onclick="tog(this)">💃 เต้น</button>
+    <button class="chip" data-v="พูดคุย" onclick="tog(this)">🎙️ พูดคุย</button>
+    <button class="chip" data-v="Aesthetic" onclick="tog(this)">🎞️ Aesthetic</button>
+    <button class="chip" data-v="Tips" onclick="tog(this)">📚 Tips</button>
+    <button class="chip" data-v="Live" onclick="tog(this)">🔴 Live</button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">19</span>ปกติตัดคลิปแอพไหน?</div>
+  <div class="qhint">เลือกได้มากกว่า 1</div></div>
+  <div class="qb"><div class="chips" id="g_edit_app">
+    <button class="chip" data-v="CapCut" onclick="tog(this)">✂️ CapCut</button>
+    <button class="chip" data-v="TikTok (in-app)" onclick="tog(this)">📱 TikTok</button>
+    <button class="chip" data-v="VN" onclick="tog(this)">🎬 VN</button>
+    <button class="chip" data-v="iMovie" onclick="tog(this)">🍎 iMovie</button>
+    <button class="chip" data-v="Premiere Pro / Final Cut" onclick="tog(this)">🎥 Pro</button>
+    <button class="chip" data-v="ยังไม่ถนัดตัดต่อ" onclick="tog(this)">❓ ยังไม่ถนัด</button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">20</span>ปกติแต่งรูปแอพไหน?</div>
+  <div class="qhint">เลือกได้มากกว่า 1</div></div>
+  <div class="qb"><div class="chips" id="g_photo_app">
+    <button class="chip" data-v="CapCut (แต่งรูป)" onclick="tog(this)">✂️ CapCut</button>
+    <button class="chip" data-v="Meitu / 美图秀秀" onclick="tog(this)">🌟 Meitu</button>
+    <button class="chip" data-v="Ulike" onclick="tog(this)">🤩 Ulike</button>
+    <button class="chip" data-v="Lightroom / VSCO" onclick="tog(this)">☀️ Lightroom/VSCO</button>
+    <button class="chip" data-v="Remini" onclick="tog(this)">✨ Remini</button>
+    <button class="chip" data-v="อื่นๆ" onclick="tog(this)" id="chip_photo_other">➕ อื่นๆ</button>
+  </div>
+  <input class="qi" id="a_photo_other" placeholder="ระบุแอพอื่นที่ใช้..." style="display:none;margin-top:8px">
+  </div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">21</span>ใช้ AI ช่วยทำ Content ไหม?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="ai_use" data-v="ใช้ประจำ" onclick="pick(this)"><span class="chi">🤖</span><div class="cht"><div class="chm">ใช้ประจำ</div><div class="chs2">ใช้ AI ช่วยหลายเรื่องในการทำ Content</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="ai_use" data-v="ใช้บ้าง ลองแล้ว" onclick="pick(this)"><span class="chi">🔍</span><div class="cht"><div class="chm">ใช้บ้าง</div><div class="chs2">ลองใช้แล้ว แต่ไม่ได้ใช้สม่ำเสมอ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="ai_use" data-v="ยังไม่ได้ใช้" onclick="pick(this)"><span class="chi">🤔</span><div class="cht"><div class="chm">ยังไม่ได้ใช้</div><div class="chs2">ไม่แน่ใจจะเริ่มยังไง</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="ai_use" data-v="ไม่ใช้ ชอบทำเองทั้งหมด" onclick="pick(this)"><span class="chi">👐</span><div class="cht"><div class="chm">ไม่ใช้</div><div class="chs2">ชอบ original ทำเองทั้งหมด</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">22</span>ถ้าใช้ AI ใช้ทำอะไร?</div>
+  <div class="qhint">เลือกได้มากกว่า 1 (ถ้าไม่ใช้ข้ามได้)</div></div>
+  <div class="qb"><div class="chips" id="g_ai_tools">
+    <button class="chip" data-v="คิดไอเดีย/Script" onclick="tog(this)">💡 ไอเดีย</button>
+    <button class="chip" data-v="เขียน Caption" onclick="tog(this)">✍️ Caption</button>
+    <button class="chip" data-v="CapCut AI" onclick="tog(this)">✂️ CapCut AI</button>
+    <button class="chip" data-v="แต่งรูป AI" onclick="tog(this)">✨ แต่งรูป AI</button>
+    <button class="chip" data-v="Canva AI" onclick="tog(this)">📐 Canva AI</button>
+    <button class="chip" data-v="TikTok AI" onclick="tog(this)">📱 TikTok AI</button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">23</span>ให้คะแนนตัวเองตอนพูดหน้ากล้อง กี่คะแนน? (จาก 10)</div>
+  <div class="qhint">10 = กล้ามาก พูดได้ natural มาก / 1 = ยังไม่คอนฟิเดนท์เลย</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="cam_score" data-v="9-10 คะแนน — กล้ามาก พูดเก่งมาก" onclick="pick(this)"><span class="chi">🌟</span><div class="cht"><div class="chm">9-10 คะแนน</div><div class="chs2">กล้ามาก พูดหน้ากล้องได้ดีมาก natural</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="cam_score" data-v="7-8 คะแนน — ค่อนข้างคอนฟิเดนท์" onclick="pick(this)"><span class="chi">😊</span><div class="cht"><div class="chm">7-8 คะแนน</div><div class="chs2">ค่อนข้างคอนฟิเดนท์ มีบ้างที่เขิน</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="cam_score" data-v="5-6 คะแนน — พอได้ ยังต้องฝึก" onclick="pick(this)"><span class="chi">😐</span><div class="cht"><div class="chm">5-6 คะแนน</div><div class="chs2">พอได้ แต่ยังต้องฝึกเพิ่มอีก</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="cam_score" data-v="3-4 คะแนน — เขิน ยังไม่ถนัด" onclick="pick(this)"><span class="chi">😅</span><div class="cht"><div class="chm">3-4 คะแนน</div><div class="chs2">เขินกล้อง ยังไม่ค่อยถนัด</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="cam_score" data-v="1-2 คะแนน — ไม่คอนฟิเดนท์เลย" onclick="pick(this)"><span class="chi">😨</span><div class="cht"><div class="chm">1-2 คะแนน</div><div class="chs2">ยังไม่คอนฟิเดนท์เลย ต้องการความช่วยเหลือ</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">24</span>Content ที่ไม่อยากทำ / รู้สึกไม่ถนัด?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="nolike" data-v="Hard sell ขายของตรงๆ" onclick="pick(this)"><span class="chi">💰</span><div class="cht"><div class="chm">Hard sell</div><div class="chs2">ขายของตรงๆ เน้นราคา</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="nolike" data-v="ถ่ายที่สาธารณะ คนมอง" onclick="pick(this)"><span class="chi">👥</span><div class="cht"><div class="chm">ถ่ายที่สาธารณะ</div><div class="chs2">มีคนมอง เขินกล้อง</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="nolike" data-v="คลิปยาว พูดเยอะ" onclick="pick(this)"><span class="chi">🎙️</span><div class="cht"><div class="chm">คลิปยาว พูดเยอะ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="nolike" data-v="เต้น / ท่าทางโดดเด่น" onclick="pick(this)"><span class="chi">💃</span><div class="cht"><div class="chm">เต้น / ท่าทาง</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="nolike" data-v="ไลฟ์สดคนเดียวนาน" onclick="pick(this)"><span class="chi">🔴</span><div class="cht"><div class="chm">ไลฟ์สดคนเดียวนาน</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="nav"><button class="bbk" onclick="go(4)">←</button><button class="bnx" onclick="go(6)">ถัดไป →</button></div>
+</div>
+
+<!-- ═══ S6: อุปกรณ์ ═══ -->
+<div class="step" id="s6">
+  <div class="stag">06 · อุปกรณ์และความพร้อม</div>
+  <div class="stitle">ความพร้อมในการทำงาน 📷</div>
+  <div class="ssub">บอกตรงๆ แบรนด์จะเข้ามาช่วยได้ถูกต้อง</div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">25</span>อุปกรณ์ที่มีอยู่?</div>
+  <div class="qhint">เลือกได้มากกว่า 1</div></div>
+  <div class="qb"><div class="chips" id="g_gear">
+    <button class="chip" data-v="มือถือ" onclick="tog(this)">📱 มือถือ</button>
+    <button class="chip" data-v="กล้อง DSLR/Mirrorless" onclick="tog(this)">📸 กล้อง</button>
+    <button class="chip" data-v="Ring light" onclick="tog(this)">💡 Ring light</button>
+    <button class="chip" data-v="ไมค์ภายนอก" onclick="tog(this)">🎙️ ไมค์</button>
+    <button class="chip" data-v="ขาตั้งกล้อง" onclick="tog(this)">🦯 ขาตั้ง</button>
+    <button class="chip" data-v="Laptop" onclick="tog(this)">💻 Laptop</button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">26</span>ถ้าถ่ายที่บ้าน พื้นที่เป็นยังไง?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="shoot" data-v="บ้านพร้อมถ่าย มุมสวย ไฟดี" onclick="pick(this)"><span class="chi">✅</span><div class="cht"><div class="chm">พร้อมถ่ายเลย</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="shoot" data-v="บ้านได้แต่ต้องจัดก่อน" onclick="pick(this)"><span class="chi">🛋️</span><div class="cht"><div class="chm">บ้านได้แต่ต้องจัด</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="shoot" data-v="ออกข้างนอกดีกว่า คาเฟ่/mall" onclick="pick(this)"><span class="chi">🏬</span><div class="cht"><div class="chm">ออกข้างนอกดีกว่า</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="shoot" data-v="มาสตูดิโอแบรนด์ได้" onclick="pick(this)"><span class="chi">🎥</span><div class="cht"><div class="chm">มาสตูดิโอแบรนด์ได้</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">27</span>พร้อม Live TikTok ไหม?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="live" data-v="พร้อมเลย อุปกรณ์ครบ" onclick="pick(this)"><span class="chi">✅</span><div class="cht"><div class="chm">พร้อมเลย</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="live" data-v="เกือบพร้อม ต้องการอุปกรณ์เพิ่ม" onclick="pick(this)"><span class="chi">🔧</span><div class="cht"><div class="chm">เกือบพร้อม</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="live" data-v="ยังต้องฝึกอีก" onclick="pick(this)"><span class="chi">📚</span><div class="cht"><div class="chm">ต้องฝึกอีก</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">28</span>เวลาว่างทำงานได้มากที่สุด?</div>
+  <div class="qhint">เลือกได้มากกว่า 1</div></div>
+  <div class="qb"><div class="chips" id="g_time">
+    <button class="chip" data-v="เช้า 8-12น." onclick="tog(this)">🌅 เช้า</button>
+    <button class="chip" data-v="บ่าย 12-17น." onclick="tog(this)">☀️ บ่าย</button>
+    <button class="chip" data-v="เย็น 17-20น." onclick="tog(this)">🌆 เย็น</button>
+    <button class="chip" data-v="กลางคืน 20น.+" onclick="tog(this)">🌙 คืน</button>
+    <button class="chip" data-v="เสาร์-อาทิตย์" onclick="tog(this)">📅 เสาร์-อาทิตย์</button>
+  </div></div></div>
+
+  <div class="nav"><button class="bbk" onclick="go(5)">←</button><button class="bnx" onclick="go(7)">ถัดไป →</button></div>
+</div>
+
+<!-- ═══ S7: เป้าหมาย ═══ -->
+<div class="step" id="s7">
+  <div class="stag">07 · เป้าหมายและสุดท้าย</div>
+  <div class="stitle">เป้าหมายของน้อง 🚀</div>
+  <div class="ssub">ส่วนสุดท้ายแล้ว บอกตรงๆ ได้เลย</div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">29</span>Content ที่เคยได้ยอดดีที่สุด คืออะไร? ทำไมคิดว่ามันดัง?</div></div>
+  <div class="qb"><textarea class="qi" id="a_best" rows="2" placeholder="เช่น คลิป OOTD ที่ถ่ายตอนไปคอนเสิร์ต ได้ 500K เพราะ vibe ดีและ location สวย"></textarea></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qn">30</span>จุดแข็งที่คิดว่าทำได้ดีกว่าคนอื่น?</div></div>
+  <div class="qb"><textarea class="qi" id="a_strength" rows="2" placeholder="เช่น ถ่ายรูปเองได้ดี ตัดต่อเก่ง พูดหน้ากล้องได้ดี คิดไอเดียเร็ว"></textarea></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qnum">31</span>อยากให้แบรนด์ช่วยเรื่องอะไรมากที่สุด?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="help" data-v="ไอเดีย Content / Script" onclick="pick(this)"><span class="chi">💡</span><div class="cht"><div class="chm">ไอเดีย Content</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="help" data-v="อุปกรณ์ถ่ายทำ" onclick="pick(this)"><span class="chi">📸</span><div class="cht"><div class="chm">อุปกรณ์</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="help" data-v="สอนทักษะ ตัดต่อ พูด ไลฟ์" onclick="pick(this)"><span class="chi">📚</span><div class="cht"><div class="chm">สอนทักษะ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="help" data-v="พื้นที่ถ่ายทำ สตูดิโอ" onclick="pick(this)"><span class="chi">🎥</span><div class="cht"><div class="chm">พื้นที่ถ่ายทำ</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="help" data-v="สร้าง Personal Brand" onclick="pick(this)"><span class="chi">✨</span><div class="cht"><div class="chm">Personal Brand</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="help" data-v="สอนใช้ AI ทำ Content" onclick="pick(this)"><span class="chi">🤖</span><div class="cht"><div class="chm">สอนใช้ AI</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qnum">32</span>อีก 1 ปี อยากเห็นตัวเองเป็นยังไง?</div></div>
+  <div class="qb"><div class="chs">
+    <button class="ch" data-g="goal" data-v="มีฐานแฟนคลับที่แน่นและ loyal" onclick="pick(this)"><span class="chi">❤️</span><div class="cht"><div class="chm">มีแฟนคลับที่แน่น</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="goal" data-v="รายได้จาก Content เป็นหลัก" onclick="pick(this)"><span class="chi">💵</span><div class="cht"><div class="chm">รายได้จาก Content</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="goal" data-v="เป็นที่รู้จักในวงกว้างขึ้น" onclick="pick(this)"><span class="chi">🌏</span><div class="cht"><div class="chm">เป็นที่รู้จักมากขึ้น</div></div><div class="chd"></div></button>
+    <button class="ch" data-g="goal" data-v="พัฒนาทักษะ Creator" onclick="pick(this)"><span class="chi">📈</span><div class="cht"><div class="chm">พัฒนาทักษะ</div></div><div class="chd"></div></button>
+  </div></div></div>
+
+  <div class="qc"><div class="qh"><div class="ql"><span class="qnum">33</span>อยากให้แบรนด์รู้อะไรเกี่ยวกับน้อง 1 อย่าง?</div></div>
+  <div class="qb"><textarea class="qi" id="a_note" rows="3" placeholder="ไม่มีผิดถูก บอกตรงๆ ✨"></textarea></div></div>
+
+  <div class="nav"><button class="bbk" onclick="go(6)">←</button><button class="bnx" onclick="finish()">ดูผลลัพธ์ ✨</button></div>
+</div>
+
+<!-- ══════════════════════ RESULT ══════════════════════ -->
+<div class="res" id="resWrap">
+
+  <div class="res-hero">
+    <div class="rico" id="rIco">✨</div>
+    <div class="rtype" id="rType">—</div>
+    <div class="rnick" id="rNick">—</div>
+    <div class="rdesc" id="rDesc">—</div>
+    <div class="rtags" id="rTags"></div>
+  </div>
+
+  <!-- Meaning box -->
+  <div class="meaning-wrap" id="meaningWrap">
+    <div class="meaning-hdr">
+      <span style="font-size:14px">🔍</span>
+      <div class="meaning-hdr-txt">ความหมายและคำอธิบายตัวตนน้อง</div>
+    </div>
+    <div class="meaning-body" id="meaningRows"></div>
+  </div>
+
+  <!-- All answers -->
+  <div class="sec-div">
+    <div class="sec-div-line"></div>
+    <div class="sec-div-txt">คำตอบทั้งหมด</div>
+    <div class="sec-div-line"></div>
+  </div>
+  <div id="rCards"></div>
+
+  <!-- Send button -->
+  <button class="sbtn main" id="sendBtn" onclick="sendToSheet()">📤 ส่งข้อมูลเข้า Google Sheet</button>
+  <div class="resnote" id="resNote">กดส่งเพื่อให้ทีม Creator Platform รับข้อมูลของน้อง ✨</div>
+
+  <!-- Footer brand -->
+  <div class="res-footer">
+    <div class="res-footer-logo">
+      <div class="lollipop">
+        <div class="lollipop-head"><div class="lollipop-inner"></div></div>
+        <div class="lollipop-stick"></div>
+      </div>
+      <div class="res-footer-name">Creator Platform Design</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL="#";
+let cur=1; const TOTAL=7; const A={};
+
+// toggle photo other input
+document.getElementById('chip_photo_other').addEventListener('click',function(){
+  const inp=document.getElementById('a_photo_other');
+  inp.style.display=this.classList.contains('on')?'block':'none';
+  if(!this.classList.contains('on')) inp.value='';
+});
+
+function renderProg(){
+  const pct=((cur-1)/TOTAL)*100;
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pl').textContent=cur>TOTAL?'เสร็จแล้ว! 🎉':`ส่วนที่ ${cur} จาก ${TOTAL}`;
+  document.getElementById('pd').innerHTML=Array.from({length:TOTAL},(_,i)=>{
+    const c=i+1<cur?'d':i+1===cur?'a':'';
+    return`<div class="pd ${c}"></div>`;
+  }).join('');
+}
+
+function pick(btn){
+  const g=btn.dataset.g;
+  // scope ใน step ปัจจุบันเท่านั้น ไม่ affect ข้ามหน้า
+  const stepEl = document.getElementById('s'+cur);
+  if(stepEl){
+    stepEl.querySelectorAll(`.ch[data-g="${g}"]`).forEach(b=>b.classList.remove('on'));
+  } else {
+    // fallback: ใช้ parent ของปุ่ม
+    btn.closest('.chs')?.querySelectorAll(`.ch[data-g="${g}"]`).forEach(b=>b.classList.remove('on'));
+  }
+  btn.classList.add('on'); A[g]=btn.dataset.v;
+}
+function tog(c){c.classList.toggle('on');}
+function chips(id){return[...document.querySelectorAll(`#${id} .chip.on`)].map(c=>c.dataset.v).join(', ');}
+
+function saveAll(){
+  ['a_nick','a_social','a_mbti','a_aesthetic','a_watch1','a_watch2','a_watch3',
+   'a_goali1','a_goali2','a_goali3','a_daily','a_best','a_strength','a_note','a_limit','a_province'].forEach(id=>{
+    const el=document.getElementById(id); if(el) A[id]=el.value.trim();
+  });
+  // photo apps + other
+  let photoApps=chips('g_photo_app');
+  const other=document.getElementById('a_photo_other').value.trim();
+  if(other) photoApps=photoApps?photoApps+', '+other:other;
+  A['g_photo_app']=photoApps;
+  ['g_consume','g_content','g_edit_app','g_ai_tools','g_gear','g_time'].forEach(id=>{A[id]=chips(id);});
+}
+
+// ── Validation rules per step ─────────────────────────────────────
+const REQUIRED = {
+  1: () => {
+    if(!A['loc']) return 'กรุณาเลือกจังหวัดที่อยู่';
+    if(A['loc']==='ต่างจังหวัด' && !document.getElementById('a_province').value.trim()) return 'กรุณาระบุจังหวัดของน้อง';
+    if(!A['a_nick']) return 'กรุณากรอกชื่อเล่น';
+    if(!A['a_social']) return 'กรุณากรอก IG / TikTok';
+    if(!A['s1_status']) return 'กรุณาเลือกสถานะปัจจุบัน';
+    return null;
+  },
+  2: () => {
+    if(!A['a_mbti']) return 'กรุณากรอก MBTI — กดลิงก์ด้านบนเพื่อทำแบบทดสอบได้เลยค่ะ 🧠';
+    if(!A['vibe']) return 'กรุณาเลือกบุคลิกที่ใกล้เคียงที่สุด';
+    if(!A['recharge']) return 'กรุณาเลือกวิธีชาร์จพลังงาน';
+    if(!A['decide']) return 'กรุณาเลือกวิธีตัดสินใจ';
+    return null;
+  },
+  3: () => {
+    if(!A['style']) return 'กรุณาเลือกสไตล์แต่งตัว';
+    if(!A['a_watch1']) return 'กรุณาใส่ TikTok/IG ที่ชอบดูอย่างน้อย 1 ช่อง';
+    if(!A['a_goali1']) return 'กรุณาใส่ TikTok/IG ที่อยากเป็นแบบอย่างน้อย 1 ช่อง';
+    return null;
+  },
+  4: () => {
+    if(!A['platform']) return 'กรุณาเลือก Platform ที่ใช้มากที่สุด';
+    if(!A['freeday']) return 'กรุณาเลือกกิจกรรมวัน Free Day';
+    return null;
+  },
+  5: () => {
+    if(!A['ai_use']) return 'กรุณาเลือกว่าใช้ AI ไหม';
+    if(!A['cam_score']) return 'กรุณาให้คะแนนตัวเองตอนพูดหน้ากล้อง';
+    if(!A['nolike']) return 'กรุณาเลือก Content ที่ไม่ถนัด';
+    return null;
+  },
+  6: () => {
+    if(!A['shoot']) return 'กรุณาเลือกพื้นที่ถ่ายทำ';
+    if(!A['live']) return 'กรุณาเลือกความพร้อม Live';
+    return null;
+  },
+  7: () => {
+    if(!A['a_strength']) return 'กรุณากรอกจุดแข็งของน้อง';
+    if(!A['help']) return 'กรุณาเลือกสิ่งที่ต้องการให้แบรนด์ช่วย';
+    if(!A['goal']) return 'กรุณาเลือกเป้าหมาย 1 ปี';
+    return null;
+  },
+};
+
+function showError(msg){
+  // สร้าง toast alert
+  let t=document.getElementById('err-toast');
+  if(!t){t=document.createElement('div');t.id='err-toast';t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#D32F2F;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);max-width:300px;text-align:center;font-family:Noto Sans Thai,sans-serif';document.body.appendChild(t);}
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>{t.style.display='none';},3000);
+}
+
+function go(n){
+  saveAll();
+  // ถ้าไปหน้าถัดไป (forward) ให้ validate ก่อน
+  if(n > cur){
+    const check = REQUIRED[cur];
+    if(check){const err=check(); if(err){showError(err);return;}}
+  }
+  document.getElementById(`s${cur}`).classList.remove('show');
+  cur=n;
+  const el=document.getElementById(`s${cur}`);
+  if(el){el.classList.add('show');renderProg();window.scrollTo(0,0);}
+}
+
+// ── Personality ──────────────────────────────────────────────────────
+function getP(){
+  const v=A['vibe']||''; const s=A['style']||'';
+  if(v==='ตลก'&&s.includes('Bold'))   return{ico:'🔥',type:'The Bold Entertainer',desc:'โดดเด่น ตลก และกล้า — ใครเห็นก็จำ คนดูอยากตามเพราะไม่มีใครเหมือน',tag:['Bold','Fun','Memorable']};
+  if(v==='ตลก')                        return{ico:'😄',type:'The Relatable Creator',desc:'ตลกและเข้าถึงง่าย คนดูรู้สึกเหมือนเป็นเพื่อน ทำให้คนรู้สึก "นี่ไง ฉัน"',tag:['Funny','Real','Friendly']};
+  if(v==='มีพลัง'&&s.includes('Fem')) return{ico:'🎀',type:'The Bubbly Sweetheart',desc:'น่ารักและมีพลัง คนดูรู้สึกอบอุ่นและอยากตาม พลังงานบวกตลอดเวลา',tag:['Energetic','Cute','Positive']};
+  if(v==='มีพลัง')                     return{ico:'⚡',type:'The High Energy Creator',desc:'พลังงานสูง คนดูได้รับพลังงานจากน้อง ไม่มีวันเบื่อ',tag:['Energetic','Dynamic','Inspiring']};
+  if(v==='สบายๆ'&&s.includes('Min'))  return{ico:'🖤',type:'The Cool Minimalist',desc:'เท่ เรียบ ดูดีโดยไม่ต้องพยายาม คนดูแล้วอยากเป็นแบบนั้น',tag:['Cool','Minimal','Effortless']};
+  if(v==='สบายๆ')                      return{ico:'🌿',type:'The Laid-Back Creator',desc:'สบายๆ ดูแล้วผ่อนคลาย เหมือนเพื่อนที่ไม่ judge',tag:['Chill','Relax','Authentic']};
+  if(v==='จริงใจ')                     return{ico:'💬',type:'The Authentic Storyteller',desc:'จริงใจและ real ที่สุด คนดูเชื่อถือและติดตามเพราะรู้ว่าไม่ pretend',tag:['Real','Honest','Trustworthy']};
+  if(v==='น่ารัก')                     return{ico:'🌸',type:'The Sweet Realist',desc:'น่ารักแต่พูดตรง คนดูรู้สึกใกล้ชิด เหมือนเพื่อนที่น่ารักแต่ไม่ทำเก๊',tag:['Sweet','Real','Approachable']};
+  if(v==='กล้า')                       return{ico:'✨',type:'The Show Stealer',desc:'กล้า โดดเด่น ไม่เหมือนใคร คนดูหยุดดูเพราะไม่เคยเห็นแบบนี้',tag:['Bold','Confident','Unique']};
+  return{ico:'🌟',type:'The Unique Creator',desc:'มีเสน่ห์เฉพาะตัว ตัวตนชัดและน่าสนใจ',tag:['Unique','Original']};
+}
+
+// ── Meaning explainer ────────────────────────────────────────────────
+function getMeanings(){
+  const rows=[];
+  const mbtiMap={
+    'ENFP':{label:'นักฝัน ชอบไอเดีย คุยเก่ง',explain:'ถนัด content พูดคุย vlog ชีวิตประจำวัน — ให้อิสระ ไม่ต้อง script เคร่งเกินไป'},
+    'ENFJ':{label:'ผู้นำที่ใส่ใจคน',explain:'เหมาะกับ live พูดคุย สร้างแรงบันดาลใจ — content ที่ motivate คนอื่นจะดัง'},
+    'ENTP':{label:'นักอภิปราย คิดนอกกรอบ',explain:'เหมาะกับ content ตลก ถกเถียง แปลกใหม่ — ชอบ challenge จะดึงออกมาได้'},
+    'ENTJ':{label:'ผู้นำที่มั่นใจ วางแผนเก่ง',explain:'เหมาะกับ content Tips สู่ความสำเร็จ — มี structure จะทำให้ content ดูน่าเชื่อถือ'},
+    'INFP':{label:'นักฝันเงียบๆ ลึกซึ้ง',explain:'เหมาะกับ cinematic aesthetic content — ให้พื้นที่แสดงความรู้สึก ไม่ต้องเร็ว'},
+    'INFJ':{label:'เข้าใจคนได้ลึก จริงใจ',explain:'เหมาะกับ storytelling content ที่มีความหมาย — คนดูจะรู้สึกว่าน้องเข้าใจเขา'},
+    'INTP':{label:'นักคิดวิเคราะห์',explain:'เหมาะกับ tips educational content — ให้ข้อมูลลึกๆ จะทำให้ต่างจากคนอื่น'},
+    'INTJ':{label:'มีวิสัยทัศน์ มั่นใจ',explain:'เหมาะกับ content ที่มี concept ชัดเจน — ให้ทิศทางแล้วน้องจะทำได้ดีมาก'},
+    'ESFP':{label:'ชีวิตคือปาร์ตี้ ชอบความสนุก',explain:'เหมาะกับ entertainment vlog live สนุก — ให้พื้นที่ spontaneous จะเปล่งประกาย'},
+    'ESFJ':{label:'ดูแลคน ชอบทำให้คนมีความสุข',explain:'เหมาะกับ content อบอุ่น lifestyle — review ที่ใส่ใจ detail จะได้รับความไว้ใจ'},
+    'ESTP':{label:'นักลงมือ ชอบ action เร็ว',explain:'เหมาะกับ content real-time challenge — live ปฏิสัมพันธ์ดีมาก ตอบเร็ว'},
+    'ESTJ':{label:'มีระบบ จัดการได้ดี',explain:'เหมาะกับ tips how-to review — content ที่มีโครงสร้างชัดเจน คนดูไว้ใจ'},
+    'ISFP':{label:'ศิลปิน Aesthetic สูง',explain:'เหมาะกับ OOTD visual photo — ให้ creative freedom เต็มที่จะได้ content สวยมาก'},
+    'ISFJ':{label:'ดูแลคน รายละเอียดสูง',explain:'เหมาะกับ review ละเอียด content ดูแลตัวเอง — คนดูจะรู้สึกว่า น้องทำเพื่อเขาจริงๆ'},
+    'ISTP':{label:'ทำได้จริง แก้ปัญหาเก่ง',explain:'เหมาะกับ review จริงๆ how-to ทักษะ — ไม่ชอบ drama ให้ content ตรงๆ ไม่เยิ่นเย้อ'},
+    'ISTJ':{label:'รับผิดชอบสูง เชื่อถือได้',explain:'น้องจะ consistent มากกว่าคนอื่น — จุดแข็งคือทำสม่ำเสมอ ต้องให้กำหนดการล่วงหน้า'},
+  };
+  const mbti=(A['a_mbti']||'').toUpperCase().trim();
+  if(mbti&&mbtiMap[mbti]){
+    rows.push({ico:'🧠',label:'MBTI: '+mbti,val:mbtiMap[mbti].label,explain:mbtiMap[mbti].explain});
+  } else if(mbti){
+    rows.push({ico:'🧠',label:'MBTI',val:mbti,explain:'ดูความหมายเพิ่มเติมที่ 16personalities.com/th'});
+  }
+  const vibeMap={
+    'ตลก':'ให้ space น้องด้นสด ไม่ต้อง script เคร่ง — content ที่ตลกตามธรรมชาติจะ viral ได้ง่ายกว่า',
+    'สบายๆ':'น้องทำได้ดีเมื่อบรรยากาศผ่อนคลาย — content ที่ natural ไม่ forced จะดูดีกว่า',
+    'มีพลัง':'ให้พื้นที่แสดงพลังงาน — live event fast-paced content จะดึงน้องออกมาได้ดีที่สุด',
+    'จริงใจ':'content ที่ scripted มากเกินจะทำให้น้องไม่เป็นธรรมชาติ — ให้พูดจากใจ',
+    'น่ารัก':'ไม่ต้อง bold มาก — lifestyle อบอุ่น สะท้อนตัวตนจริงๆ จะทำให้คนรักน้อง',
+    'กล้า':'ให้โอกาสแสดงออก ลอง concept แตกต่าง ไม่ต้อง safe — น้องเป็น showstopper',
+  };
+  if(A['vibe']&&vibeMap[A['vibe']])
+    rows.push({ico:'✨',label:'บุคลิก',val:A['vibe'],explain:vibeMap[A['vibe']]});
+  const rcMap={
+    'อยู่คนเดียว':'Introvert — ไม่ควรบังคับให้ socialise เยอะเกิน ให้เวลา prep ก่อน live',
+    'เจอเพื่อน':'Extrovert — live คู่หรือ group content จะดึงน้องออกมาได้ดีกว่าทำคนเดียว',
+    'แล้วแต่อารมณ์':'Ambivert — ยืดหยุ่นสูง ดูจังหวะ บางทีให้ทำคนเดียว บางทีให้ทำกับคนอื่น',
+  };
+  if(A['recharge']&&rcMap[A['recharge']])
+    rows.push({ico:'🔋',label:'พลังงาน',val:A['recharge'],explain:rcMap[A['recharge']]});
+  const aiMap={
+    'ใช้ประจำ':'น้องสามารถ scale content ได้เร็วด้วย AI — ให้ tools และ prompt ที่ดีจะช่วยได้มาก',
+    'ใช้บ้าง ลองแล้ว':'เปิดรับ AI แต่ยังไม่ full commit — อาจต้องการ guidance เล็กน้อยก็จะ unlock ได้',
+    'ยังไม่ได้ใช้':'แนะนำให้แบรนด์สอนใช้ AI — จะช่วยให้ทำ content ได้เร็วขึ้นมากในระยะยาว',
+    'ไม่ใช้ ชอบทำเองทั้งหมด':'น้อง value ความ original — content จะดู authentic แต่ทำได้ช้ากว่า',
+  };
+  if(A['ai_use']&&aiMap[A['ai_use']])
+    rows.push({ico:'🤖',label:'การใช้ AI',val:A['ai_use'],explain:aiMap[A['ai_use']]});
+  const liveMap={
+    'พร้อมเลย อุปกรณ์ครบ':'วางแผน live schedule ได้เลยทันที',
+    'เกือบพร้อม ต้องการอุปกรณ์เพิ่ม':'แบรนด์ควรช่วยจัดหาอุปกรณ์ก่อน อีกไม่นานก็ live ได้',
+    'ยังต้องฝึกอีก':'ควรจัด live training ก่อน — ให้ experience ผ่าน live ที่ออฟฟิศเป็น practice ก่อน',
+  };
+  if(A['live']&&liveMap[A['live']])
+    rows.push({ico:'🔴',label:'ความพร้อม Live',val:A['live'],explain:liveMap[A['live']]});
+  if(A['help'])
+    rows.push({ico:'🆘',label:'น้องต้องการความช่วยเหลือเรื่อง',val:A['help'],explain:'นี่คือสิ่งที่น้องต้องการมากที่สุด — ถ้าแบรนด์ช่วยได้ จะปลดล็อค potential น้องได้ทันที'});
+  if(A['a_limit']&&A['a_limit']!=='')
+    rows.push({ico:'⚠️',label:'ข้อจำกัดที่ต้องระวัง',val:A['a_limit'],explain:'แบรนด์ควรเข้ามาช่วยแก้ปัญหานี้ก่อน จะได้ไม่เป็นอุปสรรคในการทำงาน'});
+  return rows;
+}
+
+function finish(){
+  saveAll();
+  for(let i=1;i<=TOTAL;i++) document.getElementById(`s${i}`).classList.remove('show');
+  const p=getP();
+  document.getElementById('rIco').textContent=p.ico;
+  document.getElementById('rType').textContent=p.type;
+  document.getElementById('rNick').textContent=(A['a_nick']||'น้อง')+' — '+p.type;
+  document.getElementById('rDesc').textContent=p.desc;
+  document.getElementById('rTags').innerHTML=p.tag.map(t=>`<span class="rtag">${t}</span>`).join('');
+
+  const meanings=getMeanings();
+  document.getElementById('meaningRows').innerHTML=meanings.length?meanings.map(m=>`
+    <div class="mrow">
+      <div class="mico">${m.ico}</div>
+      <div>
+        <div class="mlabel">${m.label}</div>
+        <div class="mval">${m.val}</div>
+        <div class="mexplain">${m.explain}</div>
+      </div>
+    </div>`).join(''):'<div style="font-size:12px;color:#999">ตอบคำถามเพิ่มเติมเพื่อดูการวิเคราะห์</div>';
+
+  const rows=[
+    ['IG / TikTok',A['a_social']||''],['จังหวัด',A['loc']||''],['สถานะ',A['s1_status']||''],
+    ['MBTI',A['a_mbti']||''],['บุคลิก',A['vibe']||''],['ชาร์จพลัง',A['recharge']||''],
+    ['ตัดสินใจ',A['decide']||''],['ข้อจำกัด',A['a_limit']||''],
+    ['สไตล์แต่งตัว',A['style']||''],['Vibe ตัวเอง',A['a_aesthetic']||''],
+    ['เสพ Influencer (1)',A['a_watch1']||''],['เสพ Influencer (2)',A['a_watch2']||''],['เสพ Influencer (3)',A['a_watch3']||''],
+    ['อยากเป็นแบบ (1)',A['a_goali1']||''],['อยากเป็นแบบ (2)',A['a_goali2']||''],['อยากเป็นแบบ (3)',A['a_goali3']||''],
+    ['คะแนนพูดหน้ากล้อง',A['cam_score']||''],
+    ['Content เสพ',A['g_consume']||''],['Platform',A['platform']||''],
+    ['Free Day',A['freeday']||''],['ชีวิตประจำวัน',A['a_daily']||''],
+    ['Content ที่ทำ',A['g_content']||''],['แอพตัดต่อ',A['g_edit_app']||''],
+    ['แอพแต่งรูป',A['g_photo_app']||''],['ใช้ AI',A['ai_use']||''],
+    ['AI ทำอะไร',A['g_ai_tools']||''],['Uncomfortable',A['nolike']||''],
+    ['อุปกรณ์',A['g_gear']||''],['พื้นที่ถ่าย',A['shoot']||''],
+    ['พร้อม Live',A['live']||''],['เวลาว่าง',A['g_time']||''],
+    ['Content ที่เคยดัง',A['a_best']||''],['จุดแข็ง',A['a_strength']||''],
+    ['แบรนด์ช่วย',A['help']||''],['เป้าหมาย 1 ปี',A['goal']||''],
+    ['ฝากบอก',A['a_note']||''],
+  ];
+  document.getElementById('rCards').innerHTML=rows.map(([q,a])=>`
+    <div class="rcard">
+      <div class="rcard-q">${q}</div>
+      <div class="rcard-a ${!a?'empty':''}">${a||'ไม่ได้ระบุ'}</div>
+    </div>`).join('');
+
+  document.getElementById('pf').style.width='100%';
+  document.getElementById('pl').textContent='เสร็จแล้ว! 🎉';
+  document.getElementById('resWrap').style.display='block';
+  window.scrollTo(0,0);
+}
+
+async function sendToSheet(){
+  const btn=document.getElementById('sendBtn');
+  const note=document.getElementById('resNote');
+  const p=getP();
+  const data = {
+    timestamp: new Date().toLocaleString('th-TH'),
+    nick: A['a_nick'] || '',
+    social: A['a_social'] || '',
+    personality: p.type,
+    mbti: A['a_mbti'] || '',
+    loc: A['loc'] || '',
+    province: document.getElementById('a_province')?.value || '', 
+    status: A['s1_status'] || '',
+    vibe: A['vibe'] || '',
+    recharge: A['recharge'] || '',
+    decide: A['decide'] || '',
+    limit: A['a_limit'] || '',
+    style: A['style'] || '',
+    aesthetic: A['a_aesthetic'] || '',
+    watch: (([A['a_watch1'], A['a_watch2'], A['a_watch3']]).filter(Boolean).join(' | ')) || '',
+    goal_influ: (([A['a_goali1'], A['a_goali2'], A['a_goali3']]).filter(Boolean).join(' | ')) || '',
+    cam_score: A['cam_score'] || '',
+    consume: A['g_consume'] || '',
+    platform: A['platform'] || '',
+    freeday: A['freeday'] || '',
+    daily: A['a_daily'] || '',
+    content: A['g_content'] || '',
+    edit_app: A['g_edit_app'] || '',
+    photo_app: A['g_photo_app'] || '',
+    ai_use: A['ai_use'] || '',
+    ai_tools: A['g_ai_tools'] || '',
+    nolike: A['nolike'] || '',
+    gear: A['g_gear'] || '',
+    shoot: A['shoot'] || '',
+    live: A['live'] || '',
+    time: A['g_time'] || '',
+    best: A['a_best'] || '',
+    strength: A['a_strength'] || '',
+    help: A['help'] || '',
+    goal: A['goal'] || '',
+    note: A['a_note'] || '',
+  };
+  document.getElementById('ov').classList.add('show');
+  btn.disabled=true;
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    document.getElementById('ov').classList.remove('show');
+    btn.textContent='✅ ส่งข้อมูลเรียบร้อยแล้ว!';
+    btn.classList.remove('main'); btn.classList.add('ok');
+    note.innerHTML='<strong>ส่งข้อมูลเรียบร้อยแล้ว! 🎉</strong><br>ทีม Creator Platform ได้รับข้อมูลของน้องแล้วครับ<br>ดูคำตอบและคำอธิบายตัวตนของน้องได้ที่หน้านี้เลย ✨';
+  }catch(e){
+    document.getElementById('ov').classList.remove('show');
+    btn.textContent='❌ ส่งไม่สำเร็จ — กดลองใหม่';
+    btn.classList.remove('main'); btn.classList.add('err'); btn.disabled=false;
+    note.textContent='มีปัญหา กรุณา screenshot หน้านี้แล้วส่งให้ทีมด้วยนะครับ';
+  }
+}
+
+renderProg();
+</script>
+<!--
+วิธีเชื่อม Google Sheet:
+1. เปิด Sheet ID: 1BnQODDvbtMuZTFOdUqlQ_TKBHrgjEzH8FjeovPDjGKI
+2. Extensions → Apps Script → วาง code นี้:
+
+function doPost(e){
+  try{
+    const ss=SpreadsheetApp.openById("1BnQODDvbtMuZTFOdUqlQ_TKBHrgjEzH8FjeovPDjGKI");
+    let sh=ss.getSheetByName("🐢 Creator Profile");
+    if(!sh) sh=ss.insertSheet("🐢 Creator Profile");
+    if(sh.getLastRow()===0){
+      sh.appendRow(["Timestamp","ชื่อเล่น","Social","บุคลิก","MBTI","จังหวัด","สถานะ","Vibe","ชาร์จพลัง","ตัดสินใจ","ข้อจำกัด","สไตล์","Vibe ตัวเอง","เสพ Influencer","อยากเป็นแบบ","Content เสพ","Platform","Free Day","ชีวิตประจำวัน","Content ที่ทำ","แอพตัดต่อ","แอพแต่งรูป","ใช้ AI","AI ทำอะไร","Uncomfortable","อุปกรณ์","พื้นที่อยู่","Live","เวลาว่าง","Content ดัง","จุดแข็ง","แบรนด์ช่วย","เป้าหมาย","ฝากบอก","คะแนนพูดหน้ากล้อง"]);
+      const hRow=sh.getRange(1,1,1,35);
+      hRow.setBackground("#B71C1C").setFontColor("#FFFFFF").setFontWeight("bold");
+      sh.setFrozenRows(1);
+    }
+    const d=JSON.parse(e.postData.contents);
+    const loc=d.loc+(d.province?" ("+d.province+")":"");
+    sh.appendRow([
+      d.timestamp,d.nick,d.social,d.personality,d.mbti,
+      loc,d.status,d.vibe,d.recharge,d.decide,d.limit,
+      d.style,d.aesthetic,d.watch,d.goal_influ,
+      d.consume,d.platform,d.freeday,d.daily,
+      d.content,d.edit_app,d.photo_app,d.ai_use,d.ai_tools,
+      d.nolike,d.gear,d.shoot,d.live,d.time,
+      d.best,d.strength,d.help,d.goal,d.note,
+      d.cam_score
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({status:"ok"})).setMimeType(ContentService.MimeType.JSON);
+  }catch(err){
+    return ContentService.createTextOutput(JSON.stringify({status:"error",msg:err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+3. Deploy → Web app → Execute as: Me → Anyone → Deploy → Copy URL
+4. วาง URL แทน YOUR_SCRIPT_ID_HERE ในไฟล์นี้
+-->
+</body>
+</html>

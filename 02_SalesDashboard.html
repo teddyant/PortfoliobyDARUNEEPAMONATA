@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Dashboard — ตัวอย่างผลงาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --a:#5D4037; --a-bg:#EFEBE9; --a-dk:#3E2723;
+  --b:#6D9886; --b-bg:#E0F0EB; --b-dk:#3B6E60;
+  --c:#8D6748; --c-bg:#F3EAE0; --c-dk:#5C3D20;
+  --am:#A5886B; --am-bg:#FAF3EC;
+  --red:#C0392B; --red-bg:#FDEDEC; --red-dk:#922B21;
+  --grn:#27AE60; --grn-bg:#E9F7EF;
+  --bg:#FAF7F4; --sur:#fff;
+  --t1:#1a1a18; --t2:#5f5e5a; --t3:#b4b2a9;
+  --bd:#E8E0D8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{padding-bottom:48px;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--t1);font-size:16px;}
+.nav{position:sticky;top:0;z-index:100;background:#1a1a18;display:flex;align-items:center;padding:0 20px;height:52px;gap:2px;overflow-x:auto;}
+.nav-brand{color:#fff;font-weight:700;font-size:15px;margin-right:14px;white-space:nowrap;}
+.nav-brand em{color:#f59e0b;font-style:normal;}
+.nb{background:none;border:none;color:#888;font-size:13px;font-family:inherit;font-weight:500;padding:5px 11px;border-radius:7px;cursor:pointer;white-space:nowrap;}
+.nb:hover,.nb.on{color:#fff;background:#2a2a28;}
+.nb.ex{background:#A5886B!important;color:#fff!important;font-weight:700!important;}
+.nb.ex.on{background:#8D6748!important;}
+.nr{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.live{display:flex;align-items:center;gap:5px;color:#4ade80;font-size:12px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.upd{font-size:12px;color:#888;}
+
+.page{display:none;padding:20px 22px 60px;max-width:1100px;margin:0 auto;}
+.page.on{display:block;}
+.pg-title{font-size:22px;font-weight:700;margin-bottom:2px;}
+.pg-sub{font-size:13px;color:var(--t2);margin-bottom:16px;}
+
+.sec{margin-bottom:26px;}
+.sec-hdr{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--bd);}
+
+/* SUMBAR */
+.sumbar{background:#1a1a18;border-radius:14px;padding:14px 20px;display:flex;flex-wrap:wrap;gap:0;margin-bottom:16px;}
+.si{padding:0 20px;border-right:1px solid #333;}
+.si:first-child{padding-left:0;}.si:last-child{border-right:none;}
+.slbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.sval{font-size:22px;font-weight:700;color:#fff;}
+.sval.am{color:#f59e0b;}.sval.ca{color:#93b8ff;}.sval.cb{color:#6dd9b5;}
+
+/* METRIC CARDS */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.mc{background:var(--sur);border:1px solid var(--bd);border-radius:13px;padding:15px 17px;}
+.mc.ca{border-top:4px solid var(--a);} .mc.cb{border-top:4px solid var(--b);} .mc.cc{border-top:4px solid var(--c);} .mc.tot{border-top:4px solid var(--am);}
+.mlbl{font-size:12px;color:var(--t2);margin-bottom:4px;}
+.mval{font-size:26px;font-weight:700;line-height:1.1;}
+.mval.ca{color:var(--a);}.mval.cb{color:var(--b);}.mval.cc{color:var(--c);}.mval.am{color:var(--am);}
+.msub{font-size:12px;color:var(--t3);margin-top:4px;}
+
+/* PROGRESS */
+.prog{margin-bottom:10px;}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.prog-lbl{font-size:13px;color:var(--t2);}
+.prog-pct{font-size:20px;font-weight:700;}
+.prog-bg{width:100%;height:10px;background:var(--bg);border-radius:6px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:6px;}
+.prog-info{font-size:12px;color:var(--t3);margin-top:3px;}
+
+/* BADGE */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.b-ok{background:var(--grn-bg);color:#14532d;}
+.b-near{background:var(--am-bg);color:#78350f;}
+.b-low{background:var(--red-bg);color:var(--red-dk);}
+
+/* BRANCH CARD */
+.bcard{background:var(--sur);border:1px solid var(--bd);border-radius:15px;overflow:hidden;margin-bottom:14px;}
+.bcard-top{padding:14px 18px 12px;}
+.bcard-top.ca{background:var(--a-bg);border-bottom:1px solid #d0b8b0;}
+.bcard-top.cb{background:var(--b-bg);border-bottom:1px solid #a8cfc4;}
+.bcard-top.cc{background:var(--c-bg);border-bottom:1px solid #c9a882;}
+.bname{font-size:17px;font-weight:700;}
+.bname.ca{color:var(--a-dk);}.bname.cb{color:var(--b-dk);}.bname.cc{color:var(--c-dk);}
+.brev{font-size:34px;font-weight:700;margin-top:2px;line-height:1.1;}
+.brev.ca{color:var(--a);}.brev.cb{color:var(--b);}.brev.cc{color:var(--c);}
+.bmeta{font-size:14px;color:var(--t2);margin-top:3px;}
+.bbody{padding:13px 18px;}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px;}
+.sbox{background:var(--bg);border-radius:9px;padding:9px 12px;text-align:center;}
+.sbox-lbl{font-size:11px;color:var(--t2);margin-bottom:2px;}
+.sbox-val{font-size:19px;font-weight:700;}
+
+/* TIER STRIP */
+.tstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;}
+.tbox{border-radius:10px;padding:10px 6px;text-align:center;}
+.t100{background:#dcfce7;}.t150{background:#eef4ff;}.t200{background:#f3e8ff;}.t250{background:#fff7ed;}.t300{background:#fef2f2;}
+.tnm{font-size:11px;font-weight:700;margin-bottom:2px;}
+.t100 .tnm{color:#14532d;}.t150 .tnm{color:#0c44a0;}.t200 .tnm{color:#5b21b6;}.t250 .tnm{color:#92400e;}.t300 .tnm{color:#991b1b;}
+.tqty{font-size:21px;font-weight:700;}
+.t100 .tqty{color:#14532d;}.t150 .tqty{color:#1a6bff;}.t200 .tqty{color:#7c3aed;}.t250 .tqty{color:#c2410c;}.t300 .tqty{color:#ef4444;}
+.tstock{font-size:12px;color:var(--t2);margin-top:3px;font-weight:600;}
+.tstock.warn{color:#ef4444;}.tstock.ok{color:#16a34a;}
+.tmtd{font-size:10px;color:var(--t3);margin-top:1px;}
+
+/* TABLES */
+.tbl{background:var(--sur);border:1px solid var(--bd);border-radius:13px;overflow:hidden;}
+.tbl-hdr{display:grid;padding:9px 18px;background:var(--bg);font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd);}
+.tbl-row{display:grid;padding:10px 18px;border-bottom:1px solid var(--bd);align-items:center;font-size:14px;}
+.tbl-row:last-child{border-bottom:none;}
+.tbl-row:hover{background:#fafaf8;}
+.tbl-row.pk{background:#fffbeb;}
+.tbl-row.tot{background:var(--bg);font-weight:700;}
+.tbl-row.today{background:#fffbeb;}
+.tr{text-align:right;}
+.pk-nm{color:#78350f;font-weight:700;}.pk-v{color:#78350f;font-weight:700;}
+.hit{color:var(--grn);font-size:12px;}.miss{color:var(--red);font-size:12px;}
+.dc{font-size:13px;}.dd{font-size:12px;font-weight:700;}
+/* col layouts */
+.hc2{grid-template-columns:70px 80px 1fr 45px 80px 1fr 45px 80px 85px;}
+.pc{grid-template-columns:1fr 55px 100px 60px 48px 60px 60px 60px 60px;}
+.sc{grid-template-columns:38px 1fr 70px 54px 84px 70px;}
+.snm{font-size:14px;font-weight:600;}
+.scd{font-size:11px;color:var(--t3);font-family:'IBM Plex Mono',monospace;}
+.sqty{text-align:right;font-size:16px;font-weight:700;}
+.srev{text-align:right;font-size:14px;font-weight:600;}
+.spct{text-align:right;font-size:12px;color:var(--t3);}
+.rnk{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.r1{background:#fef3c7;color:#92400e;}.r2{background:#f1f5f9;color:#334155;}.r3{background:#fff7ed;color:#c2410c;}
+.rn{font-size:13px;color:var(--t3);}
+.tp{display:inline-block;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:700;}
+.tp100{background:#dcfce7;color:#14532d;}.tp150{background:#eef4ff;color:#0c44a0;}
+.tp200{background:#f3e8ff;color:#5b21b6;}.tp250{background:#fff7ed;color:#92400e;}.tp300{background:#fef2f2;color:#991b1b;}
+
+/* CHART BOX */
+.cbox{background:var(--sur);border:1px solid var(--bd);border-radius:13px;padding:18px;}
+.cleg{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:14px;color:var(--t2);}
+.csq{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle;}
+.ch{position:relative;width:100%;}
+
+/* CANVA / REPORT PAGE */
+.canva-header{background:#1a1a18;border-radius:16px;padding:20px 26px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.canva-brand{font-size:20px;font-weight:800;color:#fff;letter-spacing:.04em;}
+.canva-brand em{color:#f59e0b;font-style:normal;}
+.compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.compare-card{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;text-align:center;}
+.compare-card.current{border:2px solid var(--am);background:var(--am-bg);}
+.compare-lbl{font-size:12px;color:var(--t2);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+.compare-val{font-size:28px;font-weight:800;}
+.compare-card.current .compare-val{color:var(--am);}
+.compare-sub{font-size:12px;color:var(--t3);margin-top:4px;}
+.area-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;}
+.area-card{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:15px 18px;}
+.area-name{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;}
+.area-sale{font-size:26px;font-weight:800;color:var(--a);}
+.area-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:7px;}
+.area-lbl{font-size:13px;color:var(--t2);}
+.area-pct{font-size:15px;font-weight:700;}
+.grand-box{background:#1a1a18;border-radius:14px;padding:18px 24px;margin-bottom:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
+.grand-item{padding:0 18px;border-right:1px solid #333;}
+.grand-item:first-child{padding-left:0;}.grand-item:last-child{border-right:none;}
+.grand-lbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.grand-val{font-size:20px;font-weight:700;color:#fff;}
+.grand-val.amber{color:#f59e0b;}
+.online-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.online-card{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:14px 18px;text-align:center;}
+.online-card.total{background:var(--a-bg);border-color:var(--a);}
+.online-lbl{font-size:12px;color:var(--t2);margin-bottom:5px;font-weight:600;}
+.online-val{font-size:24px;font-weight:800;color:var(--a);}
+
+/* EXEC */
+.exec-page{padding:14px 14px 80px;max-width:520px;margin:0 auto;}
+.exec-hero{background:#1a1a18;border-radius:20px;padding:22px 20px;margin-bottom:14px;text-align:center;}
+.exec-hero-lbl{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.exec-hero-val{font-size:42px;font-weight:800;color:#f59e0b;line-height:1;}
+.exec-hero-sub{font-size:13px;color:#aaa;margin-top:5px;}
+.exec-prog-bg{width:100%;height:9px;background:#333;border-radius:5px;overflow:hidden;margin-top:12px;}
+.exec-prog-bar{height:100%;border-radius:5px;}
+.exec-branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.exec-branch{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:14px 12px;}
+.exec-branch-nm{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.exec-branch-val{font-size:22px;font-weight:800;line-height:1.1;}
+.exec-branch-meta{font-size:11px;color:var(--t3);margin-top:3px;}
+.exec-section{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:10px;}
+.exec-sec-title{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:7px;border-bottom:2px solid var(--bd);}
+.exec-peak-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px;}
+.exec-peak-row:last-child{border-bottom:none;}
+.exec-peak-row.pk{background:#fffbeb;border-radius:7px;padding:6px 7px;}
+.exec-cum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.exec-cum-item{background:var(--bg);border-radius:9px;padding:9px 11px;text-align:center;}
+.exec-cum-lbl{font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.exec-cum-val{font-size:17px;font-weight:700;}
+
+/* DAY BADGE */
+.day-badge{display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;border-radius:14px;}
+
+/* DISCLAIMER */
+.disclaimer{position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#3E2723,#6D4C41);color:#fff;font-family:'Sarabun',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 20px;box-shadow:0 -2px 12px rgba(0,0,0,.2);}
+.spin{width:26px;height:26px;border:3px solid var(--bd);border-top-color:var(--a);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 10px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<style>
+.portfolio-banner{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:8px 16px;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;box-shadow:0 2px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.portfolio-banner span.tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:11px;letter-spacing:2px;}
+.portfolio-banner span.pipe{opacity:.4;}
+body{padding-top:40px !important;}
+</style>
+<div class="portfolio-banner">
+  <span class="tag">PORTFOLIO</span>
+  <span class="pipe">|</span>
+  ✦ ตัวอย่างผลงาน — ข้อมูลจำลองเพื่อการนำเสนอ ✦
+  <span class="pipe">|</span>
+  <span class="tag">MOCK-UP</span>
+</div>
+
+
+<nav class="nav">
+  <div class="nav-brand">ANT <em>SALES</em></div>
+  <button class="nb on"  onclick="go('p1',this)">หน้า 1 — ภาพรวม</button>
+  <button class="nb"     onclick="go('p2',this)">หน้า 2 — เป้า + Stock</button>
+  <button class="nb"     onclick="go('p3',this)">หน้า 3 — Peak Time</button>
+  <button class="nb"     onclick="go('p4',this)">หน้า 4 — SKU ขายดี</button>
+  <button class="nb"     onclick="go('p5',this)">หน้า 5 — Monthly Report</button>
+  <button class="nb ex"  onclick="go('p6',this)">📱 ผู้บริหาร</button>
+  <div class="nr">
+    <div class="live"><div class="dot"></div>Demo</div>
+    <span class="upd" id="upd">ข้อมูลตัวอย่าง</span>
+  </div>
+</nav>
+
+<div class="page on" id="p1"></div>
+<div class="page"    id="p2"></div>
+<div class="page"    id="p3"></div>
+<div class="page"    id="p4"></div>
+<div class="page"    id="p5"></div>
+<div class="page"    id="p6"></div>
+
+<div class="disclaimer">
+  <span>📌</span>
+  <span><strong>หมายเหตุ:</strong> นำมาให้ดูเป็นตัวอย่างผลงาน ไม่ได้เชื่อมกับข้อมูลของบริษัทเก่า</span>
+  <button onclick="this.parentElement.style.display='none'" style="margin-left:10px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:600;">✕</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// MOCK DATA — แก้ตรงนี้ได้เลย
+// ════════════════════════════════════════════
+const TODAY = '15/06/2026';
+const DAY_TH = 'จันทร์';
+const DAY_EN = 'Monday';
+const DAY_COLOR = '#ca8a04';
+const DAY_BG    = '#fefce8';
+
+const BRANCHES = [
+  {
+    id:'a', cls:'ca', label:'สาขา A',
+    sale: 87450, goal: 90000, bills: 142, staff: 14,
+    pct: 0.972, badge: 'ใกล้เป้า',
+    shift: [4, 3, 7],                      // เช้า เย็น ทั้งวัน
+    mtd: 1243600, mtd_goal: 1890000, mtd_days: 15, mtd_pct: 0.658,
+    avg_bill: 616,
+    tier: [
+      { price:100, qty:38, mtd:420, stock:85,  status:'ปกติ' },
+      { price:150, qty:44, mtd:510, stock:62,  status:'ปกติ' },
+      { price:200, qty:31, mtd:368, stock:40,  status:'ใกล้หมด' },
+      { price:250, qty:18, mtd:195, stock:22,  status:'ใกล้หมด' },
+      { price:300, qty:11, mtd:121, stock: 8,  status:'หมด!' },
+    ],
+    peak: [
+      { slot:'เช้า 10:00–11:59',     bills:28, rev:18200, t100:8,  t150:10, t200:6,  t250:3, t300:1 },
+      { slot:'กลางวัน 12:00–13:59',  bills:41, rev:27300, t100:12, t150:14, t200:9,  t250:4, t300:2 },
+      { slot:'บ่าย 14:00–15:59',     bills:33, rev:19800, t100:9,  t150:11, t200:8,  t250:3, t300:2 },
+      { slot:'เย็น 16:00–17:59',     bills:25, rev:14100, t100:6,  t150:9,  t200:6,  t250:3, t300:1 },
+      { slot:'ค่ำ 18:00–19:59',      bills:12, rev: 6200, t100:4,  t150:4,  t200:3,  t250:1, t300:0 },
+      { slot:'ดึก 20:00–22:00',      bills: 3, rev: 1850, t100:1,  t150:1,  t200:1,  t250:0, t300:0 },
+    ],
+  },
+  {
+    id:'b', cls:'cb', label:'สาขา B',
+    sale: 54200, goal: 50000, bills: 98, staff: 10,
+    pct: 1.084, badge: 'บรรลุเป้า ✓',
+    shift: [3, 2, 5],
+    mtd: 821400, mtd_goal: 1050000, mtd_days: 15, mtd_pct: 0.782,
+    avg_bill: 553,
+    tier: [
+      { price:100, qty:22, mtd:268, stock:55,  status:'ปกติ' },
+      { price:150, qty:29, mtd:341, stock:48,  status:'ปกติ' },
+      { price:200, qty:24, mtd:280, stock:30,  status:'ใกล้หมด' },
+      { price:250, qty:14, mtd:168, stock:18,  status:'ใกล้หมด' },
+      { price:300, qty: 9, mtd:100, stock: 5,  status:'หมด!' },
+    ],
+    peak: [
+      { slot:'เช้า 10:00–11:59',     bills:16, rev:10400, t100:5,  t150:5,  t200:4, t250:2, t300:0 },
+      { slot:'กลางวัน 12:00–13:59',  bills:28, rev:18600, t100:8,  t150:10, t200:6, t250:3, t300:1 },
+      { slot:'บ่าย 14:00–15:59',     bills:22, rev:12800, t100:6,  t150:8,  t200:5, t250:2, t300:1 },
+      { slot:'เย็น 16:00–17:59',     bills:18, rev: 9200, t100:5,  t150:6,  t200:5, t250:2, t300:0 },
+      { slot:'ค่ำ 18:00–19:59',      bills: 9, rev: 2800, t100:3,  t150:3,  t200:2, t250:1, t300:0 },
+      { slot:'ดึก 20:00–22:00',      bills: 5, rev:  400, t100:2,  t150:2,  t200:1, t250:0, t300:0 },
+    ],
+  },
+  {
+    id:'c', cls:'cc', label:'สาขา C',
+    sale: 31800, goal: 35000, bills: 61, staff: 8,
+    pct: 0.909, badge: 'ใกล้เป้า',
+    shift: [2, 2, 4],
+    mtd: 492800, mtd_goal: 700000, mtd_days: 15, mtd_pct: 0.704,
+    avg_bill: 521,
+    tier: [
+      { price:100, qty:14, mtd:171, stock:38,  status:'ปกติ' },
+      { price:150, qty:18, mtd:214, stock:29,  status:'ปกติ' },
+      { price:200, qty:15, mtd:180, stock:20,  status:'ใกล้หมด' },
+      { price:250, qty: 9, mtd:110, stock:12,  status:'ใกล้หมด' },
+      { price:300, qty: 5, mtd: 75, stock: 3,  status:'หมด!' },
+    ],
+    peak: [
+      { slot:'เช้า 10:00–11:59',     bills:11, rev: 6400, t100:3, t150:4, t200:2, t250:1, t300:1 },
+      { slot:'กลางวัน 12:00–13:59',  bills:18, rev:10800, t100:5, t150:6, t200:4, t250:2, t300:1 },
+      { slot:'บ่าย 14:00–15:59',     bills:14, rev: 7600, t100:4, t150:5, t200:3, t250:1, t300:1 },
+      { slot:'เย็น 16:00–17:59',     bills:11, rev: 5200, t100:3, t150:4, t200:2, t250:1, t300:1 },
+      { slot:'ค่ำ 18:00–19:59',      bills: 5, rev: 1400, t100:2, t150:2, t200:1, t250:0, t300:0 },
+      { slot:'ดึก 20:00–22:00',      bills: 2, rev:  400, t100:1, t150:1, t200:0, t250:0, t300:0 },
+    ],
+  },
+];
+
+const HISTORY = [
+  // { date, a, b, bills_a, bills_b }
+  { date:'01/06/2026', a:72000, b:48000, ba:118, bb:86 },
+  { date:'02/06/2026', a:68400, b:45200, ba:112, bb:81 },
+  { date:'03/06/2026', a:91200, b:61000, ba:148, bb:109 },
+  { date:'04/06/2026', a:84500, b:56300, ba:136, bb:101 },
+  { date:'05/06/2026', a:    0, b:    0, ba:  0, bb:  0 },  // หยุด
+  { date:'06/06/2026', a:95300, b:63800, ba:154, bb:114 },
+  { date:'07/06/2026', a:88000, b:58200, ba:142, bb:104 },
+  { date:'08/06/2026', a:79400, b:52100, ba:128, bb:93 },
+  { date:'09/06/2026', a:82100, b:55400, ba:133, bb:99 },
+  { date:'10/06/2026', a:76800, b:51200, ba:124, bb:91 },
+  { date:'11/06/2026', a:93500, b:62100, ba:151, bb:111 },
+  { date:'12/06/2026', a:87000, b:58000, ba:140, bb:104 },
+  { date:'13/06/2026', a:    0, b:    0, ba:  0, bb:  0 },  // หยุด
+  { date:'14/06/2026', a:71200, b:47800, ba:115, bb:85 },
+  { date:'15/06/2026', a:87450, b:54200, ba:142, bb:98 },  // TODAY
+];
+
+const SKU_TOP = [
+  { rank:'🥇', code:'SKU-A-100', name:'เสื้อยืด Oversize (S–XL)',    price:100, qty:62,  rev:6200,  pct:0.128 },
+  { rank:'🥈', code:'SKU-B-150', name:'กางเกงลำลอง (M–L)',           price:150, qty:48,  rev:7200,  pct:0.099 },
+  { rank:'🥉', code:'SKU-C-200', name:'เดรสสั้น (Free Size)',          price:200, qty:41,  rev:8200,  pct:0.085 },
+  { rank:4,    code:'SKU-D-150', name:'เสื้อเชิ้ตลาย (S–XL)',        price:150, qty:38,  rev:5700,  pct:0.079 },
+  { rank:5,    code:'SKU-E-100', name:'กางเกงขาสั้น (M–XL)',          price:100, qty:35,  rev:3500,  pct:0.072 },
+  { rank:6,    code:'SKU-F-250', name:'แจ็คเก็ตเบา (M–L)',            price:250, qty:28,  rev:7000,  pct:0.058 },
+  { rank:7,    code:'SKU-G-200', name:'กระโปรงลาย (Free Size)',       price:200, qty:26,  rev:5200,  pct:0.054 },
+  { rank:8,    code:'SKU-H-150', name:'เสื้อกล้าม Set (S–L)',         price:150, qty:24,  rev:3600,  pct:0.050 },
+  { rank:9,    code:'SKU-I-300', name:'ชุดเซ็ต 2 ชิ้น (M–XL)',       price:300, qty:18,  rev:5400,  pct:0.037 },
+  { rank:10,   code:'SKU-J-100', name:'ผ้าพันคอ (Free Size)',          price:100, qty:16,  rev:1600,  pct:0.033 },
+];
+
+const MONTHLY = {
+  month: 'มิถุนายน 2026', day: 15, days_left: 15, total_days: 30,
+  offline_compare: [
+    { label:'เม.ย. 2026', val:298871 },
+    { label:'พ.ค. 2026',  val:410064 },
+    { label:'มิ.ย. 2026 (ปัจจุบัน)', val:240024, current:true },
+  ],
+  areas: [
+    { name:"ทีม A (Key)", target:420000, mtd:168200, pct_target:0.401, pct_forecast:0.620, avg_bill:620, tg_by_day:14000, tg_vs_day:0.08 },
+    { name:"ทีม B (Riya)", target:380000, mtd:141800, pct_target:0.373, pct_forecast:0.571, avg_bill:588, tg_by_day:12667, tg_vs_day:-0.04 },
+    { name:"ทีม C (Fon)",  target:250000, mtd: 92000, pct_target:0.368, pct_forecast:0.556, avg_bill:542, tg_by_day:8333, tg_vs_day:-0.02 },
+  ],
+  grand: { sale_mtd:402000, bills:688, avg_bill:584, target_mtd:1050000, pct_achieve:0.383, remaining:648000, forecast:860000, pct_forecast:0.817 },
+  online_compare: [
+    { label:'เม.ย. 2026', val:182400 },
+    { label:'พ.ค. 2026',  val:241300 },
+    { label:'มิ.ย. 2026 (ปัจจุบัน)', val:128600, current:true },
+  ],
+  online_ch: { a: 78400, b: 50200, total: 128600 },
+};
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+const N  = v => Number(v).toLocaleString('th-TH');
+const P  = v => (v*100).toFixed(1)+'%';
+const PC = v => v >= 1 ? 'var(--grn)' : v >= 0.7 ? '#f59e0b' : 'var(--red)';
+const BD = v => v >= 1 ? '<span class="badge b-ok">บรรลุเป้า ✓</span>'
+              : v >= 0.7 ? '<span class="badge b-near">ใกล้เป้า</span>'
+              : '<span class="badge b-low">ต่ำกว่าเป้า</span>';
+const TP  = p => p<=100?'tp100':p<=150?'tp150':p<=200?'tp200':p<=250?'tp250':'tp300';
+const TBOX = p => p<=100?'t100':p<=150?'t150':p<=200?'t200':p<=250?'t250':'t300';
+const RNK = r => typeof r==='string' ? `<span style="font-size:18px">${r}</span>`
+                                      : `<span class="rnk r${r<4?r:''}" style="${r>=4?'background:#f5f5f5;color:#999':''}">${r}</span>`;
+const DAYBADGE = () => `<span class="day-badge" style="background:${DAY_BG};color:${DAY_COLOR};">${DAY_EN}</span>`;
+const STOCKCLS = s => s==='หมด!'?'warn':s==='ใกล้หมด'?'warn':'ok';
+
+let CH = {};
+function go(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  el.classList.add('on');
+}
+
+// ════════════════════════════════════════════
+// PAGE 1 — ภาพรวม
+// ════════════════════════════════════════════
+function renderP1() {
+  const tot_sale  = BRANCHES.reduce((s,b)=>s+b.sale, 0);
+  const tot_bills = BRANCHES.reduce((s,b)=>s+b.bills, 0);
+  const tot_staff = BRANCHES.reduce((s,b)=>s+b.staff, 0);
+  const tot_goal  = BRANCHES.reduce((s,b)=>s+b.goal, 0);
+
+  let h = `
+  <div class="pg-title">ภาพรวมยอดขาย — Clearance Sale</div>
+  <div class="pg-sub">ข้อมูลวันที่ ${TODAY} · สาขา A · สาขา B · สาขา C &nbsp;${DAYBADGE()}</div>
+
+  <div class="sumbar">
+    <div class="si"><div class="slbl">รายได้รวมทุกสาขา</div><div class="sval am">${N(tot_sale)} ฿</div></div>
+    <div class="si"><div class="slbl">บิลรวม</div><div class="sval">${N(tot_bills)} บิล</div></div>
+    <div class="si"><div class="slbl">พนักงานวันนี้</div><div class="sval">${tot_staff} คน</div></div>
+    ${BRANCHES.map(b=>`<div class="si"><div class="slbl">${b.label}</div><div class="sval c${b.id}">${N(b.sale)} ฿</div></div>`).join('')}
+  </div>
+
+  <div class="sec"><div class="sec-hdr">ยอดขายวันล่าสุด — รายสาขา</div>
+  <div class="mgrid">
+    ${BRANCHES.map(b=>`
+    <div class="mc c${b.id}">
+      <div class="mlbl">${b.label}</div>
+      <div class="mval c${b.id}">${N(b.sale)} ฿</div>
+      <div class="msub">${N(b.bills)} บิล · ${b.staff} คน</div>
+      <div style="margin-top:9px;">
+        <div style="font-size:12px;color:var(--t2);margin-bottom:3px;">เป้า ${N(b.goal)} ฿ &nbsp; ${BD(b.pct)}</div>
+        <div class="prog-bg"><div class="prog-bar" style="width:${Math.min(100,b.pct*100).toFixed(1)}%;background:${PC(b.pct)};"></div></div>
+        <div style="font-size:14px;font-weight:700;color:${PC(b.pct)};margin-top:3px;">${P(b.pct)}</div>
+      </div>
+    </div>`).join('')}
+    <div class="mc tot">
+      <div class="mlbl">รวมทุกสาขา</div>
+      <div class="mval am">${N(tot_sale)} ฿</div>
+      <div class="msub">${N(tot_bills)} บิล · ${tot_staff} คน</div>
+      <div style="margin-top:9px;">
+        <div style="font-size:12px;color:var(--t2);margin-bottom:3px;">เป้ารวม ${N(tot_goal)} ฿</div>
+        <div class="prog-bg"><div class="prog-bar" style="width:${Math.min(100,tot_sale/tot_goal*100).toFixed(1)}%;background:${PC(tot_sale/tot_goal)};"></div></div>
+        <div style="font-size:14px;font-weight:700;color:${PC(tot_sale/tot_goal)};margin-top:3px;">${P(tot_sale/tot_goal)}</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="sec"><div class="sec-hdr">ประวัติยอดรายวัน — สาขา A vs สาขา B</div>
+  <div class="cbox" style="margin-bottom:13px;">
+    <div class="cleg">
+      <span><span class="csq" style="background:var(--a);"></span>สาขา A</span>
+      <span><span class="csq" style="background:var(--b);"></span>สาขา B</span>
+    </div>
+    <div class="ch" style="height:200px;"><canvas id="hchart"></canvas></div>
+  </div>
+  <div class="tbl">
+    <div class="tbl-hdr hc2">
+      <span>วันที่</span><span>วัน</span>
+      <span class="tr">ยอด A (฿)</span><span class="tr">บิล</span><span class="tr">เป้า A</span>
+      <span class="tr">ยอด B (฿)</span><span class="tr">บิล</span><span class="tr">เป้า B</span>
+      <span class="tr">รวม (฿)</span>
+    </div>
+    ${HISTORY.map(r=>{
+      const isT = r.date===TODAY;
+      const dm = getDayMeta(r.date);
+      const sd = r.date.replace('/2026','');
+      const da = r.a - 90000, db = r.b - 50000;
+      const dah = r.a>0 ? ` <span class="${da>=0?'hit':'miss'}">${da>=0?'+':''}${N(da)}</span>` : '';
+      const dbh = r.b>0 ? ` <span class="${db>=0?'hit':'miss'}">${db>=0?'+':''}${N(db)}</span>` : '';
+      return `<div class="tbl-row hc2 ${isT?'today':''}">
+        <span class="dc">${sd}</span>
+        <span class="dd" style="color:${dm.c};">${dm.s}</span>
+        <span style="text-align:right;font-weight:600;color:var(--a);">${r.a>0?N(r.a)+dah:'-'}</span>
+        <span style="text-align:right;color:var(--t3);">${r.a>0?N(r.ba):'-'}</span>
+        <span style="text-align:right;color:var(--t3);">90,000</span>
+        <span style="text-align:right;font-weight:600;color:var(--b);">${r.b>0?N(r.b)+dbh:'-'}</span>
+        <span style="text-align:right;color:var(--t3);">${r.b>0?N(r.bb):'-'}</span>
+        <span style="text-align:right;color:var(--t3);">50,000</span>
+        <span style="text-align:right;font-weight:700;">${r.a>0?N(r.a+r.b):'-'}</span>
+      </div>`;
+    }).join('')}
+  </div></div>`;
+
+  document.getElementById('p1').innerHTML = h;
+
+  // chart
+  if (CH.hc) CH.hc.destroy();
+  const valid = HISTORY.filter(r=>r.a>0);
+  CH.hc = new Chart(document.getElementById('hchart'), {
+    type:'bar',
+    data:{
+      labels: valid.map(r=>r.date.replace('/2026','')),
+      datasets:[
+        {label:'A', data:valid.map(r=>r.a), backgroundColor:'rgba(93,64,55,.7)', borderRadius:3, stack:'s'},
+        {label:'B', data:valid.map(r=>r.b), backgroundColor:'rgba(109,152,134,.7)', borderRadius:3, stack:'s'},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{font:{size:10},boxWidth:12}}},
+      scales:{
+        x:{stacked:true,ticks:{font:{size:9},maxRotation:45,autoSkip:false},grid:{display:false}},
+        y:{stacked:true,ticks:{callback:v=>(v/1000).toFixed(0)+'K',font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════
+// PAGE 2 — เป้า + Stock
+// ════════════════════════════════════════════
+function renderP2() {
+  let h = `
+  <div class="pg-title">เป้าหมายวันนี้ + Stock คงเหลือ</div>
+  <div class="pg-sub">ข้อมูลวันที่ ${TODAY} · แยกรายสาขา · แยก Tier · ยอดสะสม &nbsp;${DAYBADGE()}</div>`;
+
+  BRANCHES.forEach(b => {
+    const deficit = b.goal - b.sale;
+    h += `
+    <div class="sec"><div class="sec-hdr" style="color:var(--${b.id});">${b.label}</div>
+    <div class="bcard">
+      <div class="bcard-top c${b.id}">
+        <div class="bname c${b.id}">${b.label}</div>
+        <div class="brev c${b.id}">${N(b.sale)} ฿ &nbsp;<span class="day-badge" style="background:${DAY_BG};color:${DAY_COLOR};font-size:13px;">${DAY_EN}</span></div>
+        <div class="bmeta">${N(b.bills)} บิล · avg/บิล ${N(Math.round(b.sale/b.bills))} ฿ · ${BD(b.pct)}</div>
+      </div>
+      <div class="bbody">
+        <div class="prog">
+          <div class="prog-top">
+            <span class="prog-lbl">% บรรลุเป้าวันนี้ (เป้า ${N(b.goal)} ฿)</span>
+            <span class="prog-pct" style="color:${PC(b.pct)}">${P(b.pct)}</span>
+          </div>
+          <div class="prog-bg"><div class="prog-bar" style="width:${Math.min(100,b.pct*100).toFixed(1)}%;background:${PC(b.pct)};"></div></div>
+          <div class="prog-info">${deficit>0?'ขาดอีก '+N(deficit)+' ฿':'เกินเป้าแล้ว +'+N(-deficit)+' ฿'}</div>
+        </div>
+        <div class="prog">
+          <div class="prog-top">
+            <span class="prog-lbl">ยอดสะสม MTD (${b.mtd_days}/30 วัน)</span>
+            <span class="prog-pct" style="color:${PC(b.mtd_pct)}">${P(b.mtd_pct)}</span>
+          </div>
+          <div class="prog-bg"><div class="prog-bar" style="width:${Math.min(100,b.mtd_pct*100).toFixed(1)}%;background:${PC(b.mtd_pct)};"></div></div>
+          <div class="prog-info">สะสม ${N(b.mtd)} ฿ · เป้า ${N(b.mtd_goal)} ฿ · avg ${N(Math.round(b.mtd/b.mtd_days))} ฿/วัน</div>
+        </div>
+        <div class="sgrid">
+          <div class="sbox"><div class="sbox-lbl">กะเช้า</div><div class="sbox-val">${b.shift[0]} คน</div></div>
+          <div class="sbox"><div class="sbox-lbl">กะเย็น</div><div class="sbox-val">${b.shift[1]} คน</div></div>
+          <div class="sbox"><div class="sbox-lbl">ทั้งวัน</div><div class="sbox-val">${b.shift[2]} คน</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--sur);border:1px solid var(--bd);border-radius:13px;padding:14px 18px;margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em;">STOCK คงเหลือ + QTY วันนี้ แยก Tier</div>
+      <div class="tstrip">
+        ${b.tier.map(t=>`
+        <div class="tbox ${TBOX(t.price)}">
+          <div class="tnm">฿${t.price}</div>
+          <div class="tqty">${t.qty}</div>
+          <div class="tstock ${STOCKCLS(t.status)}">Stock: ${t.stock}</div>
+          <div class="tmtd">MTD: ${t.mtd} ชิ้น</div>
+        </div>`).join('')}
+      </div>
+    </div></div>`;
+  });
+
+  document.getElementById('p2').innerHTML = h;
+}
+
+// ════════════════════════════════════════════
+// PAGE 3 — Peak Time
+// ════════════════════════════════════════════
+function renderP3() {
+  // combined all branches
+  const allPeak = BRANCHES[0].peak.map((row, i) => ({
+    slot: row.slot,
+    bills: BRANCHES.reduce((s,b)=>s+b.peak[i].bills, 0),
+    rev:   BRANCHES.reduce((s,b)=>s+b.peak[i].rev, 0),
+    t100:  BRANCHES.reduce((s,b)=>s+b.peak[i].t100, 0),
+    t150:  BRANCHES.reduce((s,b)=>s+b.peak[i].t150, 0),
+    t200:  BRANCHES.reduce((s,b)=>s+b.peak[i].t200, 0),
+    t250:  BRANCHES.reduce((s,b)=>s+b.peak[i].t250, 0),
+    t300:  BRANCHES.reduce((s,b)=>s+b.peak[i].t300, 0),
+  }));
+  const totRev = allPeak.reduce((s,r)=>s+r.rev, 0);
+  const totBills = allPeak.reduce((s,r)=>s+r.bills, 0);
+  const maxRev = Math.max(...allPeak.map(r=>r.rev));
+  const peakSlot = allPeak.find(r=>r.rev===maxRev);
+
+  const peakTable = (rows) => {
+    const mx = Math.max(...rows.map(r=>r.rev));
+    const tot_r = rows.reduce((s,r)=>s+r.rev,0);
+    return `
+    <div class="tbl">
+      <div class="tbl-hdr pc"><span>ช่วงเวลา</span><span class="tr">บิล</span><span class="tr">ยอด (฿)</span><span class="tr">%ยอด</span><span class="tr">฿100</span><span class="tr">฿150</span><span class="tr">฿200</span><span class="tr">฿250</span><span class="tr">฿300</span></div>
+      ${rows.map(r=>{
+        const isPk = r.rev===mx;
+        return `<div class="tbl-row pc ${isPk?'pk':''}">
+          <span class="${isPk?'pk-nm':''}">${r.slot}${isPk?' ★':''}</span>
+          <span class="tr">${N(r.bills)}</span>
+          <span class="tr ${isPk?'pk-v':''}">${N(r.rev)}</span>
+          <span class="tr">${P(r.rev/tot_r)}</span>
+          <span class="tr">${r.t100}</span><span class="tr">${r.t150}</span>
+          <span class="tr">${r.t200}</span><span class="tr">${r.t250}</span><span class="tr">${r.t300}</span>
+        </div>`;
+      }).join('')}
+      <div class="tbl-row pc tot">
+        <span>รวม</span>
+        <span class="tr">${N(rows.reduce((s,r)=>s+r.bills,0))}</span>
+        <span class="tr">${N(rows.reduce((s,r)=>s+r.rev,0))}</span>
+        <span class="tr">100%</span>
+        <span class="tr">${rows.reduce((s,r)=>s+r.t100,0)}</span>
+        <span class="tr">${rows.reduce((s,r)=>s+r.t150,0)}</span>
+        <span class="tr">${rows.reduce((s,r)=>s+r.t200,0)}</span>
+        <span class="tr">${rows.reduce((s,r)=>s+r.t250,0)}</span>
+        <span class="tr">${rows.reduce((s,r)=>s+r.t300,0)}</span>
+      </div>
+    </div>`;
+  };
+
+  let h = `
+  <div class="pg-title">Peak Time Analysis</div>
+  <div class="pg-sub">ข้อมูลวันที่ ${TODAY} · บิลรวม ${totBills} · รายได้รวม ${N(totRev)} ฿ · Peak: ${peakSlot.slot} ★</div>
+
+  <div class="sec"><div class="sec-hdr">รวมทุกสาขา — ${totBills} บิล · ${N(totRev)} ฿</div>
+  <div class="cbox" style="margin-bottom:13px;">
+    <div class="ch" style="height:200px;"><canvas id="pkchart"></canvas></div>
+  </div>
+  ${peakTable(allPeak)}</div>
+
+  ${BRANCHES.map(b=>`
+  <div class="sec"><div class="sec-hdr" style="color:var(--${b.id});">${b.label} — ${b.bills} บิล · ${N(b.sale)} ฿</div>
+  ${peakTable(b.peak)}</div>`).join('')}`;
+
+  document.getElementById('p3').innerHTML = h;
+
+  if (CH.pk) CH.pk.destroy();
+  const pkColors = allPeak.map(r => r.rev===maxRev ? '#A5886B' : '#D4C4B8');
+  CH.pk = new Chart(document.getElementById('pkchart'), {
+    type:'bar',
+    data:{labels:allPeak.map(r=>r.slot), datasets:[{data:allPeak.map(r=>r.rev), backgroundColor:pkColors, borderRadius:6}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+N(ctx.raw)+' ฿'}}},
+      scales:{
+        y:{ticks:{callback:v=>(v/1000).toFixed(0)+'K฿',font:{size:11}},grid:{color:'rgba(0,0,0,.04)'}},
+        x:{ticks:{font:{size:10},maxRotation:20},grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════
+// PAGE 4 — SKU
+// ════════════════════════════════════════════
+function renderP4() {
+  const tot_qty = SKU_TOP.reduce((s,r)=>s+r.qty,0);
+  let h = `
+  <div class="pg-title">สินค้าขายดีวันนี้</div>
+  <div class="pg-sub">ข้อมูลวันที่ ${TODAY} · ${SKU_TOP.length} รายการ · เรียงจากขายมากไปน้อย</div>
+  <div class="tbl">
+    <div class="tbl-hdr sc"><span></span><span>ชื่อสินค้า</span><span class="tr">Tier</span><span class="tr">Qty</span><span class="tr">ยอด (฿)</span><span class="tr">% qty</span></div>
+    ${SKU_TOP.map(r=>`
+    <div class="tbl-row sc">
+      <span>${RNK(r.rank)}</span>
+      <div><div class="snm">${r.name}</div><div class="scd">${r.code}</div></div>
+      <span class="tr"><span class="tp ${TP(r.price)}">฿${r.price}</span></span>
+      <span class="sqty">${N(r.qty)}</span>
+      <span class="srev">${N(r.rev)}</span>
+      <span class="spct">${P(r.pct)}</span>
+    </div>`).join('')}
+    <div class="tbl-row sc tot">
+      <span></span><span>รวม</span><span></span>
+      <span class="sqty">${N(tot_qty)}</span>
+      <span class="srev">${N(SKU_TOP.reduce((s,r)=>s+r.rev,0))}</span>
+      <span class="spct">100%</span>
+    </div>
+  </div>`;
+  document.getElementById('p4').innerHTML = h;
+}
+
+// ════════════════════════════════════════════
+// PAGE 5 — Monthly Report
+// ════════════════════════════════════════════
+function renderP5() {
+  const m = MONTHLY;
+  const pColor = v => v>=1?'var(--grn)':v>=0.7?'#f59e0b':'var(--red)';
+
+  const compareCard = (item) => `
+    <div class="compare-card${item.current?' current':''}">
+      <div class="compare-lbl">${item.label}</div>
+      <div class="compare-val">${N(item.val)} ฿</div>
+      <div class="compare-sub">ยอดขาย Offline MTD</div>
+    </div>`;
+
+  let h = `
+  <div class="pg-title">Monthly Sales Report</div>
+  <div class="pg-sub">${m.month} · Day ${m.day} · เหลืออีก ${m.days_left} วัน · รวม ${m.total_days} วัน</div>
+
+  <div class="canva-header">
+    <div>
+      <div class="canva-brand">ANT <em>MONTHLY</em> REPORT</div>
+      <div style="font-size:13px;color:#888;margin-top:4px;">${m.month} — Day ${m.day} / ${m.total_days}</div>
+    </div>
+    <div style="text-align:right;font-size:13px;color:#888;">
+      <div style="color:#ccc;font-size:14px;font-weight:600;">เหลืออีก ${m.days_left} วัน</div>
+      อัปเดต: ข้อมูลตัวอย่าง
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr" style="color:var(--a);">◼ ยอดขาย OFFLINE เปรียบเทียบ 3 เดือน</div>
+    <div class="compare-grid">${m.offline_compare.map(compareCard).join('')}</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">AREA BREAKDOWN PERFORMANCE</div>
+    <div class="area-grid">
+      ${m.areas.map((a,i)=>`
+      <div class="area-card">
+        <div class="area-name">${a.name}</div>
+        <div class="area-sale" style="color:${['var(--a)','var(--b)','var(--c)'][i]};">${N(a.mtd)} ฿</div>
+        <div style="margin-top:8px;">
+          <div class="prog-bg"><div class="prog-bar" style="width:${Math.min(100,a.pct_target*100).toFixed(1)}%;background:${pColor(a.pct_target)};"></div></div>
+          <div style="font-size:12px;color:var(--t3);margin-top:4px;">เป้า ${N(a.target)} ฿</div>
+        </div>
+        <div class="area-row"><span class="area-lbl">% Target</span><span class="area-pct" style="color:${pColor(a.pct_target)};">${P(a.pct_target)}</span></div>
+        <div class="area-row"><span class="area-lbl">% Forecast</span><span class="area-pct" style="color:${pColor(a.pct_forecast)};">${P(a.pct_forecast)}</span></div>
+        <div class="area-row"><span class="area-lbl">Avg/Bill</span><span class="area-pct">${N(a.avg_bill)} ฿</span></div>
+        <div class="area-row"><span class="area-lbl">TG By Day</span><span class="area-pct">${N(a.tg_by_day)} ฿ <span style="color:${a.tg_vs_day>=0?'var(--grn)':'var(--red)'};">(${a.tg_vs_day>=0?'+':''}${(a.tg_vs_day*100).toFixed(1)}%)</span></span></div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">GRAND TOTAL PERFORMANCE SUMMARY</div>
+    <div class="grand-box">
+      <div class="grand-item"><div class="grand-lbl">Total Sale MTD</div><div class="grand-val amber">${N(m.grand.sale_mtd)} ฿</div></div>
+      <div class="grand-item"><div class="grand-lbl">Total Bills</div><div class="grand-val">${N(m.grand.bills)}</div></div>
+      <div class="grand-item"><div class="grand-lbl">Avg/Bill</div><div class="grand-val">${N(m.grand.avg_bill)} ฿</div></div>
+      <div class="grand-item"><div class="grand-lbl">Target MTD</div><div class="grand-val">${N(m.grand.target_mtd)} ฿</div></div>
+    </div>
+    <div class="grand-box" style="margin-top:-12px;">
+      <div class="grand-item"><div class="grand-lbl">% Achieve</div><div class="grand-val" style="color:${pColor(m.grand.pct_achieve)};">${P(m.grand.pct_achieve)}</div></div>
+      <div class="grand-item"><div class="grand-lbl">Remaining</div><div class="grand-val">${N(m.grand.remaining)} ฿</div></div>
+      <div class="grand-item"><div class="grand-lbl">Forecast</div><div class="grand-val">${N(m.grand.forecast)} ฿</div></div>
+      <div class="grand-item"><div class="grand-lbl">% Forecast</div><div class="grand-val" style="color:${pColor(m.grand.pct_forecast)};">${P(m.grand.pct_forecast)}</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr" style="color:var(--b);">◼ ยอดขาย ONLINE เปรียบเทียบ 3 เดือน</div>
+    <div class="compare-grid">${m.online_compare.map(c=>`
+      <div class="compare-card${c.current?' current':''}">
+        <div class="compare-lbl">${c.label}</div>
+        <div class="compare-val">${N(c.val)} ฿</div>
+        <div class="compare-sub">Online MTD</div>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:13px;font-weight:700;color:var(--t2);margin-bottom:10px;">CHANNEL BREAKDOWN</div>
+    <div class="online-grid">
+      <div class="online-card"><div class="online-lbl">WH Online A</div><div class="online-val">${N(m.online_ch.a)} ฿</div></div>
+      <div class="online-card"><div class="online-lbl" style="color:var(--b);">WH Online B</div><div class="online-val" style="color:var(--b);">${N(m.online_ch.b)} ฿</div></div>
+      <div class="online-card total"><div class="online-lbl">รวม Online</div><div class="online-val">${N(m.online_ch.total)} ฿</div></div>
+    </div>
+  </div>`;
+
+  document.getElementById('p5').innerHTML = h;
+}
+
+// ════════════════════════════════════════════
+// PAGE 6 — ผู้บริหาร (Mobile)
+// ════════════════════════════════════════════
+function renderP6() {
+  const tot_sale = BRANCHES.reduce((s,b)=>s+b.sale, 0);
+  const tot_goal = BRANCHES.reduce((s,b)=>s+b.goal, 0);
+  const tot_bills= BRANCHES.reduce((s,b)=>s+b.bills,0);
+  const tot_staff= BRANCHES.reduce((s,b)=>s+b.staff,0);
+  const tot_pct  = tot_sale / tot_goal;
+
+  const branchCard = (b) => {
+    const pct = b.pct;
+    const pc = pct>=1?'var(--grn)':pct>=0.7?'#f59e0b':'var(--red)';
+    return `<div class="exec-branch">
+      <div class="exec-branch-nm">${b.label}</div>
+      <div class="exec-branch-val" style="color:var(--${b.id});">${N(b.sale)} ฿</div>
+      <div class="exec-branch-meta">${N(b.bills)} บิล · เป้า ${N(b.goal)} ฿</div>
+      <div class="exec-branch-meta">👤 ${b.staff} คน</div>
+      <div style="margin-top:8px;">
+        <div class="prog-bg"><div class="prog-bar" style="width:${Math.min(100,pct*100).toFixed(1)}%;background:${pc};"></div></div>
+        <div style="font-size:16px;font-weight:700;color:${pc};margin-top:3px;">${P(pct)}</div>
+      </div>
+    </div>`;
+  };
+
+  const peakRows = (peaks) => {
+    const mx = Math.max(...peaks.map(r=>r.rev));
+    return peaks.map(r=>`
+    <div class="exec-peak-row ${r.rev===mx?'pk':''}">
+      <span style="font-size:12px;color:var(--t2);">${r.slot}</span>
+      <span style="font-weight:700;">${N(r.rev)} ฿ <span style="font-size:11px;color:var(--t3);">(${r.bills} บิล)</span></span>
+    </div>`).join('');
+  };
+
+  let h = `<div class="exec-page">
+  <div style="text-align:center;font-size:13px;color:var(--t2);margin-bottom:12px;">ข้อมูลวันที่ <strong>${TODAY}</strong> &nbsp;<span class="day-badge" style="background:${DAY_BG};color:${DAY_COLOR};">${DAY_EN}</span></div>
+
+  <div class="exec-hero">
+    <div class="exec-hero-lbl">ยอดรวมทุกสาขาวันนี้</div>
+    <div class="exec-hero-val">${N(tot_sale)} ฿</div>
+    <div class="exec-hero-sub">${N(tot_bills)} บิล · ${tot_staff} คน</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#bbb;margin-top:12px;margin-bottom:5px;">
+      <span>เป้ารวม ${N(tot_goal)} ฿</span>
+      <span style="color:${tot_pct>=1?'#4ade80':tot_pct>=0.7?'#f59e0b':'#f87171'};font-weight:800;font-size:16px;">${P(tot_pct)}</span>
+    </div>
+    <div class="exec-prog-bg"><div class="exec-prog-bar" style="width:${Math.min(100,tot_pct*100).toFixed(1)}%;background:${tot_pct>=1?'#4ade80':tot_pct>=0.7?'#f59e0b':'#f87171'};"></div></div>
+  </div>
+
+  <div class="exec-branch-grid">${BRANCHES.map(branchCard).join('')}</div>
+
+  <div class="exec-section">
+    <div class="exec-sec-title">📈 ยอดสะสม MTD</div>
+    <div class="exec-cum-grid">
+      ${BRANCHES.map(b=>`
+      <div class="exec-cum-item" style="border-top:3px solid var(--${b.id});">
+        <div class="exec-cum-lbl">${b.label} สะสม</div>
+        <div class="exec-cum-val" style="color:var(--${b.id});">${N(b.mtd)} ฿</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px;">เป้า ${N(b.mtd_goal)} ฿</div>
+        <div style="font-size:13px;font-weight:700;color:${PC(b.mtd_pct)};margin-top:2px;">${P(b.mtd_pct)}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  ${BRANCHES.slice(0,2).map(b=>`
+  <div class="exec-section">
+    <div class="exec-sec-title" style="color:var(--${b.id});">⏱️ Peak Time — ${b.label}</div>
+    ${peakRows(b.peak)}
+  </div>`).join('')}
+
+  <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:8px;">ข้อมูลตัวอย่าง (Mock Data) · ANT Portfolio Demo</div>
+  </div>`;
+
+  document.getElementById('p6').innerHTML = h;
+}
+
+// ════════════════════════════════════════════
+// DAY META
+// ════════════════════════════════════════════
+function getDayMeta(dateStr) {
+  const CFG = [
+    {s:'Sun',c:'#dc2626'},{s:'Mon',c:'#ca8a04'},{s:'Tue',c:'#db2777'},
+    {s:'Wed',c:'#16a34a'},{s:'Thu',c:'#ea580c'},{s:'Fri',c:'#0ea5e9'},{s:'Sat',c:'#7e22ce'}
+  ];
+  const p = (dateStr||'').split('/');
+  if (p.length<3) return {s:'?',c:'#888'};
+  let yr = parseInt(p[2]); if(yr>2500) yr-=543;
+  const d = new Date(yr, parseInt(p[1])-1, parseInt(p[0]));
+  return isNaN(d.getTime()) ? {s:'?',c:'#888'} : CFG[d.getDay()];
+}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+function init() {
+  renderP1();
+  renderP2();
+  renderP3();
+  renderP4();
+  renderP5();
+  renderP6();
+  document.getElementById('upd').textContent = 'ข้อมูลตัวอย่าง ' + TODAY;
+}
+init();
+</script>
+</body>
+</html>

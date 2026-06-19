@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สมัครร่วมงาน Influencer — ตัวอย่างผลงาน</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Sans+Thai:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap');
+  :root {
+    --white:#ffffff;--off-white:#faf9f8;--mint:#c8f0e4;--mint-soft:#e8f9f4;--mint-deep:#a0dcc8;
+    --choc:#3b1f14;--choc-mid:#6b3a2a;--choc-light:#c4907a;--blush:#f5e6e0;--blush-light:#fdf2ef;
+    --gray-100:#f5f5f5;--gray-200:#e8e8e8;--gray-400:#aaa;--gray-600:#666;--gray-800:#333;
+    --accent:#e8a090;--tier1:#c8f0e4;--tier2:#fce4b4;--tier3:#f4c8e0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans Thai','Inter',sans-serif;background:#fff;color:var(--choc);line-height:1.6;}
+  nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--gray-200);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:'Playfair Display',serif;font-size:18px;letter-spacing:2px;color:var(--choc);text-decoration:none;}
+  .logo span{color:var(--choc-light);}
+  nav a.admin-link{font-size:12px;color:var(--gray-400);text-decoration:none;padding:6px 14px;border:1px solid var(--gray-200);border-radius:20px;cursor:pointer;transition:all 0.2s;}
+  nav a.admin-link:hover{border-color:var(--choc-light);color:var(--choc-mid);}
+  .hero{background:var(--blush-light);padding:72px 32px 56px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;background:var(--mint);border-radius:50%;opacity:0.35;}
+  .hero::after{content:'';position:absolute;bottom:-80px;left:-40px;width:200px;height:200px;background:var(--accent);border-radius:50%;opacity:0.18;}
+  .hero-tag{display:inline-block;background:var(--mint);color:var(--choc-mid);font-size:11px;letter-spacing:2px;font-weight:600;padding:5px 16px;border-radius:20px;margin-bottom:20px;text-transform:uppercase;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,48px);color:var(--choc);line-height:1.25;margin-bottom:16px;}
+  .hero h1 em{color:var(--choc-light);font-style:normal;}
+  .hero p{max-width:540px;margin:0 auto 32px;color:var(--choc-mid);font-size:15px;line-height:1.8;}
+  .hero-cta{display:inline-block;background:var(--choc);color:#fff;text-decoration:none;padding:14px 36px;border-radius:40px;font-size:14px;font-weight:500;letter-spacing:0.5px;transition:all 0.25s;cursor:pointer;border:none;}
+  .hero-cta:hover{background:var(--choc-mid);transform:translateY(-1px);}
+  .section{padding:64px 32px;max-width:1080px;margin:0 auto;}
+  .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--choc-light);font-weight:600;margin-bottom:8px;}
+  .section h2{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,32px);color:var(--choc);margin-bottom:40px;}
+
+  /* LOCATION TOGGLE */
+  .loc-toggle{display:flex;gap:10px;margin-bottom:32px;background:var(--gray-100);padding:5px;border-radius:30px;width:fit-content;}
+  .loc-btn{padding:9px 24px;border:none;border-radius:25px;font-family:'Noto Sans Thai',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.25s;background:transparent;color:var(--gray-600);}
+  .loc-btn.active{background:#fff;color:var(--choc);box-shadow:0 2px 8px rgba(59,31,20,0.12);}
+
+  .tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+  .tier-card{border-radius:16px;padding:28px;border:1.5px solid transparent;transition:transform 0.2s,box-shadow 0.2s;}
+  .tier-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(59,31,20,0.1);}
+  .tier-card.t1{background:var(--tier1);border-color:var(--mint-deep);}
+  .tier-card.t2{background:var(--tier2);border-color:#e8c87a;}
+  .tier-card.t3{background:var(--tier3);border-color:#e0a0c8;}
+  .tier-badge{display:inline-block;background:rgba(255,255,255,0.65);color:var(--choc-mid);font-size:10px;letter-spacing:1.5px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;margin-bottom:14px;}
+  .tier-card h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--choc);margin-bottom:6px;}
+  .tier-card .follower{font-size:12px;color:var(--choc-mid);margin-bottom:20px;font-weight:500;}
+  .tier-income{background:rgba(255,255,255,0.7);border-radius:12px;padding:16px;margin-bottom:16px;}
+  .income-row{display:flex;justify-content:space-between;font-size:13px;color:var(--choc);padding:4px 0;}
+  .income-row strong{color:var(--choc-mid);font-size:14px;}
+  .tier-jobs{margin-top:16px;}
+  .tier-jobs p{font-size:12px;color:var(--choc-mid);font-weight:600;margin-bottom:8px;letter-spacing:0.5px;}
+  .job-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--choc);margin-bottom:5px;line-height:1.5;}
+  .job-item::before{content:'•';color:var(--choc-light);flex-shrink:0;margin-top:1px;}
+
+  .apply-section{background:var(--blush-light);padding:64px 32px;}
+  .apply-inner{max-width:640px;margin:0 auto;}
+  .form-group{margin-bottom:20px;}
+  label{display:block;font-size:12px;font-weight:600;color:var(--choc-mid);letter-spacing:0.5px;margin-bottom:7px;}
+  label .req{color:var(--choc-light);}
+  input,select,textarea{width:100%;padding:12px 16px;border:1.5px solid var(--gray-200);border-radius:10px;font-family:'Noto Sans Thai',sans-serif;font-size:14px;color:var(--choc);background:#fff;outline:none;transition:border-color 0.2s;}
+  input:focus,select:focus,textarea:focus{border-color:var(--mint-deep);}
+  textarea{resize:vertical;min-height:90px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+
+  /* LOCATION SECTION IN FORM */
+  .loc-section{display:none;}
+  .loc-section.show{display:block;}
+
+  .qa-box{background:#fff;border:1.5px solid var(--mint-deep);border-radius:14px;padding:20px;margin:20px 0;}
+  .qa-box h4{font-size:13px;color:var(--choc-mid);font-weight:600;margin-bottom:14px;}
+  .qa-item{margin-bottom:16px;}
+  .qa-q{font-size:13px;font-weight:600;color:var(--choc);margin-bottom:6px;}
+  .radio-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;}
+  .radio-row label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400;cursor:pointer;letter-spacing:0;}
+  .submit-btn{width:100%;padding:16px;background:var(--choc);color:#fff;font-family:'Noto Sans Thai',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-top:8px;}
+  .submit-btn:hover{background:var(--choc-mid);}
+  .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .success-card{display:none;text-align:center;padding:48px 24px;background:var(--mint-soft);border-radius:16px;}
+  .success-card .big-emoji{font-size:48px;margin-bottom:16px;}
+  .success-card h3{font-family:'Playfair Display',serif;font-size:24px;color:var(--choc);margin-bottom:10px;}
+  .success-card p{color:var(--choc-mid);font-size:14px;line-height:1.8;}
+
+  /* ADMIN */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:16px;}
+  .modal-overlay.show{display:flex;}
+  .modal{background:#fff;border-radius:20px;width:100%;max-width:980px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;}
+  .modal-header{padding:20px 28px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;}
+  .modal-header h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--choc);}
+  .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-400);}
+  .modal-body{overflow-y:auto;padding:24px 28px;flex:1;}
+  .login-box{max-width:320px;margin:0 auto;text-align:center;padding:32px 0;}
+  .login-box h4{font-family:'Playfair Display',serif;font-size:18px;color:var(--choc);margin-bottom:20px;}
+  .login-input-wrap{display:flex;gap:10px;margin-bottom:10px;}
+  .login-input-wrap input{border-radius:10px;}
+  .login-btn{padding:12px 22px;background:var(--choc);color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;white-space:nowrap;}
+  .login-btn:hover{background:var(--choc-mid);}
+  .login-error{font-size:12px;color:#c0392b;margin-top:6px;display:none;}
+  .admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+  .tab-btn{padding:8px 18px;border:1.5px solid var(--gray-200);background:#fff;border-radius:20px;font-size:13px;font-weight:500;color:var(--gray-600);cursor:pointer;transition:all 0.2s;font-family:'Noto Sans Thai',sans-serif;}
+  .tab-btn.active{background:var(--choc);color:#fff;border-color:var(--choc);}
+  .data-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .data-table th{background:var(--blush-light);color:var(--choc-mid);font-weight:600;padding:10px 14px;text-align:left;border-bottom:1px solid var(--gray-200);white-space:nowrap;}
+  .data-table td{padding:10px 14px;border-bottom:1px solid var(--gray-100);color:var(--choc);vertical-align:top;}
+  .data-table tr:hover td{background:var(--off-white);}
+  .tier-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap;}
+  .tier-pill.t1{background:var(--tier1);color:var(--choc-mid);}
+  .tier-pill.t2{background:var(--tier2);color:#7a5a10;}
+  .tier-pill.t3{background:var(--tier3);color:#7a1060;}
+  .status-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;}
+  .status-pill.active{background:#d4f5e0;color:#1a7040;}
+  .status-pill.pending{background:#fff3cc;color:#7a5500;}
+  .status-pill.done{background:var(--gray-100);color:var(--gray-600);}
+  .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px;}
+  .stat-card{background:var(--off-white);border-radius:12px;padding:18px;text-align:center;}
+  .stat-card .num{font-family:'Playfair Display',serif;font-size:28px;color:var(--choc);}
+  .stat-card .lbl{font-size:11px;color:var(--choc-light);margin-top:4px;font-weight:500;}
+  a.tbl-link{color:var(--choc-light);text-decoration:none;font-size:11px;}
+  a.tbl-link:hover{text-decoration:underline;}
+  .empty-state{text-align:center;padding:48px;color:var(--gray-400);font-size:14px;}
+  .sync-badge{display:inline-flex;align-items:center;gap:6px;background:var(--mint-soft);color:var(--choc-mid);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;margin-bottom:16px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:#2ecc71;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  footer{text-align:center;padding:32px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-100);}
+  footer a{color:var(--choc-light);text-decoration:none;}
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:10px;}
+
+  .bday-note{font-size:11px;color:var(--gray-400);margin-top:5px;}
+  .loc-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:6px;}
+  .loc-badge.bkk{background:#e0f0ff;color:#1060aa;}
+  .loc-badge.up{background:#ffe0f0;color:#aa1060;}
+
+  /* PROFILE CARD VIEW */
+  .view-toggle{display:flex;gap:8px;margin-bottom:20px;}
+  .view-btn{padding:7px 16px;border:1.5px solid var(--gray-200);background:#fff;border-radius:20px;font-size:12px;font-weight:500;color:var(--gray-600);cursor:pointer;transition:all 0.2s;font-family:'Noto Sans Thai',sans-serif;}
+  .view-btn.active{background:var(--choc);color:#fff;border-color:var(--choc);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+  .profile-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:16px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+  .profile-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(59,31,20,0.1);}
+  .pc-header{background:var(--blush-light);padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px;}
+  .pc-avatar{width:48px;height:48px;border-radius:50%;background:var(--mint);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:2px solid #fff;}
+  .pc-info{flex:1;min-width:0;}
+  .pc-name{font-family:'Playfair Display',serif;font-size:15px;color:var(--choc);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pc-nick{font-size:11px;color:var(--choc-light);font-weight:500;}
+  .pc-body{padding:14px 18px;}
+  .pc-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;color:var(--choc);}
+  .pc-row span{color:var(--gray-400);font-size:11px;min-width:20px;text-align:center;}
+  .pc-links{display:flex;gap:8px;margin-top:12px;}
+  .pc-link{flex:1;text-align:center;padding:7px 4px;border-radius:10px;font-size:11px;font-weight:600;text-decoration:none;transition:opacity 0.2s;}
+  .pc-link:hover{opacity:0.8;}
+  .pc-link.ig{background:#fce4b4;color:#7a5a10;}
+  .pc-link.tt{background:var(--tier1);color:var(--choc-mid);}
+  .pc-link.line{background:var(--tier3);color:#7a1060;}
+  .pc-status-bar{padding:8px 18px 14px;border-top:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;}
+  .pc-period{font-size:10px;color:var(--gray-400);}
+
+  /* CONFIRM PROFILE CARDS */
+  .confirm-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:16px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;position:relative;}
+  .confirm-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(59,31,20,0.12);}
+  .confirm-card .active-badge{position:absolute;top:12px;right:12px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+  .confirm-card .cc-header{background:var(--blush-light);padding:20px 18px 16px;display:flex;align-items:center;gap:12px;}
+  .cc-avatar{width:52px;height:52px;border-radius:50%;background:var(--mint-soft);border:2px solid var(--mint-deep);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+  .cc-body{padding:14px 18px;}
+  .cc-info-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;color:var(--choc);}
+  .cc-info-row .icon{font-size:13px;min-width:18px;}
+  .cc-links{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px;}
+  .cc-link{text-align:center;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:600;text-decoration:none;transition:all 0.2s;display:flex;flex-direction:column;gap:2px;align-items:center;}
+  .cc-link:hover{opacity:0.8;transform:scale(1.03);}
+  .cc-link .link-icon{font-size:16px;}
+  .cc-link.ig{background:#fce4b4;color:#7a5a10;}
+  .cc-link.tt{background:var(--tier1);color:var(--choc-mid);}
+  .cc-link.wa{background:#d4f5e0;color:#1a7040;}
+  .cc-footer{padding:10px 18px 14px;border-top:1px solid var(--gray-100);}
+</style>
+</head>
+<body>
+<style>
+.portfolio-banner{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:8px 16px;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;box-shadow:0 2px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.portfolio-banner span.tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:11px;letter-spacing:2px;}
+.portfolio-banner span.pipe{opacity:.4;}
+body{padding-top:40px !important;}
+</style>
+<div class="portfolio-banner">
+  <span class="tag">PORTFOLIO</span>
+  <span class="pipe">|</span>
+  ✦ ตัวอย่างผลงาน — ข้อมูลจำลองเพื่อการนำเสนอ ✦
+  <span class="pipe">|</span>
+  <span class="tag">MOCK-UP</span>
+</div>
+
+
+<nav>
+  <a href="#" class="logo">Creator Platform <span>DESIGN</span></a>
+  <a class="admin-link" onclick="openAdmin()">🔒 Admin</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">✨ Long-Term Collaboration</div>
+  <h1>ร่วมเป็นส่วนหนึ่งของ<br><em>Creator Platform</em></h1>
+  <p>เรากำลังมองหา Influencer ที่มีสไตล์เป็นของตัวเอง มาร่วมงานกันแบบ Long-Term Ambassador<br>มีรายได้ประจำ + เสื้อผ้าฟรีทุก Collection + Commission</p>
+  <button class="hero-cta" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">สมัครร่วมงานเลย 💕</button>
+</section>
+
+<!-- TIER SECTION -->
+<section class="section">
+  <p class="section-label">เงื่อนไขและสิทธิประโยชน์</p>
+  <h2>เลือก Tier ที่ใช่สำหรับคุณ</h2>
+
+  <div class="loc-toggle">
+    <button class="loc-btn active" onclick="showTierLoc('bkk',this)">🏙️ กรุงเทพฯ</button>
+    <button class="loc-btn" onclick="showTierLoc('up',this)">🌏 ต่างจังหวัด</button>
+  </div>
+
+  <!-- กรุงเทพฯ -->
+  <div id="tier-bkk">
+    <div class="tier-grid">
+      <div class="tier-card t1">
+        <div class="tier-badge">Tier 1</div>
+        <h3>Rising Star</h3>
+        <p class="follower">📱 IG / TikTok 50,000+ Followers</p>
+        <div class="tier-income">
+          <div class="income-row"><span>💰 รายได้ประจำ</span><strong>5,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>👗 โควต้าเสื้อผ้าฟรี</span><strong>2,500 บ./เดือน</strong></div>
+          <div class="income-row"><span>💳 Commission</span><strong>15% / ยอดขาย</strong></div>
+          <div class="income-row"><span>📸 งานถ่ายแบบ</span><strong>5,000 บ./ครั้ง</strong></div>
+          <div class="income-row"><span>👥 Invite Friends</span><strong>5,000 บ./คน</strong></div>
+          <div class="income-row"><span>🛍️ ส่วนลดซื้อสินค้า</span><strong>60%</strong></div>
+        </div>
+        <div class="tier-jobs">
+          <p>📋 งานต่อเดือน</p>
+          <div class="job-item">Short VDO TikTok/Reels — 5 คลิป/เดือน</div>
+          <div class="job-item">Photo Post IG/TikTok — 2 โพสต์/เดือน (5-10 รูป)</div>
+          <div class="job-item">Tag Story Brand IG — 6 ครั้ง/เดือน</div>
+          <div class="job-item">Live ช่องตัวเอง — 1 ครั้ง/เดือน</div>
+          <div class="job-item">Live ที่ออฟฟิศ (แคมเปญ) — 1 ครั้ง/เดือน</div>
+          <div class="job-item">เข้าออฟฟิศถ่าย Talk/Photo — 1 ครั้ง/เดือน</div>
+          <div class="job-item">ติด "Friends of @Creator Platform" ใน Bio ตลอดสัญญา</div>
+        </div>
+      </div>
+      <div class="tier-card t2">
+        <div class="tier-badge">Tier 2</div>
+        <h3>Creator</h3>
+        <p class="follower">📱 IG / TikTok 100,000–299,999 Followers</p>
+        <div class="tier-income">
+          <div class="income-row"><span>💰 รายได้ประจำ</span><strong>10,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>👗 โควต้าเสื้อผ้าฟรี</span><strong>5,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>💳 Commission</span><strong>15% / ยอดขาย</strong></div>
+          <div class="income-row"><span>📸 งานถ่ายแบบ</span><strong>5,000 บ./ครั้ง</strong></div>
+          <div class="income-row"><span>👥 Invite Friends</span><strong>5,000 บ./คน</strong></div>
+          <div class="income-row"><span>🛍️ ส่วนลดซื้อสินค้า</span><strong>60%</strong></div>
+        </div>
+        <div class="tier-jobs">
+          <p>📋 งานต่อเดือน</p>
+          <div class="job-item">Short VDO TikTok/Reels — 12 คลิป/เดือน</div>
+          <div class="job-item">Photo Post IG/TikTok — 5 โพสต์/เดือน (5-10 รูป)</div>
+          <div class="job-item">Tag Story Brand IG — 15 ครั้ง/เดือน</div>
+          <div class="job-item">Live ช่องตัวเอง — 1 ครั้ง/เดือน</div>
+          <div class="job-item">Live ที่ออฟฟิศ (แคมเปญ) — 1 ครั้ง/เดือน</div>
+          <div class="job-item">เข้าออฟฟิศถ่าย Talk/Photo — 1 ครั้ง/เดือน</div>
+          <div class="job-item">ติด "Friends of @Creator Platform" ใน Bio ตลอดสัญญา</div>
+        </div>
+      </div>
+      <div class="tier-card t3">
+        <div class="tier-badge">Tier 3</div>
+        <h3>Star Creator</h3>
+        <p class="follower">📱 IG / TikTok 300,000+ Followers</p>
+        <div class="tier-income">
+          <div class="income-row"><span>💰 รายได้ประจำ</span><strong>15,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>👗 โควต้าเสื้อผ้าฟรี</span><strong>7,500 บ./เดือน</strong></div>
+          <div class="income-row"><span>💳 Commission</span><strong>15% / ยอดขาย</strong></div>
+          <div class="income-row"><span>📸 งานถ่ายแบบ</span><strong>5,000 บ./ครั้ง</strong></div>
+          <div class="income-row"><span>👥 Invite Friends</span><strong>5,000 บ./คน</strong></div>
+          <div class="income-row"><span>🛍️ ส่วนลดซื้อสินค้า</span><strong>60%</strong></div>
+        </div>
+        <div class="tier-jobs">
+          <p>📋 งานต่อเดือน</p>
+          <div class="job-item">Short VDO TikTok/Reels — 12 คลิป/เดือน</div>
+          <div class="job-item">Photo Post IG/TikTok — 5 โพสต์/เดือน (5-10 รูป)</div>
+          <div class="job-item">Tag Story Brand IG — 15 ครั้ง/เดือน</div>
+          <div class="job-item">Live ช่องตัวเอง — 1 ครั้ง/เดือน</div>
+          <div class="job-item">Live ที่ออฟฟิศ (แคมเปญ) — 1 ครั้ง/เดือน</div>
+          <div class="job-item">เข้าออฟฟิศถ่าย Talk/Photo — 1 ครั้ง/เดือน</div>
+          <div class="job-item">ติด "Friends of @Creator Platform" ใน Bio ตลอดสัญญา</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ต่างจังหวัด -->
+  <div id="tier-up" style="display:none;">
+    <div class="tier-grid">
+      <div class="tier-card t1">
+        <div class="tier-badge">Tier 1</div>
+        <h3>Rising Star</h3>
+        <p class="follower">📱 IG / TikTok 50,000+ Followers</p>
+        <div class="tier-income">
+          <div class="income-row"><span>💰 รายได้ประจำ</span><strong>5,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>👗 โควต้าเสื้อผ้าฟรี</span><strong>2,500 บ./เดือน</strong></div>
+          <div class="income-row"><span>💳 Commission</span><strong>15% / ยอดขาย</strong></div>
+          <div class="income-row"><span>📸 งานถ่ายแบบ</span><strong>5,000 บ./ครั้ง</strong></div>
+          <div class="income-row"><span>👥 Invite Friends</span><strong>5,000 บ./คน</strong></div>
+          <div class="income-row"><span>🛍️ ส่วนลดซื้อสินค้า</span><strong>60%</strong></div>
+        </div>
+        <div class="tier-jobs">
+          <p>📋 งานต่อเดือน</p>
+          <div class="job-item">Short VDO TikTok/Reels — 6 คลิป/เดือน</div>
+          <div class="job-item">Short VDO OOTD ช่องแบรนด์ — 4 คลิป/เดือน</div>
+          <div class="job-item">Photo Post IG/TikTok — 3 โพสต์/เดือน (5-10 รูป)</div>
+          <div class="job-item">Tag Story Brand IG — 7 ครั้ง/เดือน</div>
+          <div class="job-item">Live ช่องตัวเอง — 2 ครั้ง/เดือน (เดี่ยว/คู่)</div>
+          <div class="job-item">ติด "Friends of @Creator Platform" ใน Bio ตลอดสัญญา</div>
+        </div>
+      </div>
+      <div class="tier-card t2">
+        <div class="tier-badge">Tier 2</div>
+        <h3>Creator</h3>
+        <p class="follower">📱 IG / TikTok 100,000–299,999 Followers</p>
+        <div class="tier-income">
+          <div class="income-row"><span>💰 รายได้ประจำ</span><strong>10,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>👗 โควต้าเสื้อผ้าฟรี</span><strong>5,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>💳 Commission</span><strong>15% / ยอดขาย</strong></div>
+          <div class="income-row"><span>📸 งานถ่ายแบบ</span><strong>5,000 บ./ครั้ง</strong></div>
+          <div class="income-row"><span>👥 Invite Friends</span><strong>5,000 บ./คน</strong></div>
+          <div class="income-row"><span>🛍️ ส่วนลดซื้อสินค้า</span><strong>60%</strong></div>
+        </div>
+        <div class="tier-jobs">
+          <p>📋 งานต่อเดือน</p>
+          <div class="job-item">Short VDO TikTok/Reels — 12 คลิป/เดือน</div>
+          <div class="job-item">Short VDO OOTD ช่องแบรนด์ — 5 คลิป/เดือน</div>
+          <div class="job-item">Photo Post IG/TikTok — 7 โพสต์/เดือน (5-10 รูป)</div>
+          <div class="job-item">Tag Story Brand IG — 15 ครั้ง/เดือน</div>
+          <div class="job-item">Live ช่องตัวเอง — 2 ครั้ง/เดือน (เดี่ยว/คู่)</div>
+          <div class="job-item">ติด "Friends of @Creator Platform" ใน Bio ตลอดสัญญา</div>
+        </div>
+      </div>
+      <div class="tier-card t3">
+        <div class="tier-badge">Tier 3</div>
+        <h3>Star Creator</h3>
+        <p class="follower">📱 IG / TikTok 300,000+ Followers</p>
+        <div class="tier-income">
+          <div class="income-row"><span>💰 รายได้ประจำ</span><strong>15,000 บ./เดือน</strong></div>
+          <div class="income-row"><span>👗 โควต้าเสื้อผ้าฟรี</span><strong>7,500 บ./เดือน</strong></div>
+          <div class="income-row"><span>💳 Commission</span><strong>15% / ยอดขาย</strong></div>
+          <div class="income-row"><span>📸 งานถ่ายแบบ</span><strong>5,000 บ./ครั้ง</strong></div>
+          <div class="income-row"><span>👥 Invite Friends</span><strong>5,000 บ./คน</strong></div>
+          <div class="income-row"><span>🛍️ ส่วนลดซื้อสินค้า</span><strong>60%</strong></div>
+        </div>
+        <div class="tier-jobs">
+          <p>📋 งานต่อเดือน</p>
+          <div class="job-item">Short VDO TikTok/Reels — 12 คลิป/เดือน</div>
+          <div class="job-item">Short VDO OOTD ช่องแบรนด์ — 5 คลิป/เดือน</div>
+          <div class="job-item">Photo Post IG/TikTok — 7 โพสต์/เดือน (5-10 รูป)</div>
+          <div class="job-item">Tag Story Brand IG — 15 ครั้ง/เดือน</div>
+          <div class="job-item">Live ช่องตัวเอง — 2 ครั้ง/เดือน (เดี่ยว/คู่)</div>
+          <div class="job-item">ติด "Friends of @Creator Platform" ใน Bio ตลอดสัญญา</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;background:var(--blush-light);border-radius:14px;padding:24px;">
+    <p style="font-size:12px;font-weight:700;color:var(--choc-mid);letter-spacing:1px;margin-bottom:14px;">📌 ข้อกำหนดสำคัญ (ทุก Tier)</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
+      <div class="job-item">ระหว่างสัญญา ห้ามโปรโมตแบรนด์เสื้อผ้าคู่แข่ง</div>
+      <div class="job-item">ส่ง Content ให้แบรนด์อนุมัติล่วงหน้า 2 วันทำการ</div>
+      <div class="job-item">สัญญาทดลองงาน 1 เดือน</div>
+      <div class="job-item">รายงานงานรายเดือนผ่าน Google Sheet</div>
+      <div class="job-item">แบรนด์มีสิทธิ์นำ Content ไปใช้ยิงโฆษณา (Ads) ตลอดสัญญา</div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY FORM -->
+<section class="apply-section" id="apply">
+  <div class="apply-inner">
+    <p class="section-label">สมัครร่วมงาน</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--choc);margin-bottom:16px;">กรอกข้อมูลเพื่อสมัคร</h2>
+
+    <!-- NOTICE BOX -->
+    <div style="background:#fff;border:1.5px solid var(--mint-deep);border-radius:14px;padding:20px 24px;margin-bottom:28px;">
+      <p style="font-size:12px;font-weight:700;color:var(--choc-mid);letter-spacing:1px;margin-bottom:12px;">📌 กรุณาอ่านก่อนสมัครนะคะ</p>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div style="display:flex;gap:10px;font-size:13px;color:var(--choc);line-height:1.6;">
+          <span style="color:var(--choc-light);flex-shrink:0;">✦</span>
+          <span>ทางแบรนด์จะพิจารณาและรับ Influencer <strong>เป็นรายบุคคลตาม Tier</strong> ที่เหมาะสมกับ Profile ของคุณค่ะ</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;color:var(--choc);line-height:1.6;">
+          <span style="color:var(--choc-light);flex-shrink:0;">✦</span>
+          <span>กรุณา<strong>อ่านรายละเอียดงานและเงื่อนไขแต่ละ Tier</strong> ด้านบนให้ครบก่อนกรอกใบสมัครค่ะ</span>
+        </div>
+        <div style="display:flex;gap:10px;font-size:13px;color:var(--choc);line-height:1.6;">
+          <span style="color:var(--choc-light);flex-shrink:0;">✦</span>
+          <span>หากทางเราสนใจ Profile ของคุณ <strong>จะติดต่อกลับทาง LINE</strong> เพื่อนัดสัมภาษณ์ออนไลน์ค่ะ 💕</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="applyForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>ชื่อจริง <span class="req">*</span></label>
+          <input type="text" id="f_name" placeholder="ชื่อ-นามสกุล">
+        </div>
+        <div class="form-group">
+          <label>ชื่อเล่น <span class="req">*</span></label>
+          <input type="text" id="f_nick" placeholder="ชื่อเล่น">
+        </div>
+      </div>
+
+      <!-- วันเกิด -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>วันเกิด <span class="req">*</span></label>
+          <input type="date" id="f_bday">
+          <p class="bday-note">🎂 แบรนด์จะส่ง surprise ให้ในวันเกิดค่ะ!</p>
+        </div>
+        <div class="form-group">
+          <label>อายุ / ระดับการศึกษา</label>
+          <input type="text" id="f_age" placeholder="เช่น 20 ปี / ปี 2 มหาวิทยาลัย">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>เบอร์โทรศัพท์ <span class="req">*</span></label>
+          <input type="tel" id="f_phone" placeholder="08X-XXX-XXXX">
+        </div>
+        <div class="form-group">
+          <label>LINE ID <span class="req">*</span></label>
+          <input type="text" id="f_line" placeholder="@lineid หรือ ชื่อ LINE">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>IG Link <span class="req">*</span></label>
+          <input type="url" id="f_ig" placeholder="https://instagram.com/...">
+        </div>
+        <div class="form-group">
+          <label>TikTok Link <span class="req">*</span></label>
+          <input type="url" id="f_tt" placeholder="https://tiktok.com/@...">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>จำนวน Followers (IG) <span class="req">*</span></label>
+          <input type="text" id="f_ig_follow" placeholder="เช่น 55,000">
+        </div>
+        <div class="form-group">
+          <label>จำนวน Followers (TikTok) <span class="req">*</span></label>
+          <input type="text" id="f_tt_follow" placeholder="เช่น 120,000">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>ที่อยู่ / จังหวัด <span class="req">*</span></label>
+          <select id="f_location" onchange="updateLocType()">
+            <option value="">-- เลือกจังหวัด --</option>
+            <optgroup label="🏙️ กรุงเทพฯ และปริมณฑล">
+              <option value="กรุงเทพฯ">กรุงเทพฯ</option>
+              <option value="ปทุมธานี">ปทุมธานี</option>
+              <option value="นนทบุรี">นนทบุรี</option>
+              <option value="สมุทรปราการ">สมุทรปราการ</option>
+              <option value="สมุทรสาคร">สมุทรสาคร</option>
+              <option value="นครปฐม">นครปฐม</option>
+            </optgroup>
+            <optgroup label="🌏 ภาคเหนือ">
+              <option value="เชียงใหม่">เชียงใหม่</option>
+              <option value="เชียงราย">เชียงราย</option>
+              <option value="ลำปาง">ลำปาง</option>
+              <option value="ลำพูน">ลำพูน</option>
+              <option value="แม่ฮ่องสอน">แม่ฮ่องสอน</option>
+              <option value="น่าน">น่าน</option>
+              <option value="พะเยา">พะเยา</option>
+              <option value="แพร่">แพร่</option>
+              <option value="อุตรดิตถ์">อุตรดิตถ์</option>
+              <option value="ตาก">ตาก</option>
+              <option value="สุโขทัย">สุโขทัย</option>
+              <option value="พิษณุโลก">พิษณุโลก</option>
+              <option value="พิจิตร">พิจิตร</option>
+              <option value="กำแพงเพชร">กำแพงเพชร</option>
+              <option value="นครสวรรค์">นครสวรรค์</option>
+              <option value="อุทัยธานี">อุทัยธานี</option>
+              <option value="เพชรบูรณ์">เพชรบูรณ์</option>
+            </optgroup>
+            <optgroup label="🌏 ภาคอีสาน">
+              <option value="ขอนแก่น">ขอนแก่น</option>
+              <option value="อุดรธานี">อุดรธานี</option>
+              <option value="นครราชสีมา">นครราชสีมา</option>
+              <option value="อุบลราชธานี">อุบลราชธานี</option>
+              <option value="บึงกาฬ">บึงกาฬ</option>
+              <option value="หนองคาย">หนองคาย</option>
+              <option value="หนองบัวลำภู">หนองบัวลำภู</option>
+              <option value="เลย">เลย</option>
+              <option value="สกลนคร">สกลนคร</option>
+              <option value="นครพนม">นครพนม</option>
+              <option value="มุกดาหาร">มุกดาหาร</option>
+              <option value="กาฬสินธุ์">กาฬสินธุ์</option>
+              <option value="ร้อยเอ็ด">ร้อยเอ็ด</option>
+              <option value="มหาสารคาม">มหาสารคาม</option>
+              <option value="ชัยภูมิ">ชัยภูมิ</option>
+              <option value="บุรีรัมย์">บุรีรัมย์</option>
+              <option value="สุรินทร์">สุรินทร์</option>
+              <option value="ศรีสะเกษ">ศรีสะเกษ</option>
+              <option value="ยโสธร">ยโสธร</option>
+              <option value="อำนาจเจริญ">อำนาจเจริญ</option>
+            </optgroup>
+            <optgroup label="🌏 ภาคกลาง">
+              <option value="อยุธยา">อยุธยา</option>
+              <option value="อ่างทอง">อ่างทอง</option>
+              <option value="สิงห์บุรี">สิงห์บุรี</option>
+              <option value="ชัยนาท">ชัยนาท</option>
+              <option value="ลพบุรี">ลพบุรี</option>
+              <option value="สระบุรี">สระบุรี</option>
+              <option value="นครนายก">นครนายก</option>
+              <option value="ปราจีนบุรี">ปราจีนบุรี</option>
+              <option value="สระแก้ว">สระแก้ว</option>
+              <option value="ฉะเชิงเทรา">ฉะเชิงเทรา</option>
+              <option value="สุพรรณบุรี">สุพรรณบุรี</option>
+              <option value="กาญจนบุรี">กาญจนบุรี</option>
+              <option value="ราชบุรี">ราชบุรี</option>
+            </optgroup>
+            <optgroup label="🌏 ภาคตะวันออก">
+              <option value="ชลบุรี">ชลบุรี</option>
+              <option value="ระยอง">ระยอง</option>
+              <option value="จันทบุรี">จันทบุรี</option>
+              <option value="ตราด">ตราด</option>
+            </optgroup>
+            <optgroup label="🌏 ภาคตะวันตก / ใต้">
+              <option value="เพชรบุรี">เพชรบุรี</option>
+              <option value="ประจวบคีรีขันธ์">ประจวบคีรีขันธ์</option>
+              <option value="ชุมพร">ชุมพร</option>
+              <option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
+              <option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
+              <option value="พัทลุง">พัทลุง</option>
+              <option value="สงขลา">สงขลา</option>
+              <option value="ภูเก็ต">ภูเก็ต</option>
+              <option value="กระบี่">กระบี่</option>
+              <option value="ตรัง">ตรัง</option>
+              <option value="พังงา">พังงา</option>
+              <option value="ระนอง">ระนอง</option>
+              <option value="สตูล">สตูล</option>
+              <option value="ปัตตานี">ปัตตานี</option>
+              <option value="ยะลา">ยะลา</option>
+              <option value="นราธิวาส">นราธิวาส</option>
+            </optgroup>
+            <optgroup label="🌐 อื่นๆ">
+              <option value="other">อื่นๆ (โปรดระบุ)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group" id="loc-type-show" style="display:none;">
+          <label>ประเภทที่อยู่</label>
+          <input type="text" id="f_loc_type" readonly style="background:var(--gray-100);color:var(--choc-mid);">
+        </div>
+      </div>
+
+      <!-- กรอกจังหวัดเองกรณีเลือก "อื่นๆ" -->
+      <div class="form-group" id="f_other_loc_wrap" style="display:none;">
+        <label>ระบุจังหวัด / ที่อยู่ <span class="req">*</span></label>
+        <input type="text" id="f_other_loc" placeholder="เช่น นิวยอร์ก / ต่างประเทศ / อื่นๆ">
+      </div>
+
+      <div class="qa-box">
+        <h4>💬 คำถามเพิ่มเติม — ให้ทีมรู้จักคุณมากขึ้น</h4>
+
+        <div class="qa-item">
+          <div class="qa-q">1. ทำไมถึงสนใจร่วมงานกับ Creator Platform คะ?</div>
+          <textarea id="q1" placeholder="เล่าให้ฟังหน่อยนะคะ ^^"></textarea>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q">2. สไตล์ Content ของคุณเป็นแนวไหนคะ?</div>
+          <textarea id="q2" placeholder="เช่น OOTD, mix&match, lifestyle, review..." style="min-height:70px;"></textarea>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q">3. เคยไลฟ์หรือ Tag Story Brand บ้างไหมคะ?</div>
+          <div class="radio-row">
+            <label><input type="radio" name="live" value="ไลฟ์เป็นประจำ"> ไลฟ์เป็นประจำ</label>
+            <label><input type="radio" name="live" value="เคยบ้าง"> เคยบ้าง</label>
+            <label><input type="radio" name="live" value="ยังไม่เคย แต่ลองได้"> ยังไม่เคย แต่ลองได้</label>
+            <label><input type="radio" name="live" value="ไม่สะดวกไลฟ์"> ไม่สะดวกไลฟ์</label>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q">4. Audience ส่วนใหญ่ของคุณอายุประมาณเท่าไหร่คะ?</div>
+          <input type="text" id="q4" placeholder="เช่น 15-24 ปี">
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q">5. สะดวกทำ Content สม่ำเสมอทุกเดือนได้ไหมคะ? มีข้อจำกัดอะไรบ้างไหม?</div>
+          <textarea id="q5" placeholder="เช่น ช่วงสอบ / ตารางเรียนแน่น / ทำงานประจำ..." style="min-height:70px;"></textarea>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-q">6. มีคำถามอะไรอยากถามทีมงานเพิ่มเติมไหมคะ?</div>
+          <textarea id="q6" placeholder="ถามได้เลยนะคะ ^^" style="min-height:70px;"></textarea>
+        </div>
+      </div>
+
+      <div id="submitStatus" style="display:none;text-align:center;padding:12px;color:var(--choc-mid);font-size:13px;"></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">ส่งใบสมัคร 💕</button>
+    </div>
+
+    <div class="success-card" id="successCard">
+      <div class="big-emoji">🎉</div>
+      <h3>ส่งใบสมัครเรียบร้อยแล้วค่ะ!</h3>
+      <p>ขอบคุณที่สนใจร่วมงานกับ Creator Platform นะคะ<br>ทีมงานจะติดต่อกลับผ่าน LINE ภายใน 2-3 วันทำการค่ะ 💕<br><br>ระหว่างนี้ Follow <strong>@Creator Platform</strong> ไว้ได้เลยนะคะ ✨</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Creator Platform — <a href="https://www.instagram.com/Creator Platform/" target="_blank">@Creator Platform</a></p>
+</footer>
+
+<!-- ADMIN MODAL -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🔒 Admin Dashboard</h3>
+      <button class="modal-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="modal-body" id="adminBody">
+      <div class="login-box" id="loginBox">
+        <h4>กรุณาใส่รหัสผ่าน</h4>
+        <div class="login-input-wrap">
+          <input type="password" id="adminPwd" placeholder="รหัสผ่าน" onkeydown="if(event.key==='Enter')checkLogin()">
+          <button class="login-btn" onclick="checkLogin()">เข้าสู่ระบบ</button>
+        </div>
+        <div class="login-error" id="loginError">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่</div>
+      </div>
+      <div id="dashboard" style="display:none;">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div class="sync-badge"><span class="dot"></span> ซิงค์กับ Google Sheets อัตโนมัติ</div>
+          <button onclick="renderAll()" style="padding:6px 14px;border:1.5px solid var(--mint-deep);background:#fff;border-radius:20px;font-size:12px;font-weight:600;color:var(--choc);cursor:pointer;font-family:'Noto Sans Thai',sans-serif;">🔄 โหลดใหม่</button>
+        </div>
+        <div class="admin-tabs">
+          <button class="tab-btn active" onclick="showTab('applications')">📩 ใบสมัครใหม่</button>
+          <button class="tab-btn" onclick="showTab('confirm')">⭐ อินฟลูที่รับแล้ว</button>
+          <button class="tab-btn" onclick="showTab('candidates')">📋 รายชื่อที่คัดมา</button>
+        </div>
+
+        <!-- TAB: ใบสมัคร -->
+        <div id="tab-applications">
+          <div class="stats-row" id="appStats"></div>
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setAppView('table',this)">📋 ตาราง</button>
+            <button class="view-btn" onclick="setAppView('card',this)">🃏 โปรไฟล์การ์ด</button>
+          </div>
+          <div id="appTableWrap"></div>
+          <div id="appCardWrap" style="display:none;"></div>
+        </div>
+
+        <!-- TAB: CONFIRM INFLU (Profile Cards) -->
+        <div id="tab-confirm" style="display:none;">
+          <div class="stats-row" id="confirmStats"></div>
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setConfirmView('card',this)">🃏 โปรไฟล์การ์ด</button>
+            <button class="view-btn" onclick="setConfirmView('table',this)">📋 ตาราง</button>
+          </div>
+          <div id="confirmCardWrap"></div>
+          <div id="confirmTableWrap" style="display:none;">
+            <div style="overflow-x:auto;"><table class="data-table"><thead><tr>
+              <th>#</th><th>ชื่อ / ชื่อเล่น</th><th>วันเกิด 🎂</th><th>Tier</th><th>พื้นที่</th>
+              <th>IG</th><th>TikTok</th><th>LINE</th><th>เบอร์</th><th>ช่วงสัญญา</th><th>สถานะ</th>
+            </tr></thead><tbody id="confirmTable"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- TAB: รายชื่อที่คัดมา -->
+        <div id="tab-candidates" style="display:none;">
+          <div class="stats-row" id="candStats"></div>
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setCandView('card',this)">🃏 โปรไฟล์การ์ด</button>
+            <button class="view-btn" onclick="setCandView('table',this)">📋 ตาราง</button>
+          </div>
+          <div id="candCardWrap"></div>
+          <div id="candTableWrap" style="display:none;">
+            <div style="overflow-x:auto;"><table class="data-table"><thead><tr>
+              <th>#</th><th>TikTok</th><th>IG</th><th>Followers</th><th>Tier</th>
+              <th>จังหวัด</th><th>Contact</th><th>ทักแล้ว?</th><th>ตอบ?</th><th>ผ่าน?</th><th>หมายเหตุ</th>
+            </tr></thead><tbody id="candidatesTable"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// รหัสผ่านเข้าระบบ Admin (SHA-256 hash — ไม่แสดงรหัสจริง)
+const ADMIN_HASH = '20bbc81f52f3de54ff08b6a11716f4d788e73cf74a14f0e17675fec8287bdd26';
+const SHEET_ID = '13cu8uD8eUf95KUndcDYhQQ_jJ_okqy_Vcoc5QZjRSik';
+// Sheet GID ที่ต้องการบันทึกใบสมัคร (แท็บแบบฟอร์มการตอบกลับ)
+// ใช้ Apps Script Web App URL สำหรับ write (ต้อง deploy แยก)
+// สำหรับ read ใช้ public CSV export
+const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1001552775`;
+
+// ── CONFIRM DATA ──
+const CONFIRM_DATA = [
+  {no:1,name:'ภัสสร พลวิชัย',nick:'ฟิล์ม',bday:'31/01',tier:'TEIR 1',province:'กรุงเทพฯ',ig:'https://www.instagram.com/patt3i',tt:'https://www.tiktok.com/@patt3i',line:'ph@t',phone:'0613803179',period:'ธ.ค.68–มี.ค.69',status:'หมดสัญญา'},
+  {no:2,name:'ณภัทร เชียงทอง',nick:'ยูริน',bday:'7/03',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/ynyuxin_/',tt:'https://www.tiktok.com/@ynyuxin_',line:'Yurin.np',phone:'-',period:'ธ.ค.68–ธ.ค.69',status:'ต่อสัญญารายปี'},
+  {no:3,name:'วิริยา ปิงเมือง',nick:'พราว',bday:'1/3/2548',tier:'TEIR 1',province:'เชียงใหม่ (ตจว)',ig:'https://www.instagram.com/prwiiya/',tt:'https://www.tiktok.com/@prwjsuh',line:'พราว',phone:'0909791372',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
+  {no:4,name:'ณัฎฐณิชา บุษดี',nick:'เฟิร์ส',bday:'25/1/2547',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/f1rst_nz/',tt:'https://www.tiktok.com/@1_st04',line:'first',phone:'0823969545',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
+  {no:5,name:'นฤภร สิทธารถศักดิ์',nick:'เวียร์',bday:'3/12/2550',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://instagram.com/x.xaweirnpstt',tt:'https://www.tiktok.com/@xaweirblurr',line:'Xorwor',phone:'0926196154',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
+  {no:6,name:'สิริวรรณ โปธา',nick:'เนม',bday:'20/12/2546',tier:'TEIR 2',province:'เชียงใหม่ (ตจว)',ig:'https://instagram.com/whynqme',tt:'http://www.tiktok.com/@whynqme',line:'Name.',phone:'0839942956',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
+  {no:7,name:'ฐิติพร คำแสน',nick:'เอมมี่',bday:'19/08/2552',tier:'TEIR 2',province:'ปทุมธานี (เข้าสตูดิโอ)',ig:'https://www.instagram.com/emmyx_mi/',tt:'https://www.tiktok.com/@emmyx_mi',line:'emmy_px',phone:'0658137382',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
+  {no:8,name:'พัชชา อารีศรีวัฒนาวงษ์',nick:'อินดี้',bday:'12/02/2551',tier:'TEIR 1',province:'กรุงเทพฯ',ig:'https://www.instagram.com/inq1x_',tt:'https://www.tiktok.com/@cynthiana_q0',line:'Indy Eiei',phone:'0955305581',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
+];
+
+const CAND_DATA = [
+  {tt:'@finnaya_fin',ig:'finnaya_fin',follow:'130.6K/11.2K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'066-101-4622',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@babyonion_eiei',ig:'babyonionnn',follow:'366.3K/34.1K',tier:'TEIR 3',prov:'กรุงเทพฯ',contact:'noo_cy',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@prwjsuh',ig:'prwiiya',follow:'70K',tier:'TEIR 1',prov:'-',contact:'@993mshvp',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัด 9 มี.ค.69'},
+  {tt:'@praew_phit',ig:'_praew_phit_',follow:'167K/18K',tier:'TEIR 2',prov:'-',contact:'Praewphit',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
+  {tt:'@m0chamuk',ig:'m0chamuk',follow:'261K/48K',tier:'TEIR 2',prov:'-',contact:'lin.ee/h2fdzWy',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัด 9 มี.ค.69'},
+  {tt:'@itsme.aongfong',ig:'itsme.aongfong',follow:'54K',tier:'TEIR 1',prov:'-',contact:'pardiii',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
+  {tt:'@1_st04',ig:'f1rst_nz',follow:'120K/8K',tier:'TEIR 2',prov:'มจธ บางมด',contact:'IG link',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัด 9 มี.ค.69'},
+  {tt:'@ijustwannabeurgurl',ig:'urmormily',follow:'22K/73K',tier:'TEIR 1',prov:'เชียงราย',contact:'treesara',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
+  {tt:'@_.miuji._',ig:'_.miuji._',follow:'94K/171K',tier:'TEIR 2',prov:'-',contact:'IG link',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
+  {tt:'@m1ncchae',ig:'bmilin._',follow:'11K/214K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'@131gohvf',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
+  {tt:'@miewjeww',ig:'miewjew',follow:'11K/97K',tier:'TEIR 1',prov:'กรุงเทพฯ',contact:'IG link',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@minekuk',ig:'minekuk',follow:'142K/65K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'i_namfon',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@xxianng',ig:'xxianng',follow:'131K/50K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'IG link',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@nammonpks',ig:'nammonpks',follow:'133K/23K',tier:'TEIR 2',prov:'-',contact:'IG link',talked:'ทักแล้ว',replied:'ยังไม่อ่าน',pass:'',note:''},
+  {tt:'@chanidakrys',ig:'_krysnie_',follow:'103K/45K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'Krysnie',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@ramililyy',ig:'-',follow:'65K',tier:'TEIR 1',prov:'กรุงเทพฯ',contact:'-',talked:'ทักแล้ว',replied:'ไม่สนใจ',pass:'',note:''},
+  {tt:'@marminkmani',ig:'marminkmani',follow:'34K/111K',tier:'TEIR 2',prov:'-',contact:'@184ectkj',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
+  {tt:'-',ig:'oumttp',follow:'406K',tier:'TEIR 3',prov:'กรุงเทพฯ',contact:'@oumttp',talked:'ทักแล้ว',replied:'ไม่สนใจ',pass:'',note:''},
+  {tt:'@jxnnynattha',ig:'jxnnyaa_',follow:'351K/180K',tier:'TEIR 3',prov:'-',contact:'@jxnnyaa',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+];
+
+// ── LOCAL STORAGE FALLBACK ──
+let localApps = [];
+try { localApps = JSON.parse(localStorage.getItem('nd_apps')||'[]'); } catch(e){}
+
+// ── TIER TOGGLE ──
+function showTierLoc(loc, btn) {
+  document.getElementById('tier-bkk').style.display = loc==='bkk'?'block':'none';
+  document.getElementById('tier-up').style.display = loc==='up'?'block':'none';
+  document.querySelectorAll('.loc-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── FORM LOCATION ──
+const BKK = ['กรุงเทพฯ','ปทุมธานี','นนทบุรี','สมุทรปราการ'];
+function updateLocType() {
+  const v = document.getElementById('f_location').value;
+  const wrap = document.getElementById('loc-type-show');
+  const inp = document.getElementById('f_loc_type');
+  const otherWrap = document.getElementById('f_other_loc_wrap');
+  if (!v) { wrap.style.display='none'; otherWrap.style.display='none'; return; }
+  if (v === 'other') {
+    wrap.style.display = 'block';
+    inp.value = '🌐 อื่นๆ';
+    otherWrap.style.display = 'block';
+    return;
+  }
+  otherWrap.style.display = 'none';
+  wrap.style.display = 'block';
+  inp.value = BKK.includes(v) ? '🏙️ กรุงเทพฯ / ปริมณฑล' : '🌏 ต่างจังหวัด';
+}
+
+// ── SUBMIT → GOOGLE SHEETS VIA APPS SCRIPT ──
+// หมายเหตุ: ต้อง deploy Apps Script เป็น Web App ก่อน แล้วใส่ URL ด้านล่าง
+// ปัจจุบันบันทึกแบบ in-memory + localStorage เป็น backup
+const APPS_SCRIPT_URL = '#';
+
+async function submitForm() {
+  // DEMO MODE
+  alert("✅ ตัวอย่างผลงาน — ในระบบจริงข้อมูลจะถูกส่งไปที่ฐานข้อมูล"); return;
+  const name = document.getElementById('f_name').value.trim();
+  const nick = document.getElementById('f_nick').value.trim();
+  const bday = document.getElementById('f_bday').value;
+  const phone = document.getElementById('f_phone').value.trim();
+  const line = document.getElementById('f_line').value.trim();
+  const ig = document.getElementById('f_ig').value.trim();
+  const tt = document.getElementById('f_tt').value.trim();
+  const igF = document.getElementById('f_ig_follow').value.trim();
+  const ttF = document.getElementById('f_tt_follow').value.trim();
+  const loc = document.getElementById('f_location').value;
+  const locOther = document.getElementById('f_other_loc').value.trim();
+  const finalLoc = loc === 'other' ? (locOther || 'อื่นๆ') : loc;
+
+  if (!name||!nick||!bday||!phone||!line||!ig||!tt||!igF||!ttF||!loc) {
+    alert('กรุณากรอกข้อมูลที่มี * ให้ครบค่ะ 🙏'); return;
+  }
+  if (loc === 'other' && !locOther) {
+    alert('กรุณาระบุจังหวัด / ที่อยู่ของคุณด้วยนะคะ 🙏'); return;
+  }
+
+  const liveVal = document.querySelector('input[name="live"]:checked');
+  const isUp = !BKK.includes(loc);
+  const now = new Date();
+  const thDate = now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+
+  const app = {
+    timestamp: thDate,
+    name, nick, bday, phone, line, ig, tt,
+    ig_follow: igF, tt_follow: ttF,
+    location: finalLoc,
+    loc_type: loc === 'other' ? 'อื่นๆ' : (BKK.includes(loc) ? 'กรุงเทพฯ' : 'ต่างจังหวัด'),
+    age: document.getElementById('f_age').value,
+    q1: document.getElementById('q1').value,
+    q2: document.getElementById('q2').value,
+    live: liveVal ? liveVal.value : '-',
+    q4: document.getElementById('q4').value,
+    q5: document.getElementById('q5').value,
+    q6: document.getElementById('q6').value,
+  };
+
+  const btn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('submitStatus');
+  btn.disabled = true;
+  btn.textContent = 'กำลังส่ง...';
+  statusEl.style.display = 'block';
+
+  // บันทึก local เสมอ
+  localApps.push({...app, id: Date.now()});
+  try { localStorage.setItem('nd_apps', JSON.stringify(localApps)); } catch(e){}
+
+  // ถ้ามี Apps Script URL → ส่งไป Sheets จริง
+  if (APPS_SCRIPT_URL) {
+    try {
+      statusEl.textContent = '📤 กำลังบันทึกข้อมูล...';
+      const params = new URLSearchParams(app);
+      await fetch(APPS_SCRIPT_URL + '?' + params.toString(), {method:'GET', mode:'no-cors'});
+      statusEl.textContent = '✅ บันทึกลง Google Sheets เรียบร้อยแล้ว!';
+    } catch(e) {
+      statusEl.textContent = '⚠️ บันทึก offline ไว้แล้วค่ะ จะ sync ภายหลัง';
+    }
+  } else {
+    statusEl.textContent = '✅ รับข้อมูลเรียบร้อยแล้วค่ะ!';
+  }
+
+  setTimeout(() => {
+    document.getElementById('applyForm').style.display = 'none';
+    document.getElementById('successCard').style.display = 'block';
+    document.getElementById('successCard').scrollIntoView({behavior:'smooth'});
+  }, 800);
+}
+
+// ── ADMIN ──
+function openAdmin() { document.getElementById('adminModal').classList.add('show'); }
+function closeAdmin() { document.getElementById('adminModal').classList.remove('show'); }
+document.getElementById('adminModal').addEventListener('click', function(e){ if(e.target===this) closeAdmin(); });
+
+async function checkLogin() {
+  const pwd = document.getElementById('adminPwd').value;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pwd);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  if (hashHex === ADMIN_HASH) {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderAll();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function showTab(tab) {
+  ['applications','confirm','candidates'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active',['applications','confirm','candidates'][i]===tab);
+  });
+}
+
+function tierClass(t) {
+  if (!t) return '';
+  if (t.includes('1')||t.includes('50,000')) return 't1';
+  if (t.includes('2')||t.includes('100,000')) return 't2';
+  if (t.includes('3')||t.includes('300,000')) return 't3';
+  return '';
+}
+function statusClass(s) {
+  if (!s) return 'pending';
+  if (s.includes('ระหว่างสัญญา')||s.includes('ต่อสัญญา')) return 'active';
+  if (s.includes('หมดสัญญา')) return 'done';
+  return 'pending';
+}
+function tierEmoji(t='') {
+  if (t.includes('3')||t.includes('300,000')) return '⭐⭐⭐';
+  if (t.includes('2')||t.includes('100,000')) return '⭐⭐';
+  return '⭐';
+}
+
+// ── VIEW TOGGLES ──
+let appView = 'table', confirmView = 'card', candView = 'card';
+
+function setAppView(v, btn) {
+  appView = v;
+  document.querySelectorAll('#tab-applications .view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('appTableWrap').style.display = v==='table'?'block':'none';
+  document.getElementById('appCardWrap').style.display = v==='card'?'block':'none';
+}
+function setConfirmView(v, btn) {
+  confirmView = v;
+  document.querySelectorAll('#tab-confirm .view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('confirmCardWrap').style.display = v==='card'?'block':'none';
+  document.getElementById('confirmTableWrap').style.display = v==='table'?'block':'none';
+}
+function setCandView(v, btn) {
+  candView = v;
+  document.querySelectorAll('#tab-candidates .view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('candCardWrap').style.display = v==='card'?'block':'none';
+  document.getElementById('candTableWrap').style.display = v==='table'?'block':'none';
+}
+
+async function renderAll() {
+  document.getElementById('appCardWrap').innerHTML  = '<div class="empty-state">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>';
+  document.getElementById('appTableWrap').innerHTML = '<div class="empty-state">⏳ กำลังโหลดข้อมูล...</div>';
+
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    if (!res.ok) throw new Error('fetch failed');
+    const text = await res.text();
+    const rows = text.trim().split('\n').map(r => parseCSVRow(r));
+
+    if (rows.length > 1) {
+      // header row — ทำ lowercase trim ทั้งหมด เพื่อ match ง่าย
+      const raw = rows[0].map(h => h.toLowerCase().replace(/\s/g,''));
+
+      // helper: หา index จาก keyword หลายตัว
+      const col = (...keys) => {
+        for (const k of keys) {
+          const i = raw.findIndex(h => h.includes(k));
+          if (i !== -1) return i;
+        }
+        return -1;
+      };
+
+      const iTs   = col('timestamp','วันที่','เวลา');
+      const iName = col('name','ชื่อจริง','ชื่อ');
+      const iNick = col('nick','ชื่อเล่น');
+      const iBday = col('bday','วันเกิด');
+      const iPhone = col('phone','เบอร์','โทร');
+      const iLine  = col('line','ไลน์');
+      const iIg    = col('ig','instagram');
+      const iTt    = col('tt','tiktok');
+      const iIgF   = col('ig_follow','followers(ig)','followersig');
+      const iTtF   = col('tt_follow','followers(tt)','followerstt','followerstiktok');
+      const iLoc   = col('location','จังหวัด','ที่อยู่');
+      const iLocT  = col('loc_type','ประเภท');
+      const iAge   = col('age','อายุ');
+      const iQ1    = col('q1','ทำไม','เหตุผล');
+      const iQ2    = col('q2','สไตล์','content');
+      const iLive  = col('live','ไลฟ์');
+      const iQ4    = col('q4','audience','กลุ่มเป้า');
+
+      const get = (r, i) => (i !== -1 && r[i]) ? r[i].replace(/^"|"$/g,'').trim() : '-';
+
+      localApps = rows.slice(1)
+        .filter(r => r.length > 2 && get(r, iName) !== '-')
+        .map(r => ({
+          timestamp : get(r, iTs),
+          name      : get(r, iName),
+          nick      : get(r, iNick),
+          bday      : get(r, iBday),
+          phone     : get(r, iPhone),
+          line      : get(r, iLine),
+          ig        : get(r, iIg),
+          tt        : get(r, iTt),
+          ig_follow : get(r, iIgF),
+          tt_follow : get(r, iTtF),
+          location  : get(r, iLoc),
+          loc_type  : get(r, iLocT),
+          age       : get(r, iAge),
+          q1        : get(r, iQ1),
+          q2        : get(r, iQ2),
+          live      : get(r, iLive),
+          q4        : get(r, iQ4),
+        }));
+
+      console.log(`✅ โหลดจาก Sheets ได้ ${localApps.length} ใบสมัคร`);
+    }
+  } catch(e) {
+    console.warn('⚠️ ดึง Sheets ไม่ได้ ใช้ localApps แทน:', e);
+    document.getElementById('appCardWrap').innerHTML =
+      '<div class="empty-state">⚠️ ดึงข้อมูลไม่ได้ — กรุณาตรวจสอบว่า Google Sheets เปิดเป็น "ทุกคนที่มีลิงก์" แล้วกด 🔄 โหลดใหม่ค่ะ</div>';
+  }
+
+  renderApplications();
+  renderConfirm();
+  renderCandidates();
+}
+
+// parse CSV row correctly (handles commas inside quotes)
+function parseCSVRow(row) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    const c = row[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+// ── RENDER APPLICATIONS ──
+function renderApplications() {
+  const apps = localApps;
+  const stats = document.getElementById('appStats');
+  stats.innerHTML = `
+    <div class="stat-card"><div class="num">${apps.length}</div><div class="lbl">ใบสมัครทั้งหมด</div></div>
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.loc_type==='กรุงเทพฯ').length}</div><div class="lbl">กรุงเทพฯ</div></div>
+    <div class="stat-card"><div class="num">${apps.filter(a=>a.loc_type==='ต่างจังหวัด').length}</div><div class="lbl">ต่างจังหวัด</div></div>
+  `;
+  if (!apps.length) {
+    document.getElementById('appTableWrap').innerHTML='<div class="empty-state">ยังไม่มีใบสมัครเข้ามาค่ะ 🌸</div>';
+    document.getElementById('appCardWrap').innerHTML='<div class="empty-state">ยังไม่มีใบสมัครเข้ามาค่ะ 🌸</div>';
+    return;
+  }
+  // Table
+  const rows = apps.map((a,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>${a.timestamp||'-'}</td>
+    <td><strong>${a.name}</strong><br><span style="font-size:11px;color:var(--gray-400)">${a.nick}</span></td>
+    <td>🎂 ${a.bday||'-'}</td>
+    <td>${a.phone}<br><span style="font-size:11px;color:var(--gray-400)">${a.line}</span></td>
+    <td><a class="tbl-link" href="${a.ig}" target="_blank">IG ↗</a> / <a class="tbl-link" href="${a.tt}" target="_blank">TT ↗</a></td>
+    <td>${a.ig_follow} / ${a.tt_follow}</td>
+    <td>${a.location}<br><span class="loc-badge ${a.loc_type==='ต่างจังหวัด'?'up':'bkk'}">${a.loc_type}</span></td>
+    <td style="font-size:11px;color:var(--gray-600);max-width:150px;">${a.q1||'-'}</td>
+  </tr>`).join('');
+  document.getElementById('appTableWrap').innerHTML=`<div style="overflow-x:auto;"><table class="data-table">
+    <thead><tr><th>#</th><th>วันที่</th><th>ชื่อ/ชื่อเล่น</th><th>วันเกิด</th><th>เบอร์/LINE</th><th>ช่องทาง</th><th>Followers IG/TT</th><th>จังหวัด</th><th>เหตุผลสมัคร</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+  // Cards
+  const cards = apps.map(a=>`
+    <div class="profile-card">
+      <div class="pc-header">
+        <div class="pc-avatar">🌸</div>
+        <div class="pc-info">
+          <div class="pc-name">${a.name}</div>
+          <div class="pc-nick">น้อง${a.nick} &nbsp;|&nbsp; 🎂 ${a.bday||'-'}</div>
+          <div style="margin-top:4px;"><span class="loc-badge ${a.loc_type==='ต่างจังหวัด'?'up':'bkk'}">${a.loc_type}</span></div>
+        </div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-row"><span>📱</span> IG: <strong>${a.ig_follow}</strong> &nbsp;|&nbsp; TT: <strong>${a.tt_follow}</strong></div>
+        <div class="pc-row"><span>📍</span> ${a.location}</div>
+        <div class="pc-row"><span>📞</span> ${a.phone} &nbsp;|&nbsp; LINE: ${a.line}</div>
+        ${a.age?`<div class="pc-row"><span>🎓</span> ${a.age}</div>`:''}
+        ${a.q1?`<div class="pc-row" style="align-items:flex-start;"><span>💬</span><span style="color:var(--gray-600);font-size:11px;line-height:1.5;">${a.q1.substring(0,80)}${a.q1.length>80?'...':''}</span></div>`:''}
+        <div class="pc-links">
+          <a class="pc-link ig" href="${a.ig}" target="_blank">📸 Instagram</a>
+          <a class="pc-link tt" href="${a.tt}" target="_blank">🎵 TikTok</a>
+          <a class="pc-link line" href="https://line.me/ti/p/~${a.line.replace('@','')}" target="_blank">💚 LINE</a>
+        </div>
+      </div>
+      <div class="pc-status-bar">
+        <span class="pc-period">สมัครเมื่อ ${a.timestamp||'-'}</span>
+        <span class="status-pill pending">ใบสมัครใหม่</span>
+      </div>
+    </div>`).join('');
+  document.getElementById('appCardWrap').innerHTML=`<div class="card-grid">${cards}</div>`;
+}
+
+// ── RENDER CONFIRM INFLU ──
+function renderConfirm() {
+  const active = CONFIRM_DATA.filter(d=>d.status.includes('ระหว่างสัญญา')||d.status.includes('ต่อสัญญา')).length;
+  const done = CONFIRM_DATA.filter(d=>d.status.includes('หมดสัญญา')).length;
+  document.getElementById('confirmStats').innerHTML=`
+    <div class="stat-card"><div class="num">${CONFIRM_DATA.length}</div><div class="lbl">อินฟลูทั้งหมด</div></div>
+    <div class="stat-card"><div class="num">${active}</div><div class="lbl">🟢 กำลังทำงาน</div></div>
+    <div class="stat-card"><div class="num">${done}</div><div class="lbl">⚪ หมดสัญญา</div></div>
+    <div class="stat-card"><div class="num">${CONFIRM_DATA.filter(d=>d.province.includes('ตจว')||d.province.includes('เชียงใหม่')||d.province.includes('ต่างจังหวัด')).length}</div><div class="lbl">ต่างจังหวัด</div></div>
+  `;
+
+  // Profile Cards
+  const statusColors = {'อยู่ระหว่างสัญญา':'#d4f5e0','ต่อสัญญารายปี':'#d4f5e0','หมดสัญญา':'#f0f0f0'};
+  const statusText = {'อยู่ระหว่างสัญญา':'🟢 กำลังทำงาน','ต่อสัญญารายปี':'🟢 ต่อสัญญาปี','หมดสัญญา':'⚪ หมดสัญญา'};
+  const cards = CONFIRM_DATA.map(d=>{
+    const sClass = statusClass(d.status);
+    const sLabel = statusText[d.status] || d.status;
+    const sColor = statusColors[d.status] || '#fff3cc';
+    const avatarEmojis = ['🌸','✨','💕','🌿','⭐','🎀','💫','🌺'];
+    const av = avatarEmojis[d.no-1] || '✨';
+    const igHandle = d.ig.replace('https://www.instagram.com/','').replace('https://instagram.com/','').replace(/\//g,'');
+    const ttHandle = d.tt.replace('https://www.tiktok.com/@','').replace('http://www.tiktok.com/@','').replace(/\//g,'');
+    return `
+    <div class="confirm-card">
+      <div class="active-badge" style="background:${sColor};color:${sClass==='active'?'#1a7040':'#666'};">${sLabel}</div>
+      <div class="cc-header">
+        <div class="cc-avatar">${av}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--choc);font-weight:700;">${d.name}</div>
+          <div style="font-size:12px;color:var(--choc-light);margin-top:2px;">น้อง${d.nick}</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="tier-pill ${tierClass(d.tier)}">${tierEmoji(d.tier)} ${d.tier}</span>
+          </div>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-info-row"><span class="icon">📍</span> ${d.province}</div>
+        <div class="cc-info-row"><span class="icon">🎂</span> ${d.bday}</div>
+        <div class="cc-info-row"><span class="icon">📅</span> ${d.period}</div>
+        <div class="cc-info-row"><span class="icon">📞</span> ${d.phone} &nbsp; <span style="color:var(--gray-400)">|</span> &nbsp; LINE: <strong>${d.line}</strong></div>
+        <div class="cc-info-row" style="margin-top:2px;font-size:11px;color:var(--gray-400);">
+          <span class="icon">📱</span> IG: @${igHandle} &nbsp;|&nbsp; TT: @${ttHandle}
+        </div>
+        <div class="cc-links">
+          <a class="cc-link ig" href="${d.ig}" target="_blank"><span class="link-icon">📸</span>Instagram</a>
+          <a class="cc-link tt" href="${d.tt}" target="_blank"><span class="link-icon">🎵</span>TikTok</a>
+          <a class="cc-link wa" href="tel:${d.phone}"><span class="link-icon">📞</span>โทร</a>
+        </div>
+      </div>
+      <div class="cc-footer">
+        <div style="font-size:10px;color:var(--gray-400);">ช่วงสัญญา: ${d.period}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('confirmCardWrap').innerHTML=`<div class="card-grid">${cards}</div>`;
+
+  // Table
+  document.getElementById('confirmTable').innerHTML = CONFIRM_DATA.map(d=>`<tr>
+    <td>${d.no}</td>
+    <td><strong>${d.name}</strong><br><span style="font-size:11px;color:var(--gray-400)">น้อง${d.nick}</span></td>
+    <td>🎂 ${d.bday}</td>
+    <td><span class="tier-pill ${tierClass(d.tier)}">${d.tier}</span></td>
+    <td>${d.province}</td>
+    <td><a class="tbl-link" href="${d.ig}" target="_blank">IG ↗</a></td>
+    <td><a class="tbl-link" href="${d.tt}" target="_blank">TT ↗</a></td>
+    <td>${d.line}</td>
+    <td>${d.phone}</td>
+    <td style="font-size:11px;">${d.period}</td>
+    <td><span class="status-pill ${statusClass(d.status)}">${d.status}</span></td>
+  </tr>`).join('');
+}
+
+// ── RENDER CANDIDATES ──
+function renderCandidates() {
+  const total=CAND_DATA.length, interested=CAND_DATA.filter(d=>d.replied.includes('สนใจ')).length, passed=CAND_DATA.filter(d=>d.pass==='ผ่าน').length;
+  document.getElementById('candStats').innerHTML=`
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">รายชื่อทั้งหมด</div></div>
+    <div class="stat-card"><div class="num">${interested}</div><div class="lbl">สนใจ / ตอบรับ</div></div>
+    <div class="stat-card"><div class="num">${passed}</div><div class="lbl">✅ ผ่านการคัด</div></div>
+    <div class="stat-card"><div class="num">${total-interested}</div><div class="lbl">ยังไม่ตอบ</div></div>
+  `;
+
+  // Profile Cards for Candidates
+  const candCards = CAND_DATA.map((d,i)=>{
+    const rc = d.replied.includes('สนใจ')?'active':d.replied.includes('ไม่')?'done':'pending';
+    const replyColor = rc==='active'?'#d4f5e0':rc==='done'?'#f0f0f0':'#fff3cc';
+    const replyTextColor = rc==='active'?'#1a7040':rc==='done'?'#666':'#7a5500';
+    const igUrl = d.ig&&d.ig!=='-' ? `https://www.instagram.com/${d.ig.replace('@','')}/` : null;
+    const ttUrl = d.tt&&d.tt!=='-' ? `https://www.tiktok.com/${d.tt.startsWith('@')?d.tt:'@'+d.tt}` : null;
+    return `
+    <div class="profile-card">
+      <div class="pc-header">
+        <div class="pc-avatar" style="background:${d.tier.includes('3')?'var(--tier3)':d.tier.includes('2')?'var(--tier2)':'var(--tier1)'};">
+          ${tierEmoji(d.tier)}
+        </div>
+        <div class="pc-info">
+          <div class="pc-name" style="font-size:13px;">${d.tt!=='-'?d.tt:d.ig}</div>
+          <div class="pc-nick" style="margin-top:2px;"><span class="tier-pill ${tierClass(d.tier)}" style="font-size:9px;">${d.tier}</span></div>
+          <div style="margin-top:4px;font-size:11px;color:var(--gray-400);">👥 ${d.follow}</div>
+        </div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-row"><span>📍</span> ${d.prov||'-'}</div>
+        <div class="pc-row"><span>📬</span> ${d.contact||'-'}</div>
+        ${d.note?`<div class="pc-row" style="align-items:flex-start;"><span>📝</span><span style="font-size:11px;color:var(--gray-600);">${d.note}</span></div>`:''}
+        <div class="pc-links" style="margin-top:10px;">
+          ${igUrl?`<a class="pc-link ig" href="${igUrl}" target="_blank">📸 Instagram</a>`:'<span class="pc-link" style="background:var(--gray-100);color:var(--gray-400);">ไม่มี IG</span>'}
+          ${ttUrl?`<a class="pc-link tt" href="${ttUrl}" target="_blank">🎵 TikTok</a>`:'<span class="pc-link" style="background:var(--gray-100);color:var(--gray-400);">ไม่มี TT</span>'}
+        </div>
+      </div>
+      <div class="pc-status-bar">
+        <span style="font-size:10px;background:${replyColor};color:${replyTextColor};padding:3px 8px;border-radius:10px;font-weight:600;">${d.replied}</span>
+        ${d.pass?`<span class="status-pill active">✅ ${d.pass}</span>`:'<span style="font-size:10px;color:var(--gray-400);">รอผล</span>'}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('candCardWrap').innerHTML=`<div class="card-grid">${candCards}</div>`;
+
+  // Table
+  document.getElementById('candidatesTable').innerHTML=CAND_DATA.map((d,i)=>{
+    const rc=d.replied.includes('สนใจ')?'active':d.replied.includes('ไม่')?'done':'pending';
+    const igUrl = d.ig&&d.ig!=='-' ? `https://www.instagram.com/${d.ig.replace('@','')}/` : '#';
+    const ttUrl = d.tt&&d.tt!=='-' ? `https://www.tiktok.com/${d.tt.startsWith('@')?d.tt:'@'+d.tt}` : '#';
+    return `<tr>
+      <td>${i+1}</td>
+      <td><a class="tbl-link" href="${ttUrl}" target="_blank">${d.tt}</a></td>
+      <td><a class="tbl-link" href="${igUrl}" target="_blank">${d.ig}</a></td>
+      <td style="font-size:11px;">${d.follow}</td>
+      <td><span class="tier-pill ${tierClass(d.tier)}">${d.tier}</span></td>
+      <td>${d.prov}</td>
+      <td style="font-size:11px;">${d.contact}</td>
+      <td><span class="status-pill pending">${d.talked}</span></td>
+      <td><span class="status-pill ${rc}">${d.replied}</span></td>
+      <td>${d.pass?`<span class="status-pill active">${d.pass}</span>`:'-'}</td>
+      <td style="font-size:11px;color:var(--gray-600);">${d.note||'-'}</td>
+    </tr>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

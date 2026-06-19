@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Allsupplier — สมัครงาน / ลงทะเบียน</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f5;--card:#fff;--card2:#f9f9f9;--brd:#e0e0e0;--brd2:#ccc;
+  --txt:#1a1a1a;--sub:#666;--muted:#aaa;
+  --g:#1A7A4A;--gl:#1A7A4A;--gbg:rgba(26,122,74,.07);--gbrd:rgba(26,122,74,.25);
+  --o:#C75B00;--ol:#C75B00;--obg:rgba(199,91,0,.07);--obrd:rgba(199,91,0,.25);
+  --o2:#8B4513;--o2bg:rgba(139,69,19,.07);--o2brd:rgba(139,69,19,.25);
+  --r:#B72020;--rl:#B72020;--rbg:rgba(183,32,32,.07);--rbrd:rgba(183,32,32,.25);
+  --b:#1a4080;--bl:#1a4080;--bbg:rgba(26,64,128,.07);--bbrd:rgba(26,64,128,.25);
+}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* NAV */
+nav{background:#fff;border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;height:52px;gap:12px;position:sticky;top:0;z-index:100}
+.logo-b{width:30px;height:30px;border-radius:7px;flex-shrink:0;background:linear-gradient(135deg,#1A7A4A,#C75B00);display:grid;place-items:center;font-family:'Prompt',sans-serif;font-weight:700;font-size:11px;color:#fff}
+.logo-n{font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;color:#111}
+.logo-s{font-size:10px;color:#888;margin-top:1px}
+.nav-d{width:1px;height:22px;background:var(--brd2);flex-shrink:0}
+.nav-lbl{font-family:'Prompt',sans-serif;font-size:13px;color:#888}
+.nav-sp{flex:1}
+.nav-a{font-family:'DM Mono',monospace;font-size:10px;color:#888;background:none;border:1px solid var(--brd2);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.nav-a:hover{color:var(--txt);border-color:#999}
+
+/* SCREENS */
+.scr{display:none}
+.scr.on{display:block;animation:up .22s ease both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* HOME */
+.home{max-width:680px;margin:0 auto;padding:52px 20px 80px}
+.h-eye{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.h-ttl{font-family:'Prompt',sans-serif;font-size:clamp(24px,5vw,36px);font-weight:700;line-height:1.2;margin-bottom:10px}
+.h-ttl em{font-style:normal;color:var(--g)}
+.h-desc{font-size:14px;color:var(--sub);line-height:1.85;margin-bottom:40px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.cat-grid{grid-template-columns:1fr}}
+.cat{background:var(--card);border:1.5px solid var(--brd);border-radius:14px;padding:22px 20px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;gap:8px;text-align:left;position:relative;overflow:hidden}
+.cat::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,#ccc);opacity:0;transition:opacity .18s}
+.cat:hover{transform:translateY(-2px);border-color:var(--cb,#ccc);background:var(--cx,#fafafa)}
+.cat:hover::after{opacity:1}
+.cg{--cc:var(--gl);--cb:var(--gbrd);--cx:var(--gbg)}
+.co{--cc:var(--ol);--cb:var(--obrd);--cx:var(--obg)}
+.co2{--cc:var(--o2);--cb:var(--o2brd);--cx:var(--o2bg)}
+.cr{--cc:var(--rl);--cb:var(--rbrd);--cx:var(--rbg)}
+.cb{--cc:var(--bl);--cb:var(--bbrd);--cx:var(--bbg)}
+.cat-ico{font-size:26px;line-height:1}
+.cat-lbl{font-family:'Prompt',sans-serif;font-size:15px;font-weight:600;color:var(--txt)}
+.cat-sub{font-size:12px;color:var(--sub);line-height:1.6}
+.cat-arr{margin-top:auto;align-self:flex-end;font-family:'DM Mono',monospace;font-size:11px;color:var(--cc,#999);opacity:0;transition:opacity .18s}
+.cat:hover .cat-arr{opacity:1}
+.adm-ghost{text-align:center;margin-top:52px}
+.adm-ghost button{background:none;border:none;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);cursor:pointer;letter-spacing:.06em;transition:color .2s}
+.adm-ghost button:hover{color:var(--sub)}
+
+/* FORM */
+.fwrap{max-width:620px;margin:0 auto;padding:36px 20px 80px}
+.f-back{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--sub);background:none;border:none;cursor:pointer;transition:color .2s;margin-bottom:26px;padding:0}
+.f-back:hover{color:var(--txt)}
+.f-tag{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.f-tag.tg{background:var(--gbg);color:var(--gl);border:1px solid var(--gbrd)}
+.f-tag.to{background:var(--obg);color:var(--ol);border:1px solid var(--obrd)}
+.f-tag.to2{background:var(--o2bg);color:var(--o2);border:1px solid var(--o2brd)}
+.f-tag.tr{background:var(--rbg);color:var(--rl);border:1px solid var(--rbrd)}
+.f-tag.tb{background:var(--bbg);color:var(--bl);border:1px solid var(--bbrd)}
+.f-ttl{font-family:'Prompt',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.f-dsc{font-size:13px;color:var(--sub);line-height:1.75;margin-bottom:28px}
+.fsg{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:24px 0 14px;border-top:1px solid var(--brd);padding-top:18px}
+.fsg:first-of-type{border-top:none;padding-top:0;margin-top:0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:480px){.fgrid{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg.full{grid-column:1/-1}
+.fg label{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--sub)}
+.fg label span{color:#B72020;margin-left:2px}
+.fg input,.fg select,.fg textarea{background:var(--card);border:1.5px solid var(--brd2);border-radius:8px;padding:10px 13px;font-size:14px;font-family:'Sarabun',sans-serif;color:var(--txt);outline:none;transition:border-color .18s;width:100%}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--muted)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#999}
+.fg textarea{resize:vertical;min-height:86px}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%23999' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;-webkit-appearance:none;appearance:none}
+.fg select option{background:#fff;color:#1a1a1a}
+.prow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:520px){.prow{grid-template-columns:1fr 1fr}}
+.fg.phg input,.fg.pho input{background:#fffde7;border-color:#f0c000;font-weight:600}
+.rgrp{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.ro{display:flex;align-items:center;gap:5px;font-family:'Sarabun',sans-serif;font-size:13px;color:var(--txt);padding:6px 12px;border:1.5px solid var(--brd2);border-radius:8px;cursor:pointer;transition:all .15s;background:var(--card)}
+.ro:has(input:checked){border-color:#888;background:#f0f0f0}
+.ro input[type=radio]{width:14px;height:14px;accent-color:#333}
+.pdf-tip{font-size:11px;color:var(--sub);background:var(--card2);border:1px solid var(--brd);border-radius:7px;padding:10px 12px;margin-top:8px;line-height:1.7}
+.pdf-tip strong{display:block;margin-bottom:3px;color:var(--txt)}
+.f-sub{width:100%;padding:13px;margin-top:20px;font-family:'Prompt',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;transition:all .18s}
+.f-sub:disabled{opacity:.45;cursor:not-allowed}
+.f-sub.sg{background:var(--g);color:#fff}.f-sub.sg:not(:disabled):hover{background:#1e9a5a}
+.f-sub.so{background:var(--o);color:#fff}.f-sub.so:not(:disabled):hover{background:#e06800}
+.f-sub.so2{background:var(--o2);color:#fff}.f-sub.so2:not(:disabled):hover{background:#a0530f}
+.f-sub.sr{background:var(--r);color:#fff}.f-sub.sr:not(:disabled):hover{background:#d02828}
+.f-sub.sb{background:var(--b);color:#fff}.f-sub.sb:not(:disabled):hover{background:#255090}
+
+/* SUCCESS */
+.success{max-width:440px;margin:80px auto;padding:0 20px;text-align:center}
+.s-ico{font-size:56px;margin-bottom:18px}
+.s-ttl{font-family:'Prompt',sans-serif;font-size:22px;font-weight:700;margin-bottom:10px}
+.s-dsc{font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:32px}
+.s-btn{font-family:'DM Mono',monospace;font-size:11px;color:var(--sub);background:var(--card);border:1px solid var(--brd2);border-radius:8px;padding:10px 20px;cursor:pointer;transition:all .2s}
+.s-btn:hover{color:var(--txt);border-color:#999}
+
+/* ADMIN LOGIN (light) */
+#scr-login{background:#f0f0f0;min-height:100vh}
+.l-outer{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;padding:20px}
+.l-box{background:#fff;border:1.5px solid #ddd;border-radius:16px;padding:40px 32px;width:100%;max-width:360px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.l-ico{font-size:36px;margin-bottom:16px}
+.l-ttl{font-family:'Prompt',sans-serif;font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px}
+.l-sub{font-size:12px;color:#888;margin-bottom:28px;line-height:1.6}
+.l-inp-w{position:relative;margin-bottom:12px}
+.l-inp-w input{width:100%;background:#f7f7f7;border:1.5px solid #ddd;border-radius:8px;padding:12px 44px 12px 16px;font-family:'DM Mono',monospace;font-size:15px;color:#1a1a1a;outline:none;transition:border-color .2s;text-align:center;letter-spacing:.1em}
+.l-inp-w input:focus{border-color:rgba(26,122,74,.6)}
+.l-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:16px;padding:4px}
+.l-btn{width:100%;padding:12px;background:#1A7A4A;color:#fff;border:none;border-radius:8px;font-family:'Prompt',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.l-btn:hover{background:#1e9a5a}
+.l-err{font-size:12px;color:#B72020;margin-top:10px;min-height:18px}
+.l-back{margin-top:18px;background:none;border:none;font-family:'DM Mono',monospace;font-size:11px;color:#aaa;cursor:pointer;transition:color .2s}
+.l-back:hover{color:#444}
+
+/* ADMIN DASHBOARD (light) */
+#scr-admin{background:#f0f0f0;color:#1a1a1a;min-height:100vh}
+.adm{max-width:1040px;margin:0 auto;padding:32px 20px 80px}
+.adm-hdr{display:flex;align-items:center;gap:12px;margin-bottom:26px;flex-wrap:wrap}
+.adm-hdr-ttl{font-family:'Prompt',sans-serif;font-size:20px;font-weight:700;color:#1a1a1a}
+.adm-badge{background:rgba(26,122,74,.1);color:#1A7A4A;border:1px solid rgba(26,122,74,.3);border-radius:20px;padding:3px 12px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em}
+.adm-out{margin-left:auto;background:none;border:1px solid #ddd;color:#888;font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s}
+.adm-out:hover{color:#B72020;border-color:rgba(183,32,32,.4)}
+.fb-bar{display:flex;align-items:center;gap:8px;margin-bottom:18px;padding:8px 14px;background:#fff;border:1px solid #e0e0e0;border-radius:8px;font-family:'DM Mono',monospace;font-size:11px;color:#888;flex-wrap:wrap}
+.fb-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background .3s}
+.fb-dot.live{background:#2ecc71;box-shadow:0 0 6px #2ecc71;animation:pulse 2s ease-in-out infinite}
+.fb-dot.err{background:#e74c3c;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.fb-url{background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:11px;color:#1a1a1a;outline:none;width:280px;max-width:100%}
+.fb-conn{background:#1A7A4A;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;white-space:nowrap}
+.fb-conn:hover{background:#1e9a5a}
+.adm-stats{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:24px}
+@media(max-width:700px){.adm-stats{grid-template-columns:repeat(3,1fr)}}
+.adm-stat{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.adm-stat-n{font-family:'Prompt',sans-serif;font-size:26px;font-weight:700;line-height:1}
+.adm-stat-l{font-size:11px;color:#999;margin-top:4px}
+.adm-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.adm-tab{font-family:'Prompt',sans-serif;font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;cursor:pointer;border:1.5px solid #ddd;background:#fff;color:#aaa;transition:all .18s}
+.adm-tab:hover{color:#1a1a1a}
+.adm-tab.ta{border-color:#bbb;color:#1a1a1a;background:#f0f0f0}
+.adm-tab.tg{background:rgba(26,122,74,.08);border-color:rgba(26,122,74,.3);color:#1A7A4A}
+.adm-tab.to{background:rgba(199,91,0,.08);border-color:rgba(199,91,0,.3);color:#C75B00}
+.adm-tab.to2{background:rgba(139,69,19,.08);border-color:rgba(139,69,19,.3);color:#8B4513}
+.adm-tab.tr{background:rgba(183,32,32,.08);border-color:rgba(183,32,32,.3);color:#B72020}
+.adm-tab.tb{background:rgba(26,64,128,.08);border-color:rgba(26,64,128,.3);color:#1a4080}
+.adm-tbl-wrap{background:#fff;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;overflow-x:auto;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.adm-tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+.adm-tbl thead th{background:#f7f7f7;padding:10px 13px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#aaa;white-space:nowrap}
+.adm-tbl tbody tr{border-bottom:1px solid #f0f0f0;transition:background .12s}
+.adm-tbl tbody tr:last-child{border-bottom:none}
+.adm-tbl tbody tr:hover{background:#fafafa}
+.adm-tbl td{padding:10px 13px;vertical-align:middle;color:#1a1a1a}
+.td-m{font-family:'DM Mono',monospace;font-size:11px;color:#bbb}
+.td-d{color:#aaa;font-size:12px}
+.td-src{font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:10px;background:#f5f5f5;color:#999;border:1px solid #e8e8e8}
+.td-url{color:#1a4080;text-decoration:none;font-size:12px}
+.td-url:hover{text-decoration:underline}
+.p-new{display:inline-block;font-size:10px;padding:2px 9px;border-radius:20px;background:rgba(26,122,74,.1);color:#1A7A4A;border:1px solid rgba(26,122,74,.25)}
+.p-done{display:inline-block;font-size:10px;padding:2px 9px;border-radius:20px;background:#f5f5f5;color:#bbb;border:1px solid #e0e0e0}
+.btn-xs{background:none;font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:5px;cursor:pointer;transition:all .2s}
+.btn-mark{border:1px solid #ddd;color:#aaa}.btn-mark:hover{color:#C75B00;border-color:rgba(199,91,0,.4)}
+.btn-del{border:1px solid transparent;color:#ccc;margin-left:4px}.btn-del:hover{color:#B72020;border-color:rgba(183,32,32,.4);background:rgba(183,32,32,.06)}
+.adm-empty td{text-align:center;padding:3rem;color:#ccc;font-size:13px}
+#toast{position:fixed;bottom:22px;right:22px;background:#fff;border:1px solid rgba(26,122,74,.35);color:#1A7A4A;padding:10px 18px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+#toast.on{opacity:1;transform:none}
+#toast.err{color:#B72020;border-color:rgba(183,32,32,.35)}
+.spin-ov{position:fixed;inset:0;background:rgba(255,255,255,.6);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:500}
+.spin-ov.on{display:flex}
+.spin{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#1A7A4A;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-txt{font-family:'DM Mono',monospace;font-size:12px;color:#888}
+
+.f-tag.tcp{background:rgba(123,63,160,.08);color:#7B3FA0;border:1px solid rgba(123,63,160,.35)}
+.f-sub.scp{background:#7B3FA0;color:#fff}.f-sub.scp:not(:disabled):hover{background:#9B5FBF}
+.adm-tab.tcp{background:rgba(123,63,160,.08);border-color:rgba(123,63,160,.3);color:#7B3FA0}
+</style>
+</head>
+<body>
+<style>
+.portfolio-banner{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:8px 16px;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;box-shadow:0 2px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.portfolio-banner span.tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:11px;letter-spacing:2px;}
+.portfolio-banner span.pipe{opacity:.4;}
+body{padding-top:40px !important;}
+</style>
+<div class="portfolio-banner">
+  <span class="tag">PORTFOLIO</span>
+  <span class="pipe">|</span>
+  ✦ ตัวอย่างผลงาน — ข้อมูลจำลองเพื่อการนำเสนอ ✦
+  <span class="pipe">|</span>
+  <span class="tag">MOCK-UP</span>
+</div>
+
+<nav>
+  <div class="logo-b">ASP</div>
+  <div><div class="logo-n">Allsupplier</div><div class="logo-s">Supplier Portal</div></div>
+  <div class="nav-d"></div>
+  <div class="nav-lbl" id="nav-lbl">สมัครงาน / ลงทะเบียน</div>
+  <div class="nav-sp"></div>
+  <a href="index.html" class="nav-a">← Portal</a>
+</nav>
+<div class="spin-ov" id="spinner"><div class="spin"></div><div class="spin-txt" id="spin-txt">กำลังบันทึก...</div></div>
+
+<!-- HOME -->
+<div class="scr on" id="scr-home">
+  <div class="home">
+    <div class="h-eye">Allsupplier · Supplier Registration</div>
+    <h1 class="h-ttl">ลงทะเบียน<em>ผู้รับงาน</em><br/>เลือกประเภทที่ต้องการสมัคร</h1>
+    <p class="h-desc">กรุณาเลือกประเภทงานที่ตรงกับคุณ แล้วกรอกข้อมูลให้ครบถ้วน<br/>ทีมงานจะติดต่อกลับโดยเร็วที่สุดค่ะ</p>
+    <div class="cat-grid">
+      <button class="cat cg" onclick="go('renovate')">
+        <div class="cat-ico">🏗️</div><div class="cat-lbl">ช่างรีโนเวท</div>
+        <div class="cat-sub">ตกแต่งภายใน ปรับปรุง Fit-out งานไม้ งานสี</div>
+        <div class="cat-arr">ลงทะเบียน →</div>
+      </button>
+      <button class="cat co" onclick="go('contractor')">
+        <div class="cat-ico">🔨</div><div class="cat-lbl">ช่างรับเหมาก่อสร้าง</div>
+        <div class="cat-sub">ก่อสร้างสาขาในห้าง โครงสร้าง ระบบไฟ Fit-out</div>
+        <div class="cat-arr">ลงทะเบียน →</div>
+      </button>
+      <button class="cat co2" onclick="go('3d')">
+        <div class="cat-ico">🎨</div><div class="cat-lbl">ช่างปั้น 3D</div>
+        <div class="cat-sub">3D Sculpting, Character, Toy, ไฟล์ STL / OBJ</div>
+        <div class="cat-arr">ลงทะเบียน →</div>
+      </button>
+      <button class="cat cr" onclick="go('sign')">
+        <div class="cat-ico">🔩</div><div class="cat-lbl">ป้ายตั้งสแตนเลส</div>
+        <div class="cat-sub">ป้ายสแตนเลส งานโลหะ CNC แกะสลัก</div>
+        <div class="cat-arr">ลงทะเบียน →</div>
+      </button>
+      <button class="cat cb" onclick="go('space')" style="grid-column:1/-1">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div class="cat-ico">📐</div>
+          <div>
+            <div class="cat-lbl">หาพื้นที่ — Creator Hub</div>
+            <div class="cat-sub">เสนอโซนพื้นที่ในทรงวาด</div>
+          </div>
+          <div style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;color:var(--bl)">ลงทะเบียน →</div>
+        </div>
+      </button>
+    </div>
+          <button class="cat" style="--cc:#7B3FA0;--cb:rgba(123,63,160,.35);--cx:rgba(123,63,160,.07);grid-column:1/-1" onclick="go('carpet')">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div class="cat-ico">🟫</div>
+          <div>
+            <div class="cat-lbl">พรม</div>
+            <div class="cat-sub">เสนอพรม วัสดุปูพื้น หรืองานพรมสำหรับโปรเจกต์</div>
+          </div>
+          <div style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;color:#7B3FA0">ลงทะเบียน →</div>
+        </div>
+      </button>
+    </div>
+    <div class="adm-ghost"><button onclick="goAdmin()">⚙ admin</button></div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="scr" id="scr-form"><div class="fwrap" id="form-body"></div></div>
+
+<!-- SUCCESS -->
+<div class="scr" id="scr-success">
+  <div class="success">
+    <div class="s-ico">✅</div>
+    <div class="s-ttl">ส่งข้อมูลเรียบร้อยแล้ว!</div>
+    <div class="s-dsc">ขอบคุณที่ลงทะเบียนกับ Allsupplier<br/>ทีมงานได้รับข้อมูลของคุณแล้ว<br/>และจะติดต่อกลับโดยเร็วที่สุดค่ะ</div>
+    <button class="s-btn" onclick="go('home')">← กลับหน้าหลัก</button>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="scr" id="scr-login">
+  <div class="l-outer">
+    <div class="l-box">
+      <div class="l-ico">🔐</div>
+      <div class="l-ttl">Admin Access</div>
+      <div class="l-sub">ใส่รหัสผ่านเพื่อเข้าดูข้อมูลผู้สมัครทั้งหมด</div>
+      <div class="l-inp-w">
+        <input type="password" id="pass-inp" placeholder="รหัสผ่าน" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off"/>
+        <button class="l-eye" onclick="togglePw()" tabindex="-1">👁</button>
+      </div>
+      <button class="l-btn" onclick="doLogin()">เข้าสู่ระบบ Admin →</button>
+      <div class="l-err" id="l-err"></div>
+      <button class="l-back" onclick="go('home')">← กลับหน้าหลัก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="scr" id="scr-admin">
+  <div class="adm">
+    <div class="adm-hdr">
+      <div class="adm-hdr-ttl">Dashboard — ข้อมูลผู้สมัคร</div>
+      <div class="adm-badge">⚙ Admin</div>
+      <button class="adm-out" onclick="go('home')">ออกจากระบบ</button>
+    </div>
+    <!-- Multi-source status bar -->
+    <div class="fb-bar" id="fb-bar" style="flex-direction:column;align-items:flex-start;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;flex-wrap:wrap">
+        <div style="font-weight:500;color:#555;font-size:11px">แหล่งข้อมูล:</div>
+        <span id="src-form" style="display:flex;align-items:center;gap:5px"><span class="fb-dot" id="dot-form"></span><span id="txt-form" style="font-size:10px">Form (RTDB)…</span></span>
+        <span id="src-ren" style="display:flex;align-items:center;gap:5px"><span class="fb-dot" id="dot-ren"></span><span id="txt-ren" style="font-size:10px">Renovate (Firestore)…</span></span>
+        <span id="src-3d" style="display:flex;align-items:center;gap:5px"><span class="fb-dot" id="dot-3d"></span><span id="txt-3d" style="font-size:10px">3D/Sign (RTDB)…</span></span>
+        <button class="fb-conn" style="margin-left:auto" onclick="refreshAll()">↻ รีเฟรช</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        <span style="font-size:10px;color:#bbb">3D/Sign URL:</span>
+        <input class="fb-url" id="fb-url-3d" placeholder="https://your-project-rtdb.firebaseio.com" style="flex:1"/>
+        <button class="fb-conn" onclick="connect3dRtdb()">เชื่อมต่อ</button>
+      </div>
+    </div>
+    <div class="adm-stats">
+      <div class="adm-stat"><div class="adm-stat-n" id="st-all" style="color:#1A7A4A">0</div><div class="adm-stat-l">ทั้งหมด</div></div>
+      <div class="adm-stat"><div class="adm-stat-n" id="st-ren" style="color:#1A7A4A">0</div><div class="adm-stat-l">ช่างรีโนเวท</div></div>
+      <div class="adm-stat"><div class="adm-stat-n" id="st-con" style="color:#C75B00">0</div><div class="adm-stat-l">ช่างรับเหมา</div></div>
+      <div class="adm-stat"><div class="adm-stat-n" id="st-3d" style="color:#8B4513">0</div><div class="adm-stat-l">ช่างปั้น 3D</div></div>
+      <div class="adm-stat"><div class="adm-stat-n" id="st-sign" style="color:#B72020">0</div><div class="adm-stat-l">ป้ายสแตนเลส</div></div>
+      <div class="adm-stat"><div class="adm-stat-n" id="st-space" style="color:#1a4080">0</div><div class="adm-stat-l">พื้นที่</div></div>
+      <div class="adm-stat"><div class="adm-stat-n" id="st-carpet" style="color:#7B3FA0">0</div><div class="adm-stat-l">พรม</div></div>
+    </div>
+    <div class="adm-tabs">
+      <button class="adm-tab ta" id="tb-all" onclick="switchTab('all',this)">ทั้งหมด</button>
+      <button class="adm-tab" id="tb-ren" onclick="switchTab('renovate',this)">🏗️ ช่างรีโนเวท</button>
+      <button class="adm-tab" id="tb-con" onclick="switchTab('contractor',this)">🔨 ช่างรับเหมา</button>
+      <button class="adm-tab" id="tb-3d" onclick="switchTab('3d',this)">🎨 ช่างปั้น 3D</button>
+      <button class="adm-tab" id="tb-sign" onclick="switchTab('sign',this)">🔩 ป้ายสแตนเลส</button>
+      <button class="adm-tab" id="tb-space" onclick="switchTab('space',this)">📐 พื้นที่</button>
+      <button class="adm-tab" id="tb-carpet" onclick="switchTab('carpet',this)">🟫 พรม</button>
+    </div>
+    <div class="adm-tbl-wrap">
+      <table class="adm-tbl"><thead id="adm-thead"></thead><tbody id="adm-tbody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+const FB_URL='';
+const FB_LS='asp-fb-url';
+const FB_PATH='applications';
+const PASS='demo1234';
+let db=null,ref=null,allData={},connected=false;
+// ข้อมูลจาก source อื่น (รวมไว้ใน mergedData ทั้งหมด)
+let fsDataRen=[],fsDataCon=[],rtdb3dData=[],rtdbSignData=[],sheetCarpet=[],sheetSpace=[];
+
+// ── Cross-backend: Firestore (renovate / contractor) ──
+const FS_CFG={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
+let fsApp=null,fsDb=null;
+function getFs(){
+  if(fsDb)return fsDb;
+  try{
+    fsApp=firebase.apps.find(a=>a.name==='soonsiam')||firebase.initializeApp(FS_CFG,'soonsiam');
+    fsDb=firebase.firestore(fsApp);
+  }catch(e){console.warn('Firestore init failed',e);}
+  return fsDb;
+}
+async function fsSave(col,data){
+  const fs=getFs();if(!fs)return;
+  await fs.collection(col).add({...data,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+}
+
+// ── Cross-backend: Google Sheets (carpet / space) ──
+const SHEETS_URL={
+  carpet:'',
+  space:''
+};
+async function sheetSave(type,row){
+  const url=SHEETS_URL[type];if(!url)return;
+  try{await fetch(url,{method:'POST',body:JSON.stringify({action:'append',row})});}
+  catch(e){console.warn('Sheet save failed',e);}
+}
+
+// ── Cross-backend: Realtime DB ช่างปั้น 3D / ป้ายสแตนเลส ──
+const DB3D_URL='';
+let db3d=null,ref3d=null,refSign=null;
+function get3dDb(){
+  if(db3d)return db3d;
+  try{
+    const app3d=firebase.apps.find(a=>a.name==='3dart')||firebase.initializeApp({databaseURL:DB3D_URL},'3dart');
+    db3d=firebase.database(app3d);
+    ref3d=db3d.ref('3d-artists');
+    refSign=db3d.ref('sign-shops');
+  }catch(e){console.warn('3D DB init failed',e);}
+  return db3d;
+}
+async function db3dSave(isSign,data){
+  get3dDb();
+  const r=isSign?refSign:ref3d;
+  if(r)await r.push({...data,added:Date.now()});
+}
+
+function fbInit(url){
+  try{const e=firebase.apps.find(a=>a.name==='asp');if(e)e.delete();}catch(e){}
+  const app=firebase.initializeApp({databaseURL:url},'asp');
+  db=firebase.database(app);ref=db.ref(FB_PATH);
+}
+async function fbConnect(){
+  const url=(document.getElementById('fb-url-inp').value||'').trim()||FB_URL;
+  spin('กำลังเชื่อมต่อ...');
+  try{
+    fbInit(url);
+    await new Promise((res,rej)=>{const t=setTimeout(()=>rej(new Error('t')),8000);// Mock: skip Firebase
+Promise.resolve().then(()=>{clearTimeout(t);res();}).catch(rej);});
+    localStorage.setItem(FB_LS,url);
+    connected=true;
+    setDot('form',true,'Form RTDB ✓');
+    ref.on('value',snap=>{allData=snap.val()||{};if(document.getElementById('scr-admin').classList.contains('on')){rStats();rTable();}});
+    hideSpin();toast('✓ เชื่อมต่อ Firebase แล้วค่ะ');
+  }catch(e){hideSpin();setFb(false,'เชื่อมต่อไม่ได้');toast('เชื่อมต่อไม่สำเร็จ',true);}
+}
+function setFb(live,txt){document.getElementById('fb-dot').className='fb-dot'+(live?' live':'');document.getElementById('fb-txt').textContent=txt;}
+async function fbSave(e){if(!ref)throw new Error('no ref');return ref.push(e);}
+async function fbDel(k){if(ref)await ref.child(k).remove();}
+async function fbMark(k){if(ref)await ref.child(k).update({_status:'reviewed'});}
+
+// NAVIGATION
+let curType=null,admTab='all';
+function go(t){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  if(['home','login','success','admin'].includes(t)){
+    document.getElementById('scr-'+t).classList.add('on');
+  } else {
+    renderForm(t);
+    document.getElementById('scr-form').classList.add('on');
+  }
+  const lbl={home:'สมัครงาน / ลงทะเบียน',login:'⚙ Admin Login',admin:'⚙ Admin Dashboard',
+    renovate:'🏗️ ช่างรีโนเวท',contractor:'🔨 ช่างรับเหมาก่อสร้าง',
+    '3d':'🎨 ช่างปั้น 3D',sign:'🔩 ป้ายตั้งสแตนเลส',space:'📐 หาพื้นที่ Creator Hub',carpet:'🟫 พรม',success:'ส่งข้อมูลแล้ว'};
+  document.getElementById('nav-lbl').textContent=lbl[t]||'';
+  window.scrollTo(0,0);
+}
+
+// FORMS
+const TAGS={renovate:'tg',contractor:'to','3d':'to2',sign:'tr',space:'tb',carpet:'tcp'};
+const BTNS={renovate:'sg',contractor:'so','3d':'so2',sign:'sr',space:'sb',carpet:'scp'};
+const DESCS={
+  renovate:'สำหรับช่างและทีมรีโนเวทที่ต้องการรับงานตกแต่งภายใน ปรับปรุง Fit-out',
+  contractor:'สำหรับช่างและบริษัทรับเหมาก่อสร้างสาขาในห้าง / ศูนย์การค้า',
+  '3d':'สำหรับช่างปั้น 3D Sculpting ที่รับงาน Character / Toy / งานแบรนด์',
+  sign:'สำหรับร้านทำป้ายสแตนเลส งานโลหะ CNC แกะสลัก',
+  space:'สำหรับผู้ต้องการเสนอโซน แท่น Display หรือพื้นที่ใน Pop-up ทรงวาด',
+  carpet:'สำหรับผู้จำหน่ายพรม วัสดุปูพื้น หรืองานพรมสำหรับโปรเจกต์'
+};
+const LBLS={renovate:'ช่างรีโนเวท',contractor:'ช่างรับเหมาก่อสร้าง','3d':'ช่างปั้น 3D',sign:'ป้ายตั้งสแตนเลส',space:'หาพื้นที่ Pop-up Creator Hub',carpet:'พรม'};
+
+function renderForm(type){
+  curType=type;
+  let body=`<button class="f-back" onclick="go('home')">← กลับ</button>
+<div class="f-tag ${TAGS[type]}">${LBLS[type]}</div>
+<div class="f-ttl">ลงทะเบียน — ${LBLS[type]}</div>
+<div class="f-dsc">${DESCS[type]}</div>`;
+  if(type==='renovate')body+=fRen();
+  else if(type==='contractor')body+=fCon();
+  else if(type==='3d')body+=f3D();
+  else if(type==='sign')body+=fSign();
+  else if(type==='space')body+=fSpace();
+  else if(type==='carpet')body+=fCarpet();
+  body+=`<button class="f-sub ${BTNS[type]}" id="fsub" onclick="doSubmit()">ส่งข้อมูล →</button>`;
+  document.getElementById('form-body').innerHTML=body;
+  document.querySelectorAll('input[type=radio]').forEach(r=>{
+    r.addEventListener('change',()=>{
+      if(r.name==='rw')document.getElementById('rwg').style.display=r.value==='มี'?'flex':'none';
+      if(r.name==='cwa')document.getElementById('cwg').style.display=r.value==='มี'?'flex':'none';
+    });
+  });
+}
+
+function fRen(){return `
+<div class="fsg">ข้อมูลติดต่อ</div>
+<div class="fgrid">
+  <div class="fg"><label>ชื่อ-นามสกุล <span>*</span></label><input id="rn" placeholder=""/></div>
+  <div class="fg"><label>บริษัท / ทีมช่าง</label><input id="rco" placeholder=""/></div>
+  <div class="fg"><label>เบอร์โทร <span>*</span></label><input type="tel" id="rph" placeholder=""/></div>
+  <div class="fg"><label>LINE ID / อีเมล</label><input id="rli" placeholder=""/></div>
+</div>
+<div class="fsg">ประสบการณ์และงาน</div>
+<div class="fgrid">
+  <div class="fg"><label>ประสบการณ์ (ปี)</label><input type="number" id="rex" placeholder=""/></div>
+  <div class="fg"><label>ระดับวัสดุ</label>
+    <select id="rmt"><option value="">เลือก...</option><option>Economy – ประหยัด</option><option>Standard – มาตรฐาน</option><option>Premium – พรีเมียม</option><option>Luxury – ลักซ์ชัวรี</option></select></div>
+  <div class="fg"><label>ระยะเวลา (วัน)</label><input type="number" id="rdu" placeholder=""/></div>
+  <div class="fg"><label>เริ่มงานได้</label><input id="rst" placeholder=""/></div>
+  <div class="fg full"><label>งานที่ทำได้</label><input id="rsk" placeholder=""/></div>
+</div>
+<div class="fsg">ราคาประเมิน (บาท)</div>
+<div class="prow">
+  <div class="fg"><label>โครงสร้าง</label><input type="number" id="rps" placeholder=""/></div>
+  <div class="fg"><label>Fit-out</label><input type="number" id="rpf" placeholder=""/></div>
+  <div class="fg"><label>ระบบไฟฟ้า</label><input type="number" id="rpe" placeholder=""/></div>
+  <div class="fg"><label>ป้าย / สกรีน</label><input type="number" id="rpsi" placeholder=""/></div>
+  <div class="fg"><label>งานอื่นๆ</label><input type="number" id="rpo" placeholder=""/></div>
+  <div class="fg phg"><label>💰 รวมทั้งหมด</label><input type="number" id="rpt" placeholder=""/></div>
+</div>
+<div class="fsg">เงื่อนไขและไฟล์</div>
+<div class="fgrid">
+  <div class="fg"><label>รับประกันงาน?</label>
+    <div class="rgrp">
+      <label class="ro"><input type="radio" name="rw" value="มี"/> มีรับประกัน</label>
+      <label class="ro"><input type="radio" name="rw" value="ไม่มี" checked/> ไม่มี</label>
+    </div>
+  </div>
+  <div class="fg" id="rwg" style="display:none"><label>ระยะรับประกัน</label><input id="rwp" placeholder=""/></div>
+  <div class="fg full"><label>🖼 Portfolio / ผลงาน</label><input type="url" id="rpo2" placeholder=""/></div>
+  <div class="fg full">
+    <label>📄 ลิงก์ PDF ใบเสนอราคา / แคตตาล็อก</label>
+    <input type="url" id="rpdf" placeholder=""/>
+    <div class="pdf-tip"><strong>💡 วิธีแปลง PDF เป็นลิงก์</strong>อัปโหลด PDF ขึ้น Google Drive → คลิกขวา → "แชร์" → "ทุกคนที่มีลิงก์" → คัดลอกลิงก์มาใส่</div>
+  </div>
+  <div class="fg full"><label>หมายเหตุ</label><textarea id="rno" placeholder=""></textarea></div>
+</div>`;}
+
+function fCon(){return `
+<div class="fsg">ข้อมูลติดต่อ</div>
+<div class="fgrid">
+  <div class="fg"><label>ชื่อ / ชื่อทีม <span>*</span></label><input id="cn" placeholder=""/></div>
+  <div class="fg"><label>บริษัท / ร้าน</label><input id="cco" placeholder=""/></div>
+  <div class="fg"><label>เบอร์โทร <span>*</span></label><input type="tel" id="cph" placeholder=""/></div>
+  <div class="fg"><label>LINE ID</label><input id="cli" placeholder=""/></div>
+</div>
+<div class="fsg">ความสามารถ</div>
+<div class="fgrid">
+  <div class="fg"><label>ประสบการณ์ (ปี)</label><input type="number" id="cex" placeholder=""/></div>
+  <div class="fg"><label>ระดับ</label>
+    <select id="cgr"><option value="">เลือก...</option><option>ช่างทั่วไป</option><option>ช่างมืออาชีพ – มีทีม</option><option>บริษัทรับเหมา – มีใบอนุญาต</option></select></div>
+  <div class="fg"><label>ระยะเวลา (วัน)</label><input type="number" id="cdu" placeholder=""/></div>
+  <div class="fg"><label>ขนาดทีม (คน)</label><input type="number" id="cts" placeholder=""/></div>
+  <div class="fg"><label>เริ่มงานได้</label><input id="cst" placeholder=""/></div>
+  <div class="fg"><label>จังหวัดที่รับ</label><input id="cpv" placeholder=""/></div>
+  <div class="fg full"><label>งานที่ทำได้</label><input id="csk" placeholder=""/></div>
+</div>
+<div class="fsg">เงื่อนไขพิเศษ</div>
+<div class="fgrid">
+  <div class="fg"><label>🌙 ทำกลางคืน (หลัง 22.00) ได้ไหม?</label>
+    <div class="rgrp">
+      <label class="ro"><input type="radio" name="cni" value="ได้"/> ✅ ได้</label>
+      <label class="ro"><input type="radio" name="cni" value="ได้บางครั้ง"/> ⚠️ บางครั้ง</label>
+      <label class="ro"><input type="radio" name="cni" value="ไม่ได้" checked/> ❌ ไม่ได้</label>
+    </div>
+  </div>
+  <div class="fg"><label>🗺️ รับงานต่างจังหวัดได้ไหม?</label>
+    <div class="rgrp">
+      <label class="ro"><input type="radio" name="cpr" value="ได้ทั่วไทย"/> ✅ ทั่วไทย</label>
+      <label class="ro"><input type="radio" name="cpr" value="บางจังหวัด"/> ⚠️ บางจังหวัด</label>
+      <label class="ro"><input type="radio" name="cpr" value="ไม่ได้" checked/> ❌ กทม.เท่านั้น</label>
+    </div>
+  </div>
+  <div class="fg"><label>รับประกันงาน?</label>
+    <div class="rgrp">
+      <label class="ro"><input type="radio" name="cwa" value="มี"/> มี</label>
+      <label class="ro"><input type="radio" name="cwa" value="ไม่มี" checked/> ไม่มี</label>
+    </div>
+  </div>
+  <div class="fg" id="cwg" style="display:none"><label>ระยะรับประกัน</label><input id="cwp" placeholder=""/></div>
+</div>
+<div class="fsg">ราคาประเมิน (บาท)</div>
+<div class="prow">
+  <div class="fg"><label>โครงสร้าง</label><input type="number" id="cps" placeholder=""/></div>
+  <div class="fg"><label>Fit-out</label><input type="number" id="cpf" placeholder=""/></div>
+  <div class="fg"><label>ระบบไฟฟ้า</label><input type="number" id="cpe" placeholder=""/></div>
+  <div class="fg"><label>ป้าย / สกรีน</label><input type="number" id="cpsi" placeholder=""/></div>
+  <div class="fg"><label>พื้น / ฝ้า</label><input type="number" id="cpfl" placeholder=""/></div>
+  <div class="fg pho"><label>💰 รวมทั้งหมด</label><input type="number" id="cpt" placeholder=""/></div>
+</div>
+<div class="fsg">ลิงก์และไฟล์</div>
+<div class="fgrid">
+  <div class="fg full"><label>🖼 Portfolio / ผลงาน</label><input type="url" id="cpo" placeholder=""/></div>
+  <div class="fg full">
+    <label>📄 ลิงก์ PDF ใบเสนอราคา / แคตตาล็อก</label>
+    <input type="url" id="cpdf" placeholder=""/>
+    <div class="pdf-tip"><strong>💡 วิธีแปลง PDF เป็นลิงก์</strong>อัปโหลด PDF ขึ้น Google Drive → คลิกขวา → "แชร์" → "ทุกคนที่มีลิงก์" → คัดลอกลิงก์มาใส่</div>
+  </div>
+  <div class="fg full"><label>หมายเหตุ / เงื่อนไข</label><textarea id="cno" placeholder=""></textarea></div>
+</div>`;}
+
+function f3D(){return `
+<div class="fsg">ข้อมูลติดต่อ</div>
+<div class="fgrid">
+  <div class="fg"><label>ชื่อ / Studio <span>*</span></label><input id="dn" placeholder=""/></div>
+  <div class="fg"><label>Facebook / Line / Email <span>*</span></label><input id="dc" placeholder=""/></div>
+</div>
+<div class="fsg">รายละเอียดงาน</div>
+<div class="fgrid">
+  <div class="fg"><label>ราคาเริ่มต้น (บาท)</label><input type="number" id="dp" placeholder=""/></div>
+  <div class="fg"><label>ระยะเวลา</label><input id="dd" placeholder=""/></div>
+  <div class="fg"><label>ไฟล์ที่ส่งมอบได้</label><input id="df" placeholder=""/></div>
+  <div class="fg"><label>รอบแก้ไขที่รวมในราคา</label><input id="dr" placeholder=""/></div>
+  <div class="fg"><label>Preview ก่อน Final?</label>
+    <select id="dpv"><option value="">เลือก...</option><option>มี Preview</option><option>ไม่มี Preview</option><option>มีแบบชำระเพิ่ม</option></select></div>
+  <div class="fg"><label>Portfolio URL</label><input type="url" id="dpt" placeholder=""/></div>
+  <div class="fg full"><label>หมายเหตุ / ข้อมูลเพิ่มเติม</label><textarea id="dn2" placeholder=""></textarea></div>
+</div>`;}
+
+function fSign(){return `
+<div class="fsg">ข้อมูลร้าน</div>
+<div class="fgrid">
+  <div class="fg"><label>ชื่อร้าน <span>*</span></label><input id="sn" placeholder=""/></div>
+  <div class="fg"><label>Facebook / Line / เบอร์โทร <span>*</span></label><input id="sc" placeholder=""/></div>
+</div>
+<div class="fsg">รายละเอียดงาน</div>
+<div class="fgrid">
+  <div class="fg"><label>ราคาเริ่มต้น (บาท)</label><input type="number" id="sp" placeholder=""/></div>
+  <div class="fg"><label>ระยะเวลา (วัน)</label><input id="sd" placeholder=""/></div>
+  <div class="fg"><label>เกรดสแตนเลส</label><input id="sgr" placeholder=""/></div>
+  <div class="fg"><label>Portfolio URL</label><input type="url" id="spt" placeholder=""/></div>
+  <div class="fg"><label>บริการติดตั้ง?</label>
+    <select id="si"><option value="">เลือก...</option><option>ติดตั้งให้</option><option>ส่งเฉพาะงาน ลูกค้าติดเอง</option><option>มีบริการแบบชำระเพิ่ม</option></select></div>
+  <div class="fg"><label>แกะสลัก / ตัดตัวอักษร?</label>
+    <select id="se"><option value="">เลือก...</option><option>ทำได้</option><option>ทำไม่ได้</option><option>แบบชำระเพิ่ม</option></select></div>
+  <div class="fg full"><label>หมายเหตุ</label><textarea id="sno" placeholder=""></textarea></div>
+</div>`;}
+
+
+function fCarpet(){return `
+<div class="fsg">ข้อมูลติดต่อ</div>
+<div class="fgrid">
+  <div class="fg"><label>ชื่อ / ร้าน <span>*</span></label><input id="cpn"/></div>
+  <div class="fg"><label>LINE / เบอร์โทร / Email <span>*</span></label><input id="cpc"/></div>
+</div>
+<div class="fsg">รายละเอียดพรม</div>
+<div class="fgrid">
+  <div class="fg"><label>ประเภทพรม</label>
+    <select id="cptype"><option value="">เลือก...</option><option>พรมม้วน</option><option>พรมแผ่น / Tile</option><option>พรมปูพื้นทั่วไป</option><option>พรมกำหนดเอง (Custom)</option><option>อื่นๆ</option></select></div>
+  <div class="fg"><label>ขนาดที่มี</label><input id="cpsz" placeholder=""/></div>
+  <div class="fg"><label>ราคาเริ่มต้น (บาท)</label><input type="number" id="cpp"/></div>
+  <div class="fg"><label>ระยะเวลาจัดส่ง</label><input id="cpd"/></div>
+  <div class="fg"><label>มีบริการติดตั้ง?</label>
+    <select id="cpins"><option value="">เลือก...</option><option>ติดตั้งให้</option><option>ส่งเฉพาะสินค้า</option><option>ติดตั้งแบบชำระเพิ่ม</option></select></div>
+  <div class="fg"><label>Portfolio / ตัวอย่างงาน</label><input type="url" id="cppt"/></div>
+  <div class="fg full"><label>หมายเหตุ / ข้อมูลเพิ่มเติม</label><textarea id="cpnote"></textarea></div>
+</div>`;}
+
+function fSpace(){return `
+<div class="fsg">ข้อมูลผู้ติดต่อ</div>
+<div class="fgrid">
+  <div class="fg"><label>ชื่อ-นามสกุล / องค์กร <span>*</span></label><input id="spn" placeholder=""/></div>
+  <div class="fg"><label>LINE / เบอร์โทร / Email <span>*</span></label><input id="spc" placeholder=""/></div>
+</div>
+<div class="fsg">รายละเอียดพื้นที่</div>
+<div class="fgrid">
+  <div class="fg"><label>โซน / ตำแหน่ง <span>*</span></label><input id="spz" placeholder=""/></div>
+  <div class="fg"><label>รายการ / ประเภทพื้นที่</label><input id="spi" placeholder=""/></div>
+  <div class="fg"><label>ขนาด (mm)</label><input id="sps" placeholder=""/></div>
+  <div class="fg"><label>ราคาประมาณ (บาท)</label><input type="number" id="spp" placeholder=""/></div>
+  <div class="fg"><label>ผู้รับผิดชอบ / ดูแลพื้นที่</label><input id="sprs" placeholder=""/></div>
+  <div class="fg full"><label>หมายเหตุ / รายละเอียดเพิ่มเติม</label><textarea id="spnote" placeholder=""></textarea></div>
+</div>`;}
+
+// SUBMIT
+function g(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+function rv(name){const e=document.querySelector('input[name='+name+']:checked');return e?e.value:'';}
+
+async function doSubmit(){
+  let entry={_type:curType,_ts:Date.now(),_status:'new'},err=null;
+  if(curType==='renovate'){
+    if(!g('rn'))err='ชื่อ-นามสกุล';else if(!g('rph'))err='เบอร์โทร';
+    if(!err)Object.assign(entry,{ชื่อ:g('rn'),บริษัท:g('rco'),เบอร์:g('rph'),LINE:g('rli'),ประสบการณ์:g('rex'),ระดับวัสดุ:g('rmt'),ระยะเวลา:g('rdu'),เริ่มงาน:g('rst'),งานที่ทำได้:g('rsk'),ราคาโครงสร้าง:g('rps'),ราคาFitout:g('rpf'),ราคาไฟฟ้า:g('rpe'),ราคาป้าย:g('rpsi'),ราคาอื่น:g('rpo'),ราคารวม:g('rpt'),รับประกัน:rv('rw'),ระยะรับประกัน:g('rwp'),Portfolio:g('rpo2'),PDF:g('rpdf'),หมายเหตุ:g('rno')});
+  }else if(curType==='contractor'){
+    if(!g('cn'))err='ชื่อ / ชื่อทีม';else if(!g('cph'))err='เบอร์โทร';
+    if(!err)Object.assign(entry,{ชื่อ:g('cn'),บริษัท:g('cco'),เบอร์:g('cph'),LINE:g('cli'),ประสบการณ์:g('cex'),ระดับ:g('cgr'),ระยะเวลา:g('cdu'),ขนาดทีม:g('cts'),เริ่มงาน:g('cst'),จังหวัด:g('cpv'),งานที่ทำได้:g('csk'),ทำกลางคืน:rv('cni'),ต่างจังหวัด:rv('cpr'),รับประกัน:rv('cwa'),ระยะรับประกัน:g('cwp'),ราคาโครงสร้าง:g('cps'),ราคาFitout:g('cpf'),ราคาไฟฟ้า:g('cpe'),ราคาป้าย:g('cpsi'),ราคาพื้นฝ้า:g('cpfl'),ราคารวม:g('cpt'),Portfolio:g('cpo'),PDF:g('cpdf'),หมายเหตุ:g('cno')});
+  }else if(curType==='3d'){
+    if(!g('dn'))err='ชื่อ / Studio';else if(!g('dc'))err='ช่องทางติดต่อ';
+    if(!err)Object.assign(entry,{ชื่อ:g('dn'),ติดต่อ:g('dc'),ราคา:g('dp'),ระยะเวลา:g('dd'),ไฟล์:g('df'),รอบแก้:g('dr'),Preview:g('dpv'),Portfolio:g('dpt'),หมายเหตุ:g('dn2')});
+  }else if(curType==='sign'){
+    if(!g('sn'))err='ชื่อร้าน';else if(!g('sc'))err='ช่องทางติดต่อ';
+    if(!err)Object.assign(entry,{ชื่อร้าน:g('sn'),ติดต่อ:g('sc'),ราคา:g('sp'),ระยะเวลา:g('sd'),เกรด:g('sgr'),Portfolio:g('spt'),ติดตั้ง:g('si'),แกะสลัก:g('se'),หมายเหตุ:g('sno')});
+  }else if(curType==='carpet'){
+    if(!g('cpn'))err='ชื่อ / ร้าน';else if(!g('cpc'))err='ช่องทางติดต่อ';
+    if(!err)Object.assign(entry,{ชื่อ:g('cpn'),ติดต่อ:g('cpc'),ประเภทพรม:g('cptype'),ขนาด:g('cpsz'),ราคา:g('cpp'),ระยะเวลา:g('cpd'),ติดตั้ง:g('cpins'),Portfolio:g('cppt'),หมายเหตุ:g('cpnote')});
+  }else if(curType==='space'){
+    if(!g('spn'))err='ชื่อ / องค์กร';else if(!g('spc'))err='ช่องทางติดต่อ';else if(!g('spz'))err='โซน / ตำแหน่ง';
+    if(!err)Object.assign(entry,{ชื่อ:g('spn'),ติดต่อ:g('spc'),โซน:g('spz'),รายการ:g('spi'),ขนาด:g('sps'),ราคาประมาณ:g('spp'),ผู้รับผิดชอบ:g('sprs'),หมายเหตุ:g('spnote')});
+  }
+  if(err){toast('กรุณากรอก "'+err+'" ให้ครบค่ะ',true);return;}
+  if(!ref){toast('ยังไม่ได้เชื่อมต่อ Firebase',true);return;}
+  document.getElementById('fsub').disabled=true;
+  spin('กำลังส่งข้อมูล...');
+  try{
+    await fbSave(entry);
+    // ส่งข้อมูลไปยังระบบของแต่ละหน้าด้วย (fire-and-forget)
+    if(curType==='renovate'){
+      fsSave('contractors',{name:entry['ชื่อ'],phone:entry['เบอร์'],company:entry['บริษัท'],line:entry['LINE'],experience:entry['ประสบการณ์'],duration:entry['ระยะเวลา'],startDate:entry['เริ่มงาน'],material:entry['ระดับวัสดุ'],pStructure:entry['ราคาโครงสร้าง'],pFitout:entry['ราคาFitout'],pElectric:entry['ราคาไฟฟ้า'],pSignage:entry['ราคาป้าย'],pOther:entry['ราคาอื่น'],priceTotal:entry['ราคารวม'],warranty:entry['รับประกัน'],warrantyPeriod:entry['ระยะรับประกัน'],portfolio:entry['Portfolio'],pdfLink:entry['PDF'],skills:entry['งานที่ทำได้'],note:entry['หมายเหตุ']}).catch(()=>{});
+    }else if(curType==='contractor'){
+      fsSave('construction_contractors',{name:entry['ชื่อ'],phone:entry['เบอร์'],company:entry['บริษัท'],line:entry['LINE'],experience:entry['ประสบการณ์'],grade:entry['ระดับ'],duration:entry['ระยะเวลา'],startDate:entry['เริ่มงาน'],teamSize:entry['ขนาดทีม'],skills:entry['งานที่ทำได้'],provinces:entry['จังหวัด'],nightWork:entry['ทำกลางคืน'],provinceWork:entry['ต่างจังหวัด'],pStructure:entry['ราคาโครงสร้าง'],pFitout:entry['ราคาFitout'],pElectric:entry['ราคาไฟฟ้า'],pSignage:entry['ราคาป้าย'],pFloor:entry['ราคาพื้นฝ้า'],priceTotal:entry['ราคารวม'],warranty:entry['รับประกัน'],warrantyPeriod:entry['ระยะรับประกัน'],portfolio:entry['Portfolio'],pdfLink:entry['PDF'],note:entry['หมายเหตุ'],isPreset:false}).catch(()=>{});
+    }else if(curType==='3d'){
+      db3dSave(false,{id:'a'+Date.now(),name:entry['ชื่อ'],contact:entry['ติดต่อ'],price:entry['ราคา']?Number(entry['ราคา']):null,days:entry['ระยะเวลา'],files:entry['ไฟล์'],revisions:entry['รอบแก้'],preview:entry['Preview'],portfolio:entry['Portfolio'],note:entry['หมายเหตุ'],status:'waiting'}).catch(()=>{});
+    }else if(curType==='sign'){
+      db3dSave(true,{id:'s'+Date.now(),name:entry['ชื่อร้าน'],contact:entry['ติดต่อ'],price:entry['ราคา']?Number(entry['ราคา']):null,days:entry['ระยะเวลา'],grade:entry['เกรด'],install:entry['ติดตั้ง'],engrave:entry['แกะสลัก'],portfolio:entry['Portfolio'],note:entry['หมายเหตุ'],status:'waiting'}).catch(()=>{});
+    }else if(curType==='carpet'){
+      sheetSave('carpet',[entry['ชื่อ'],entry['ประเภทพรม'],entry['ติดต่อ'],entry['ขนาด'],entry['ราคา']?String(entry['ราคา']):'',entry['ระยะเวลา'],entry['ติดตั้ง'],entry['Portfolio'],entry['หมายเหตุ'],'รอยืนยัน']).catch(()=>{});
+    }else if(curType==='space'){
+      sheetSave('space',[entry['โซน'],entry['รายการ'],entry['ขนาด'],'รอยืนยัน',entry['ราคาประมาณ']?String(entry['ราคาประมาณ']):'',entry['ผู้รับผิดชอบ'],entry['หมายเหตุ']]).catch(()=>{});
+    }
+    hideSpin();go('success');
+  }
+  catch(e){hideSpin();document.getElementById('fsub').disabled=false;toast('บันทึกไม่สำเร็จ กรุณาลองใหม่ค่ะ',true);}
+}
+
+// ── โหลดข้อมูลจากทุก source ──
+async function loadAllSources(){
+  loadFirestore();
+  load3dRtdb();
+  loadSheets();
+}
+async function refreshAll(){
+  toast('กำลังรีเฟรช…');
+  await loadAllSources();
+  rStats();rTable();
+  toast('รีเฟรชแล้ว ✓');
+}
+async function loadFirestore(){
+  try{
+    const fs=getFs();if(!fs)return;
+    setDot('ren',null,'Firestore…');
+    // contractors
+    const r1=await fs.collection('contractors').orderBy('createdAt','desc').get();
+    fsDataRen=r1.docs.map(d=>({id:d.id,...d.data()}));
+    // construction_contractors
+    const r2=await fs.collection('construction_contractors').orderBy('createdAt','desc').get();
+    fsDataCon=r2.docs.filter(d=>!d.data().isPreset).map(d=>({id:d.id,...d.data()}));
+    setDot('ren',true,'Firestore ✓ ('+( fsDataRen.length+fsDataCon.length)+')');
+    rStats();rTable();
+  }catch(e){setDot('ren',false,'Firestore ✗');console.warn(e);}
+}
+async function load3dRtdb(){
+  try{
+    get3dDb();
+    if(!ref3d){setDot('3d',false,'3D/Sign ✗');return;}
+    setDot('3d',null,'3D/Sign…');
+    const [s3d,sSign]=await Promise.all([ref3d.once('value'),refSign.once('value')]);
+    const d3=s3d.val()||{};const ds=sSign.val()||{};
+    rtdb3dData=Object.values(d3);
+    rtdbSignData=Object.values(ds);
+    setDot('3d',true,'3D/Sign ✓ ('+(rtdb3dData.length+rtdbSignData.length)+')');
+    // listen realtime
+    ref3d.on('value',sn=>{rtdb3dData=Object.values(sn.val()||{});rStats();rTable();});
+    refSign.on('value',sn=>{rtdbSignData=Object.values(sn.val()||{});rStats();rTable();});
+    rStats();rTable();
+  }catch(e){setDot('3d',false,'3D/Sign ✗');console.warn(e);}
+}
+async function loadSheets(){
+  try{
+    const [rc,rs]=await Promise.all([
+      fetch(SHEETS_URL.carpet,{method:'POST',body:JSON.stringify({action:'read'})}).then(r=>r.json()).catch(()=>null),
+      fetch(SHEETS_URL.space,{method:'POST',body:JSON.stringify({action:'read'})}).then(r=>r.json()).catch(()=>null)
+    ]);
+    if(rc&&rc.rows)sheetCarpet=rc.rows.slice(1);// skip header
+    if(rs&&rs.rows)sheetSpace=rs.rows.slice(1);
+    rStats();rTable();
+  }catch(e){console.warn('Sheet load fail',e);}
+}
+function connect3dRtdb(){
+  const url=document.getElementById('fb-url-3d').value.trim();
+  if(!url){toast('กรุณาใส่ URL',true);return;}
+  // override DB3D_URL
+  try{
+    const a=firebase.apps.find(ap=>ap.name==='3dart');if(a)a.delete();
+    const app3d=firebase.initializeApp({databaseURL:url},'3dart');
+    db3d=firebase.database(app3d);
+    ref3d=db3d.ref('3d-artists');
+    refSign=db3d.ref('sign-shops');
+    load3dRtdb();
+  }catch(e){toast('เชื่อมต่อไม่ได้',true);}
+}
+function setDot(id,live,txt){
+  const dot=document.getElementById('dot-'+id);
+  const span=document.getElementById('txt-'+id);
+  if(dot)dot.className='fb-dot'+(live===true?' live':live===false?' err':'');
+  if(span)span.textContent=txt;
+}
+
+// ADMIN
+function togglePw(){const i=document.getElementById('pass-inp');i.type=i.type==='password'?'text':'password';}
+const ADM_LS='asp-admin-auth';
+function doLogin(){
+  go('admin'); rStats(); rTable(); return;
+  const val=document.getElementById('pass-inp').value;
+  const err=document.getElementById('l-err');
+  if(val===PASS){
+    err.textContent='';document.getElementById('pass-inp').value='';
+    localStorage.setItem(ADM_LS,'1');
+    go('admin');
+  }else{err.textContent='รหัสผ่านไม่ถูกต้อง';document.getElementById('pass-inp').select();}
+}
+// ถ้าเคยล็อกอินแล้วและกดปุ่ม admin อีกครั้ง → ข้าม login ไปเลย
+function goAdmin(){
+  go('admin'); return;
+  if(localStorage.getItem(ADM_LS)==='1'){
+    go('admin');
+  } else {
+    go('login');
+  }
+}
+
+const T_ICO={renovate:'🏗️',contractor:'🔨','3d':'🎨',sign:'🔩',space:'📐',carpet:'🟫'};
+const T_LBL={renovate:'ช่างรีโนเวท',contractor:'ช่างรับเหมา','3d':'ช่างปั้น 3D',sign:'ป้ายสแตนเลส',space:'พื้นที่',carpet:'พรม'};
+const T_CLS={all:'ta',renovate:'tg',contractor:'to','3d':'to2',sign:'tr',space:'tb',carpet:'tcp'};
+const COLS={
+  renovate:[{k:'ชื่อ',l:'ชื่อ'},{k:'เบอร์',l:'เบอร์'},{k:'LINE',l:'LINE'},{k:'งานที่ทำได้',l:'งาน'},{k:'ระดับวัสดุ',l:'ระดับ'},{k:'ราคารวม',l:'ราคารวม'},{k:'Portfolio',l:'Portfolio'}],
+  contractor:[{k:'ชื่อ',l:'ชื่อ'},{k:'เบอร์',l:'เบอร์'},{k:'LINE',l:'LINE'},{k:'ระดับ',l:'ระดับ'},{k:'ขนาดทีม',l:'ทีม'},{k:'ทำกลางคืน',l:'กลางคืน'},{k:'ราคารวม',l:'ราคารวม'}],
+  '3d':[{k:'ชื่อ',l:'ชื่อ'},{k:'ติดต่อ',l:'ติดต่อ'},{k:'ราคา',l:'ราคา'},{k:'ระยะเวลา',l:'ระยะเวลา'},{k:'ไฟล์',l:'ไฟล์'},{k:'รอบแก้',l:'รอบแก้'},{k:'Portfolio',l:'Portfolio'}],
+  sign:[{k:'ชื่อร้าน',l:'ชื่อร้าน'},{k:'ติดต่อ',l:'ติดต่อ'},{k:'ราคา',l:'ราคา'},{k:'ระยะเวลา',l:'ระยะเวลา'},{k:'เกรด',l:'เกรด'},{k:'ติดตั้ง',l:'ติดตั้ง'},{k:'แกะสลัก',l:'แกะสลัก'}],
+  space:[{k:'ชื่อ',l:'ชื่อ'},{k:'ติดต่อ',l:'ติดต่อ'},{k:'โซน',l:'โซน'},{k:'รายการ',l:'รายการ'},{k:'ขนาด',l:'ขนาด'},{k:'ราคาประมาณ',l:'ราคา'},{k:'ผู้รับผิดชอบ',l:'ผู้ดูแล'}],
+  carpet:[{k:'ชื่อ',l:'ชื่อ'},{k:'ติดต่อ',l:'ติดต่อ'},{k:'ประเภทพรม',l:'ประเภท'},{k:'ขนาด',l:'ขนาด'},{k:'ราคา',l:'ราคา'},{k:'Portfolio',l:'Portfolio'}],
+};
+const ACOLS=[{k:'ชื่อ',l:'ชื่อ'},{k:'ชื่อร้าน',l:'ชื่อ'},{k:'เบอร์',l:'เบอร์'},{k:'ติดต่อ',l:'ติดต่อ'},{k:'LINE',l:'LINE'},{k:'ราคา',l:'ราคา'},{k:'ราคารวม',l:'ราคารวม'}];
+
+function getAll(){
+  // จาก RTDB /applications (ฟอร์มหลัก)
+  const fromForm=Object.entries(allData).map(([k,v])=>({...v,_key:k,_src:'form'}));
+  // จาก Firestore contractors
+  const fromRen=fsDataRen.map(d=>({_type:'renovate',_src:'firestore',_key:'fs_ren_'+d.id,_ts:d.createdAt?.toMillis?.()||0,_status:d._status||'new',
+    ชื่อ:d.name,เบอร์:d.phone,LINE:d.line,บริษัท:d.company,งานที่ทำได้:d.skills,ระดับวัสดุ:d.material,ราคารวม:d.priceTotal,Portfolio:d.portfolio,ประสบการณ์:d.experience,ระยะเวลา:d.duration}));
+  // จาก Firestore construction_contractors
+  const fromCon=fsDataCon.map(d=>({_type:'contractor',_src:'firestore',_key:'fs_con_'+d.id,_ts:d.createdAt?.toMillis?.()||0,_status:d._status||'new',
+    ชื่อ:d.name,เบอร์:d.phone,LINE:d.line,บริษัท:d.company,งานที่ทำได้:d.skills,ระดับ:d.grade,ขนาดทีม:d.teamSize,ราคารวม:d.priceTotal,ทำกลางคืน:d.nightWork}));
+  // จาก RTDB 3d-artists
+  const from3d=rtdb3dData.map(d=>({_type:'3d',_src:'rtdb3d',_key:'r3d_'+d.id,_ts:d.added||0,_status:'new',
+    ชื่อ:d.name,ติดต่อ:d.contact,ราคา:d.price,ระยะเวลา:d.days,ไฟล์:d.files,รอบแก้:d.revisions,Portfolio:d.portfolio,หมายเหตุ:d.note}));
+  // จาก RTDB sign-shops
+  const fromSign=rtdbSignData.map(d=>({_type:'sign',_src:'rtdb3d',_key:'rsign_'+d.id,_ts:d.added||0,_status:'new',
+    ชื่อร้าน:d.name,ติดต่อ:d.contact,ราคา:d.price,ระยะเวลา:d.days,เกรด:d.grade,ติดตั้ง:d.install,แกะสลัก:d.engrave,Portfolio:d.portfolio}));
+  // จาก Google Sheets carpet
+  const fromCarpet=sheetCarpet.map((r,i)=>({_type:'carpet',_src:'sheet',_key:'sht_carpet_'+i,_ts:0,_status:'new',
+    ชื่อ:r[0],ประเภทพรม:r[1],ติดต่อ:r[2],ขนาด:r[3],ราคา:r[4],ระยะเวลา:r[5],ติดตั้ง:r[6],Portfolio:r[7],หมายเหตุ:r[8]}));
+  // จาก Google Sheets space
+  const fromSpace=sheetSpace.map((r,i)=>({_type:'space',_src:'sheet',_key:'sht_space_'+i,_ts:0,_status:'new',
+    โซน:r[0],รายการ:r[1],ขนาด:r[2],ราคาประมาณ:r[4],ผู้รับผิดชอบ:r[5],หมายเหตุ:r[6]}));
+  // รวมทั้งหมด dedup โดย key และ sort
+  const all=[...fromForm,...fromRen,...fromCon,...from3d,...fromSign,...fromCarpet,...fromSpace];
+  // dedup: ถ้า form มีข้อมูลชุดเดิมแล้ว (ส่งมาจาก index) ให้ใช้ของ form ก่อน
+  const seen=new Set();
+  return all.filter(e=>{if(seen.has(e._key))return false;seen.add(e._key);return true;})
+    .sort((a,b)=>(b._ts||0)-(a._ts||0));
+}
+function rStats(){
+  const d=getAll(),c=t=>d.filter(e=>e._type===t).length;
+  document.getElementById('st-all').textContent=d.length;
+  document.getElementById('st-ren').textContent=c('renovate');
+  document.getElementById('st-con').textContent=c('contractor');
+  document.getElementById('st-3d').textContent=c('3d');
+  document.getElementById('st-sign').textContent=c('sign');
+  document.getElementById('st-space').textContent=c('space');
+  document.getElementById('st-carpet').textContent=c('carpet');
+}
+function switchTab(tab,btn){
+  admTab=tab;
+  document.querySelectorAll('.adm-tab').forEach(t=>t.className='adm-tab');
+  btn.classList.add(T_CLS[tab]||'ta');
+  rTable();
+}
+function rTable(){
+  const all=getAll(),rows=admTab==='all'?all:all.filter(e=>e._type===admTab);
+  const cols=admTab==='all'?ACOLS:(COLS[admTab]||ACOLS);
+  let th='<tr><th>#</th>';
+  if(admTab==='all')th+='<th>ประเภท</th>';
+  cols.forEach(c=>{th+=`<th>${c.l}</th>`;});
+  th+='<th>วันที่</th><th>สถานะ</th><th></th></tr>';
+  document.getElementById('adm-thead').innerHTML=th;
+  if(!rows.length){document.getElementById('adm-tbody').innerHTML=`<tr class="adm-empty"><td colspan="${cols.length+(admTab==='all'?5:4)}">ยังไม่มีข้อมูลในหมวดนี้</td></tr>`;return;}
+  let tb='';
+  rows.forEach((e,i)=>{
+    const dt=new Date(e._ts||0).toLocaleDateString('th-TH',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    const st=e._status==='reviewed'?'<span class="p-done">ดูแล้ว</span>':'<span class="p-new">ใหม่</span>';
+    tb+=`<tr><td class="td-m">${i+1}</td>`;
+    if(admTab==='all')tb+=`<td><span style="font-size:13px">${T_ICO[e._type]||'?'}</span> <span class="td-d">${T_LBL[e._type]||e._type}</span></td>`;
+    cols.forEach(c=>{const val=e[c.k]||'';const isUrl=val.toString().startsWith('http');tb+=`<td>${isUrl?`<a class="td-url" href="${esc(val)}" target="_blank">ดู ↗</a>`:(esc(val)||'<span class="td-d">—</span>')}</td>`;});
+    tb+=`<td class="td-m">${dt}</td><td>${st}</td><td style="white-space:nowrap">${e._status!=='reviewed'?`<button class="btn-xs btn-mark" onclick="doMark('${esc(e._key)}')">ดูแล้ว</button>`:''}<button class="btn-xs btn-del" onclick="doDel('${esc(e._key)}')">ลบ</button></td></tr>`;
+  });
+  document.getElementById('adm-tbody').innerHTML=tb;
+}
+async function doMark(k){try{await fbMark(k);toast('อัปเดตแล้ว ✓');}catch{toast('ไม่สำเร็จ',true);}}
+async function doDel(k){if(!confirm('ยืนยันลบข้อมูลนี้?'))return;try{await fbDel(k);toast('ลบแล้ว ✓');}catch{toast('ลบไม่สำเร็จ',true);}}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function spin(t){document.getElementById('spin-txt').textContent=t||'';document.getElementById('spinner').classList.add('on');}
+function hideSpin(){document.getElementById('spinner').classList.remove('on');}
+let _tt;
+function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='on'+(err?' err':'');clearTimeout(_tt);_tt=setTimeout(()=>t.className='',3000);}
+
+// ─── MOCK DATA (Portfolio Demo) ───
+allData = {
+  "mk001": {_type:"renovate",_ts:Date.now()-86400000*2,_status:"new",ชื่อ:"ช่างวิชัย ก่อสร้าง",เบอร์:"081-234-5678",LINE:"@wichai.build",งานที่ทำได้:"ตกแต่งภายใน, งานไม้, งานสี",ระดับวัสดุ:"กลาง",ราคารวม:"85,000",Portfolio:"https://example.com"},
+  "mk002": {_type:"contractor",_ts:Date.now()-86400000*5,_status:"reviewed",ชื่อ:"บริษัท สร้างสรรค์ จำกัด",เบอร์:"02-567-8901",LINE:"@buildcreate",ระดับ:"สูง",ขนาดทีม:"12 คน",ทำกลางคืน:"ได้",ราคารวม:"320,000"},
+  "mk003": {_type:"3d",_ts:Date.now()-86400000*1,_status:"new",ชื่อ:"ศิลปิน3D สตูดิโอ",ติดต่อ:"082-999-1234",ราคา:"15,000/ชิ้น",ระยะเวลา:"7-14 วัน",ไฟล์:"STL, OBJ, FBX",รอบแก้:"3 ครั้ง",Portfolio:"https://example.com"},
+  "mk004": {_type:"sign",_ts:Date.now()-86400000*3,_status:"new",ชื่อร้าน:"ป้ายทองช่าง",ติดต่อ:"089-111-2222",ราคา:"8,500-45,000",ระยะเวลา:"5-10 วัน",เกรด:"Premium",ติดตั้ง:"รวมบริการ",แกะสลัก:"ได้"},
+  "mk005": {_type:"renovate",_ts:Date.now()-86400000*7,_status:"reviewed",ชื่อ:"นายสมชาย ช่างดี",เบอร์:"090-777-8888",LINE:"@somchai.ch",งานที่ทำได้:"Fit-out, ระบบไฟ",ระดับวัสดุ:"สูง",ราคารวม:"120,000"},
+  "mk006": {_type:"carpet",_ts:Date.now()-86400000*4,_status:"new",ชื่อ:"พรมไทย ดีไซน์",ติดต่อ:"083-444-5555",ประเภทพรม:"Loop Pile",ขนาด:"กำหนดได้",ราคา:"250 บ./ตร.ม."},
+};
+(function(){
+  const url=localStorage.getItem(FB_LS)||FB_URL;
+  try{
+    fbInit(url);
+    // Mock: skip Firebase
+Promise.resolve().then(()=>{
+      connected=true;
+setDot('form',true,'Mock Data ✓');
+if(document.getElementById('scr-admin').classList.contains('on')){rStats();rTable();}
+}).catch(()=>{});
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

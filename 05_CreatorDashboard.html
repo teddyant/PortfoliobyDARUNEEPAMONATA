@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Dashboard — ตัวอย่างผลงาน</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f6fa;--sf:#ffffff;--sf2:#f0f2f7;--bd:#e2e6ef;--tx:#1a1d2e;--mu:#8892a4;
+  --ac:#6c5ce7;--ac2:#00b894;--blue:#0984e3;--gold:#f39c12;--red:#e17055;
+}
+body{background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans Thai',sans-serif;font-size:14px;line-height:1.6}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--sf);border-radius:16px;padding:2rem;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:1.25rem}
+.modal input,.modal select{width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:8px;font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--tx);background:var(--sf2);margin-bottom:8px;outline:none}
+.modal input:focus,.modal select:focus{border-color:var(--ac)}
+.step{display:flex;gap:10px;margin-bottom:10px;padding:10px 12px;background:var(--sf2);border-radius:8px;border:1px solid var(--bd)}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--ac);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-txt{font-size:12px;color:var(--tx);line-height:1.7}
+.step-txt a{color:var(--ac);font-weight:600}
+.step-txt code{background:#ede9fe;padding:1px 5px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ac)}
+.modal-actions{display:flex;gap:8px;margin-top:1.25rem;flex-wrap:wrap}
+
+/* HEADER */
+.header{padding:1rem 2rem;border-bottom:1px solid var(--bd);background:var(--sf);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.brand{display:flex;align-items:center;gap:12px}
+.bdot{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6c5ce7,#00b894);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;flex-shrink:0}
+.bsub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:.12em;text-transform:uppercase}
+.btitle{font-size:17px;font-weight:700}
+.hact{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.btn{padding:7px 14px;border-radius:7px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font-size:12px;cursor:pointer;font-family:'IBM Plex Sans Thai',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px;font-weight:500}
+.btn:hover{background:var(--sf2)}.btn.pr{background:var(--ac);color:#fff;border-color:var(--ac)}.btn.sc{background:var(--ac2);color:#fff;border-color:var(--ac2)}
+.sync-status{font-size:11px;padding:5px 10px;border-radius:6px;font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:5px;border:1px solid var(--bd);background:var(--sf)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#94a3b8;flex-shrink:0;transition:background .3s}
+.sync-dot.ok{background:#00b894}.sync-dot.err{background:#e17055}.sync-dot.loading{background:#f39c12;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid var(--bd);padding:0 2rem;overflow-x:auto;background:var(--sf);gap:0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 16px;font-size:12px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--mu);transition:all .15s;white-space:nowrap;font-weight:500}
+.tab.active{color:var(--ac);border-bottom-color:var(--ac);background:#f8f7ff}.tab:hover:not(.active){color:var(--tx);background:var(--sf2)}
+
+/* PAGES */
+.page{display:none;padding:1.5rem 2rem}.page.active{display:block}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
+.mc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.mc-lb{font-size:11px;color:var(--mu);margin-bottom:5px;font-weight:500}
+.mc-v{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.mc-sub{font-size:11px;color:var(--mu);margin-top:3px}
+.mc.ce{border-top:3px solid var(--ac)}.mc.ce .mc-v{color:var(--ac)}
+.mc.cv{border-top:3px solid var(--blue)}.mc.cv .mc-v{color:var(--blue)}
+.mc.cg{border-top:3px solid var(--gold)}.mc.cg .mc-v{color:var(--gold)}
+.mc.cg2{border-top:3px solid var(--ac2)}.mc.cg2 .mc-v{color:var(--ac2)}
+.stitle{font-size:11px;font-weight:600;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;margin-top:1.5rem}
+.panel{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.ptitle{font-size:14px;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ptleft{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cwrap{position:relative;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.tg{display:flex;gap:3px;background:var(--sf2);border:1px solid var(--bd);border-radius:7px;padding:3px}
+.tgb{padding:5px 12px;border-radius:5px;font-size:11px;cursor:pointer;border:none;background:transparent;color:var(--mu);font-family:'IBM Plex Sans Thai',sans-serif;transition:all .15s;font-weight:500}
+.tgb.on{background:var(--ac);color:#fff}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.pill{font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;border:1px solid var(--bd);background:var(--sf);color:var(--mu);transition:all .15s;font-family:'IBM Plex Sans Thai',sans-serif;font-weight:500}
+.leg{display:flex;flex-wrap:wrap;gap:10px}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu);cursor:pointer;transition:all .15s;font-weight:500}
+.li:hover{color:var(--tx)}.li.off{opacity:.3}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* TABLES */
+.rtable,.fol-table,.er-table{width:100%;border-collapse:collapse}
+.rtable th,.fol-table th,.er-table th{font-size:11px;color:var(--mu);text-align:left;padding:8px 10px;border-bottom:2px solid var(--bd);font-weight:600;background:var(--sf2)}
+.rtable td,.fol-table td,.er-table td{padding:9px 10px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
+.rtable tr:last-child td,.fol-table tr:last-child td,.er-table tr:last-child td{border-bottom:none}
+.rtable tr:hover td,.fol-table tr:hover td,.er-table tr:hover td{background:#f8f7ff}
+.rbadge{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.rb1{background:#fef3c7;color:#d97706;border:1.5px solid #fbbf24}
+.rb2{background:#f1f5f9;color:#64748b;border:1.5px solid #94a3b8}
+.rb3{background:#fff3ed;color:#ea580c;border:1.5px solid #f97316}
+.rbn{background:var(--sf2);color:var(--mu);border:1px solid var(--bd)}
+.mn{font-weight:600}.mh{font-size:11px;color:var(--mu)}
+.tier{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700;white-space:nowrap;font-family:'IBM Plex Mono',monospace}
+.t1{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+.t2{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+.t3{background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd}
+.bbg{background:var(--sf2);border-radius:3px;height:6px;overflow:hidden;margin-top:5px}
+.bfill{height:100%;border-radius:3px;transition:width .4s}
+.numr{font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right;font-weight:600}
+.numr2{font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:right;color:var(--mu)}
+.tier-leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:1rem;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:10px}
+.tleg-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx);font-weight:500}
+
+/* INPUT TABLE */
+.de-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:10px}
+.det{width:100%;border-collapse:collapse;font-size:12px}
+.det th{font-size:10px;color:var(--mu);padding:8px 6px;border-bottom:2px solid var(--bd);text-align:center;font-weight:600;white-space:nowrap;background:var(--sf2)}
+.det th.sl{position:sticky;left:0;z-index:3;text-align:left;background:var(--sf2)}
+.det td{padding:4px 5px;border-bottom:1px solid var(--bd)}
+.det td.sl{position:sticky;left:0;background:var(--sf);z-index:2}
+.det tr:last-child td{border-bottom:none}.det tr:hover td:not(.sl){background:#f8f7ff}
+.det tfoot td{background:var(--sf2);padding:8px 5px;font-weight:600}.det tfoot td.sl{background:var(--sf2)}
+.mcell{display:flex;align-items:center;gap:7px;padding:4px 2px;min-width:120px}
+.mdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.inp{background:var(--sf);border:1.5px solid var(--bd);border-radius:5px;padding:5px 7px;color:var(--tx);font-size:11px;font-family:'IBM Plex Mono',monospace;width:80px;transition:border-color .15s;text-align:right}
+.inp:focus{outline:none;box-shadow:0 0 0 2px #6c5ce720}
+.inp.iv{border-color:#93c5fd}.inp.iv:focus{border-color:var(--blue)}
+.inp.ie{border-color:#c4b5fd}.inp.ie:focus{border-color:var(--ac)}
+.inp.ig{border-color:#6ee7b7}.inp.ig:focus{border-color:var(--ac2)}
+.tc{font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:right;display:block;min-width:72px;font-weight:600}
+.tcv{color:var(--blue)}.tce{color:var(--ac)}
+.info{background:#f0eeff;border:1px solid #c4b5fd;border-radius:10px;padding:13px 16px;font-size:12px;color:#5b21b6;margin-bottom:1rem;line-height:1.9}
+.info code{font-family:'IBM Plex Mono',monospace;background:#ede9fe;padding:1px 6px;border-radius:3px;font-size:11px;color:var(--ac);font-weight:600}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--tx);border-radius:10px;padding:10px 16px;font-size:13px;color:#fff;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* MONTHLY RANK CARDS */
+.mo-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.mo-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.mo-card.rank-1::before{background:#f39c12}.mo-card.rank-2::before{background:#94a3b8}.mo-card.rank-3::before{background:#f97316}.mo-card.rank-n::before{background:var(--bd)}
+.mo-rank-num{font-size:22px;font-weight:700;min-width:28px;text-align:center}
+.mo-rank-1{color:#d97706}.mo-rank-2{color:#64748b}.mo-rank-3{color:#ea580c}.mo-rank-n{color:var(--mu)}
+.mo-card-info{flex:1;min-width:0}
+.mo-card-name{font-weight:700;font-size:14px;color:var(--tx)}
+.mo-card-val{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;margin-top:2px}
+.mo-card-sub{font-size:11px;color:var(--mu)}
+.mo-card-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--sf2)}
+.mo-card-bar-fill{height:100%;transition:width .5s}
+.mom-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.mom-name{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;color:var(--tx)}
+.mom-val{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--tx)}
+.mom-delta{font-size:11px;margin-top:4px;display:flex;align-items:center;gap:4px;font-weight:600}
+.delta-up{color:#059669}.delta-dn{color:#dc2626}.delta-eq{color:var(--mu)}
+
+/* RANGE / PROGRESS */
+.range-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:10px}
+.range-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.range-row{display:grid;grid-template-columns:90px 1fr 80px 80px;gap:8px;align-items:center;margin-bottom:8px}
+.range-label{font-size:11px;color:var(--mu);font-weight:500}
+.range-prog-bg{background:var(--sf2);border-radius:4px;height:10px;overflow:hidden;position:relative}
+.range-prog-fill{height:100%;border-radius:4px;transition:width .5s}
+.range-prog-mid{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(108,92,231,.3);transform:translateX(-50%)}
+.range-pct{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;text-align:right}
+.range-remain{font-size:10px;color:var(--mu);text-align:right;font-family:'IBM Plex Mono',monospace}
+.pct-ok{color:#059669}.pct-warn{color:#d97706}.pct-danger{color:#dc2626}
+.range-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem}
+.rscard{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px}
+.rscard-label{font-size:10px;color:var(--mu);font-weight:600;margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase}
+.rscard-val{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700}
+.rscard-sub{font-size:10px;color:var(--mu);margin-top:2px}
+.month-sel-bar{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.target-inp{background:var(--sf);border:1.5px solid var(--bd);border-radius:5px;padding:4px 8px;color:var(--tx);font-size:11px;font-family:'IBM Plex Mono',monospace;width:95px;text-align:right}
+.target-inp:focus{outline:none;border-color:var(--ac)}
+.half-note{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:#92400e;margin-bottom:1rem;padding:10px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;line-height:1.6}
+
+/* GROWTH TARGETS */
+.tier-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.tier-card-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.kpi-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.kpi-row:last-child{border-bottom:none}
+.kpi-label{color:var(--mu);font-weight:500}
+.kpi-val{font-family:'IBM Plex Mono',monospace;font-weight:700}
+.growth-note{font-size:11px;color:var(--mu);margin-top:8px;padding:8px 10px;background:var(--sf2);border-radius:6px;line-height:1.6}
+
+/* MONTHLY CHANNEL SHEET */
+.channel-table{width:100%;border-collapse:collapse;font-size:12px}
+.channel-table th{padding:7px 10px;border-bottom:2px solid var(--bd);font-size:10px;color:var(--mu);font-weight:600;text-align:left;background:var(--sf2);white-space:nowrap}
+.channel-table th.center{text-align:center}
+.channel-table td{padding:7px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.channel-table tr:last-child td{border-bottom:none}
+.channel-table tr:hover td{background:#f8f7ff}
+.er-good{color:#059669;font-weight:700}.er-ok{color:#d97706;font-weight:700}.er-bad{color:#dc2626;font-weight:700}
+.ch-inp{background:var(--sf);border:1.5px solid var(--bd);border-radius:5px;padding:4px 6px;color:var(--tx);font-size:11px;font-family:'IBM Plex Mono',monospace;width:85px;text-align:right}
+.ch-inp:focus{outline:none;border-color:var(--ac)}
+.plat-hdr{padding:6px 10px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.plat-ig{background:#fce7f3;color:#9d174d}
+.plat-tt{background:#fef2f2;color:#9f1239}
+.growth-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-weight:700}
+.gt-up{background:#d1fae5;color:#065f46}.gt-down{background:#fee2e2;color:#991b1b}.gt-flat{background:var(--sf2);color:var(--mu)}
+
+/* STATUS BADGES */
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700}
+.badge-ok{background:#d1fae5;color:#065f46}.badge-warn{background:#fef3c7;color:#92400e}.badge-bad{background:#fee2e2;color:#991b1b}.badge-na{background:var(--sf2);color:var(--mu)}
+
+/* FOLLOW-UP STATUS */
+.fu-check{width:28px;height:28px;border-radius:7px;border:2px solid var(--bd);background:var(--sf);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;flex-shrink:0}
+.fu-check.done{background:#d1fae5;border-color:#6ee7b7;color:#065f46}
+.fu-check.late{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+.fu-note{width:100%;padding:5px 8px;border:1.5px solid var(--bd);border-radius:6px;font-size:11px;font-family:'IBM Plex Sans Thai',sans-serif;color:var(--tx);background:var(--sf);resize:none;outline:none;height:32px}
+.fu-note:focus{border-color:var(--ac)}
+.fu-status-all{font-size:12px;padding:4px 10px;border-radius:6px;font-weight:700;white-space:nowrap}
+.fs-ok{background:#d1fae5;color:#065f46}.fs-partial{background:#fef3c7;color:#92400e}.fs-none{background:#fee2e2;color:#991b1b}.fs-na{background:var(--sf2);color:var(--mu)}
+
+/* PRODUCTS PAGE */
+.prod-inp{background:var(--sf);border:1.5px solid var(--bd);border-radius:5px;padding:4px 6px;color:var(--tx);font-size:11px;font-family:'IBM Plex Sans Thai',sans-serif;width:100%;min-width:80px}
+.prod-inp:focus{outline:none;border-color:var(--ac)}
+.prod-inp.num{font-family:'IBM Plex Mono',monospace;text-align:right;min-width:60px}
+.prod-del{width:22px;height:22px;border-radius:5px;border:1px solid var(--bd);background:var(--sf);cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;color:var(--red);transition:all .15s}
+.prod-del:hover{background:#fee2e2;border-color:#fca5a5}
+.mbpill{padding:6px 14px;border-radius:20px;border:2px solid transparent;font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;background:var(--sf2);color:var(--tx);font-family:'IBM Plex Sans Thai',sans-serif}
+.mbpill:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.prod-popup-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;background:var(--sf2);margin-bottom:6px;transition:background .15s}
+.prod-popup-item:hover{background:var(--bd)}
+.prod-popup-stat{font-size:11px;color:var(--mu);margin-top:1px}
+.prod-popup-price{font-family:'IBM Plex Mono',monospace;font-weight:800;font-size:14px;white-space:nowrap;flex-shrink:0}
+</style>
+</head>
+<body>
+<style>
+.portfolio-banner{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:8px 16px;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;box-shadow:0 2px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.portfolio-banner span.tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:11px;letter-spacing:2px;}
+.portfolio-banner span.pipe{opacity:.4;}
+body{padding-top:40px !important;}
+</style>
+<div class="portfolio-banner">
+  <span class="tag">PORTFOLIO</span>
+  <span class="pipe">|</span>
+  ✦ ตัวอย่างผลงาน — ข้อมูลจำลองเพื่อการนำเสนอ ✦
+  <span class="pipe">|</span>
+  <span class="tag">MOCK-UP</span>
+</div>
+
+
+<!-- Firebase connected — ไม่ต้องมี Setup Modal แล้ว -->
+
+<div class="header">
+  <div class="brand">
+    <div class="bdot">N</div>
+    <div><div class="bsub">Creator Hub DESIGN · Creator Analytics</div><div class="btitle">Engagement Dashboard</div></div>
+  </div>
+  <div class="hact">
+    <div class="sync-status" id="syncStatus"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Local</span></div>
+    <button class="btn" onclick="exportCSV()">⬇ Export</button>
+    <button class="btn pr" onclick="doSave()">💾 บันทึก</button>
+    <button class="btn sc" onclick="doLoad()">🔄 รีเฟรช</button>
+    <button class="btn" onclick="hardReset()" title="ล้าง Cache เบราว์เซอร์ทั้งหมด">🗑 ล้าง Cache</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview',this)">📊 Overview รวมทั้งหมด</div>
+  <div class="tab" onclick="switchTab('monthly_entry',this)">📝 กรอกยอดรายเดือน</div>
+  <div class="tab" onclick="switchTab('growth',this)">📈 เป้าการเติบโต</div>
+  <div class="tab" onclick="switchTab('ranking',this)">🏆 Ranking รวมทั้งหมด</div>
+  <div class="tab" onclick="switchTab('followers',this)">👥 Followers</div>
+  <div class="tab" onclick="switchTab('range',this)">🎯 Range รายเดือน</div>
+  <div class="tab" onclick="switchTab('compare',this)">📊 เปรียบเทียบ</div>
+  <div class="tab" onclick="switchTab('monthly',this)">🗓 รายเดือน</div>
+  <div class="tab" onclick="switchTab('input',this)">✏️ Eng/Views Input</div>
+  <div class="tab" onclick="switchTab('followup',this)">📋 ตามงาน</div>
+  <div class="tab" onclick="switchTab('manage',this)">⚙️ จัดการน้อง</div>
+  <div class="tab" onclick="switchTab('products',this)">📦 สินค้า Influ</div>
+</div>
+
+<!-- ══ OVERVIEW ══ -->
+
+<style>
+.privacy-notice{background:#fef3cd;border:1px solid #ffc107;border-radius:8px;padding:9px 14px;font-size:12px;color:#856404;margin:12px 2rem 0;display:flex;align-items:center;gap:8px;}
+.privacy-notice strong{font-weight:700;}
+</style>
+<div class="privacy-notice" id="privacy-notice">
+  🔒 <span><strong>หมายเหตุ:</strong> Handle IG / TikTok และชื่อของครีเอเตอร์ถูกปิดบังไว้ เนื่องจากเป็นข้อมูลของครีเอเตอร์ส่วนตัว — นี่เป็นตัวอย่างผลงาน Dashboard เท่านั้น</span>
+</div>
+<div class="page active" id="page-overview">
+  <div class="metrics" id="mCards"></div>
+  <div class="panel">
+    <div class="ptitle">
+      <div class="ptleft">
+        <span>📈 Trend ทุกคน</span>
+        <div class="tg"><button class="tgb on" id="ov-te" onclick="setOvM('eng')">Engagement</button><button class="tgb" id="ov-tv" onclick="setOvM('views')">ยอดวิว</button></div>
+      </div>
+      <div class="leg" id="leg"></div>
+    </div>
+    <div class="pills" id="pills"></div>
+    <div class="cwrap" style="height:300px"><canvas id="trendC"></canvas></div>
+  </div>
+</div>
+
+<!-- ══ กรอกยอดรายเดือน ══ -->
+<div class="page" id="page-monthly_entry">
+  <div class="info">
+    <strong>📝 กรอกยอดรายเดือน</strong> — กรอกข้อมูลรายคนรายเดือน IG + TikTok · <code>💾 บันทึก</code> เพื่อ sync ให้ทุกคนเห็น
+    <br><span style="color:#065f46;font-weight:600">📌 มี.ค. 69 = Baseline (ก่อนทำงานกับ Creator Hub)</span> — กรอกยอดจริงเดือนมีนาคมไว้เพื่อใช้เปรียบเทียบการเติบโตในเดือนถัดไป
+  </div>
+
+  <!-- Month selector -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap">
+    <div class="tg">
+      <button class="tgb" onclick="prevEntryMo()">◀</button>
+      <span id="entry-mo-label" style="padding:4px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;min-width:90px;text-align:center"></span>
+      <button class="tgb" onclick="nextEntryMo()">▶</button>
+    </div>
+    <div class="pills" id="entryMoPills" style="margin-bottom:0"></div>
+    <button class="btn pr" onclick="saveEntry()" style="margin-left:auto">💾 บันทึก + Sync</button>
+  </div>
+
+  <!-- Entry table per member -->
+  <div id="entryCards"></div>
+</div>
+
+<!-- ══ เป้าการเติบโต ══ -->
+<div class="page" id="page-growth">
+  <div class="panel" style="background:#f0fdf4;border-color:#86efac">
+    <div style="font-size:13px;font-weight:600;color:#065f46;margin-bottom:8px">📌 วิธีคิดเป้าแบ่งตาม Tier — อ้างอิง Meta / TikTok Business / HypeAuditor 2025</div>
+    <div style="font-size:12px;color:#166534;line-height:1.8">
+      <strong>Tier 1 (50K+)</strong> — Nano ฐานเล็ก algorithm TikTok ดัน Nano มากกว่า → เป้าสูงกว่า เพราะโตเป็น % ได้เร็ว<br>
+      <strong>Tier 2 (100K+)</strong> — Micro อยู่ช่วง build loyal audience → เป้ากลาง<br>
+      <strong>Tier 3 (300K+)</strong> — Mid-tier ฐานใหญ่ % โตช้าลงตามธรรมชาติ แต่ตัวเลขจริงสูงกว่า<br>
+      เป้า ER% = ER ปัจจุบัน × 1.05/เดือน · ทบทวนทุก Q (3 เดือน)
+    </div>
+  </div>
+
+  <div class="stitle" style="margin-top:1.25rem">มาตรฐาน KPI แยก Tier</div>
+
+  <!-- WHY explanation -->
+  <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:12px;color:#92400e;margin-bottom:1.25rem;line-height:1.9">
+    <strong>💡 ทำไมเป้า Follower ถึงคิดเป็น "ตัวเลขจริง" ไม่ใช่ %?</strong><br>
+    Tier 1 (50K) มี base น้อย — ถ้าคิดเป็น % เหมือน Tier 2 จะโหดเกินไป เช่น 3% ของ 70K = เพิ่ม 2,100 คน แต่ 3% ของ 16K = แค่ 480 คน ซึ่ง achievable ต่างกัน
+    ดังนั้นจึงตั้งเป็น "จำนวนคนจริง" ที่สมเหตุสมผลตาม size ของแต่ละ Tier แทน
+  </div>
+
+  <div class="grid3">
+    <div class="tier-card">
+      <div class="tier-card-title"><span class="tier t1">Tier 1</span> 50,000+ followers</div>
+      <div class="kpi-row"><span class="kpi-label">👥 Fol เพิ่ม/เดือน</span><span class="kpi-val" style="color:#065f46">+500–1,500 คน</span></div>
+      <div class="kpi-row"><span class="kpi-label">👥 Fol เพิ่ม ครึ่งเดือน</span><span class="kpi-val" style="color:#6c5ce7">+250–750 คน</span></div>
+      <div class="kpi-row"><span class="kpi-label">👁 Views โต/เดือน</span><span class="kpi-val" style="color:#0984e3">≥ 10%</span></div>
+      <div class="kpi-row"><span class="kpi-label">❤️ Eng โต/เดือน</span><span class="kpi-val" style="color:#6c5ce7">≥ 7%</span></div>
+      <div class="kpi-row"><span class="kpi-label">IG ER% เป้า</span><span class="kpi-val" style="color:#9d174d">≥ 3.0%</span></div>
+      <div class="kpi-row"><span class="kpi-label">TT ER% เป้า</span><span class="kpi-val" style="color:#9f1239">≥ 4.0%</span></div>
+      <div class="growth-note">ตัวเลข Fol เป็น "คนจริง" ที่สมเหตุสมผล · Eng/Views เป้าเท่า Tier 2 เพราะ content quality สำคัญกว่า base size</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-card-title"><span class="tier t2">Tier 2</span> 100,000+ followers</div>
+      <div class="kpi-row"><span class="kpi-label">👥 Fol เพิ่ม/เดือน</span><span class="kpi-val" style="color:#065f46">+2,000–4,000 คน</span></div>
+      <div class="kpi-row"><span class="kpi-label">👥 Fol เพิ่ม ครึ่งเดือน</span><span class="kpi-val" style="color:#6c5ce7">+1,000–2,000 คน</span></div>
+      <div class="kpi-row"><span class="kpi-label">👁 Views โต/เดือน</span><span class="kpi-val" style="color:#0984e3">≥ 10%</span></div>
+      <div class="kpi-row"><span class="kpi-label">❤️ Eng โต/เดือน</span><span class="kpi-val" style="color:#6c5ce7">≥ 7%</span></div>
+      <div class="kpi-row"><span class="kpi-label">IG ER% เป้า</span><span class="kpi-val" style="color:#9d174d">≥ 3.0%</span></div>
+      <div class="kpi-row"><span class="kpi-label">TT ER% เป้า</span><span class="kpi-val" style="color:#9f1239">≥ 4.0%</span></div>
+      <div class="growth-note">Base ใหญ่กว่า → ตัวเลขจริงสูงกว่า · ช่วง build loyal audience · เป้า % เท่า Tier 1</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-card-title"><span class="tier t3">Tier 3</span> 300,000+ followers</div>
+      <div class="kpi-row"><span class="kpi-label">👥 Fol เพิ่ม/เดือน</span><span class="kpi-val" style="color:#065f46">+3,000–6,000 คน</span></div>
+      <div class="kpi-row"><span class="kpi-label">👥 Fol เพิ่ม ครึ่งเดือน</span><span class="kpi-val" style="color:#6c5ce7">+1,500–3,000 คน</span></div>
+      <div class="kpi-row"><span class="kpi-label">👁 Views โต/เดือน</span><span class="kpi-val" style="color:#0984e3">≥ 7%</span></div>
+      <div class="kpi-row"><span class="kpi-label">❤️ Eng โต/เดือน</span><span class="kpi-val" style="color:#6c5ce7">≥ 5%</span></div>
+      <div class="kpi-row"><span class="kpi-label">IG ER% เป้า</span><span class="kpi-val" style="color:#9d174d">≥ 1.5%</span></div>
+      <div class="kpi-row"><span class="kpi-label">TT ER% เป้า</span><span class="kpi-val" style="color:#9f1239">≥ 2.5%</span></div>
+      <div class="growth-note">Base ใหญ่มาก → % โตช้าลงตามธรรมชาติ แต่ตัวเลขจริงสูงสุด · Eng% ลดลงเล็กน้อย</div>
+    </div>
+  </div>
+
+  <div class="stitle">เป้ารายบุคคล — คำนวณจาก Baseline มี.ค. 2569</div>
+  <div class="panel" style="overflow-x:auto">
+    <table class="rtable" id="memberTargetTbl">
+      <thead><tr>
+        <th>น้อง</th><th>Tier</th>
+        <th>IG Fol ปัจจุบัน</th><th>TT Fol ปัจจุบัน</th>
+        <th>TT Fol ควรเพิ่ม/เดือน</th><th>TT Fol ควรเพิ่ม ครึ่งเดือน</th>
+        <th>TT ER ปัจจุบัน</th><th>TT ER เป้า</th>
+        <th>IG ER ปัจจุบัน</th><th>IG ER เป้า</th>
+        <th>Views โต/เดือน</th><th>Eng โต/เดือน</th>
+      </tr></thead>
+      <tbody id="memberTargetBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ RANKING ══ -->
+<div class="page" id="page-ranking">
+  <div class="tier-leg">
+    <div class="tleg-item"><span class="tier t1">Tier 1</span> 50,000+ followers</div>
+    <div class="tleg-item"><span class="tier t2">Tier 2</span> 100,000+ followers</div>
+    <div class="tleg-item"><span class="tier t3">Tier 3</span> 300,000+ followers</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+    <span class="stitle" style="margin:0">จัดอันดับ</span>
+    <div class="tg"><button class="tgb on" id="rk-te" onclick="setRkM('eng')">Engagement</button><button class="tgb" id="rk-tv" onclick="setRkM('views')">ยอดวิว</button></div>
+  </div>
+  <div class="grid2">
+    <div class="panel" style="margin-bottom:0">
+      <div class="ptitle" id="rk-title">🏆 Ranking รวมทั้งหมด — Engagement</div>
+      <table class="rtable"><thead><tr><th></th><th>น้อง</th><th>Tier</th><th id="rk-ca">Engagement รวม</th><th id="rk-cb">ยอดวิว รวม</th></tr></thead><tbody id="rankBody"></tbody></table>
+    </div>
+    <div class="panel" style="margin-bottom:0">
+      <div class="ptitle" id="rk-bt">📊 Engagement รวม</div>
+      <div class="cwrap" style="height:285px"><canvas id="rkBarC"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOLLOWERS ══ -->
+<div class="page" id="page-followers">
+  <div class="info"><strong>👥 Followers</strong> เรียงจากมากไปน้อย แยก TikTok / IG · กรอกยอด Followers ล่าสุด → กด <code>💾 บันทึก</code></div>
+  <div class="grid2">
+    <div class="panel" style="margin-bottom:0">
+      <div class="ptitle">🎵 TikTok — จัดอันดับ</div>
+      <table class="fol-table" id="ttFolTable"></table>
+    </div>
+    <div class="panel" style="margin-bottom:0">
+      <div class="ptitle">📸 Instagram — จัดอันดับ</div>
+      <table class="fol-table" id="igFolTable"></table>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:1.25rem">
+    <div class="ptitle">✏️ อัพเดตยอด Followers</div>
+    <table class="rtable" id="folInputTable"></table>
+    <div style="margin-top:12px"><button class="btn pr" onclick="saveFol()">💾 บันทึก Followers + Sync</button></div>
+  </div>
+</div>
+
+<!-- ══ RANGE ══ -->
+<div class="page" id="page-range">
+  <div class="half-note">
+    📅 <div>
+      <strong>Range รายเดือน</strong> — กรอกเป้าของแต่ละคนรายเดือน แล้วกรอกยอดล่าสุด (ดึงวันที่ 15 และ 31) ระบบจะคำนวณ % ที่ทำได้และยังขาดอีกเท่าไหร่ · <strong>เส้นม่วงกลาง = 50%</strong> คือจุดที่ควรถึง ณ ครึ่งเดือน
+    </div>
+  </div>
+
+  <!-- เลือกเดือน -->
+  <div class="month-sel-bar">
+    <div class="tg">
+      <button class="tgb" onclick="prevRangeMo()">◀</button>
+      <span id="range-mo-label" style="padding:4px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;min-width:90px;text-align:center"></span>
+      <button class="tgb" onclick="nextRangeMo()">▶</button>
+    </div>
+    <div class="pills" id="rangeMoPills" style="margin-bottom:0"></div>
+    <button class="btn pr" onclick="saveRange()" style="margin-left:auto">💾 บันทึก + Sync</button>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="range-summary" id="rangeSummary"></div>
+
+  <!-- Per-member cards -->
+  <div id="rangeCards"></div>
+</div>
+
+<!-- ══ COMPARE ══ -->
+<div class="page" id="page-compare">
+  <p class="stitle" style="margin-top:0">ยอดวิว รายเดือน (Stacked)</p>
+  <div class="panel"><div class="cwrap" style="height:270px"><canvas id="vsC"></canvas></div></div>
+  <p class="stitle">Engagement รายเดือน (Stacked)</p>
+  <div class="panel"><div class="cwrap" style="height:270px"><canvas id="esC"></canvas></div></div>
+  <p class="stitle">Views vs Engagement รวม</p>
+  <div class="panel"><div class="cwrap" style="height:290px"><canvas id="veC"></canvas></div></div>
+</div>
+
+<!-- ══ MONTHLY ══ -->
+<div class="page" id="page-monthly">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.25rem">
+    <div><div class="stitle" style="margin:0 0 4px">ดูรายเดือน</div><div style="font-size:12px;color:var(--mu)">เลือกเดือนที่ต้องการดู</div></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div class="tg"><button class="tgb" onclick="prevMo()">◀</button><span id="mo-label" style="padding:4px 14px;font-size:12px;font-family:'IBM Plex Mono',monospace;min-width:80px;text-align:center"></span><button class="tgb" onclick="nextMo()">▶</button></div>
+      <div class="tg"><button class="tgb on" id="mo-te" onclick="setMoM('eng')">Engagement</button><button class="tgb" id="mo-tv" onclick="setMoM('views')">ยอดวิว</button></div>
+    </div>
+  </div>
+  <div class="pills" id="moPills"></div>
+  <div class="metrics" id="moCards"></div>
+  <div id="moRankCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem"></div>
+  <div class="grid2">
+    <div class="panel" style="margin-bottom:0"><div class="ptitle" id="mo-bar-title">📊 Engagement เดือนนี้</div><div class="cwrap" style="height:280px"><canvas id="moBarC"></canvas></div></div>
+    <div class="panel" style="margin-bottom:0"><div class="ptitle" id="mo-donut-title">🥧 สัดส่วน</div><div class="cwrap" style="height:280px"><canvas id="moDonutC"></canvas></div></div>
+  </div>
+  <div class="panel" style="margin-top:1.25rem"><div class="ptitle" id="mo-mom-title">📅 เทียบกับเดือนก่อน</div><div id="moMoM" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px"></div></div>
+</div>
+
+<!-- ══ ENG/VIEWS INPUT ══ -->
+<div class="page" id="page-input">
+  <div class="info">กรอก <strong style="color:var(--blue)">👁 ยอดวิว</strong> และ <strong style="color:var(--ac)">❤️ Engagement</strong> รายเดือน · <code>💾 บันทึก</code> sync ขึ้น cloud · <code>🔄 รีเฟรช</code> ดึงข้อมูลล่าสุด</div>
+  <div class="de-wrap"><table class="det"><thead id="dHead"></thead><tbody id="dBody"></tbody><tfoot id="dFoot"></tfoot></table></div>
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn pr" onclick="doSave()">💾 บันทึก + Sync</button>
+    <button class="btn sc" onclick="doLoad()">🔄 ดึงข้อมูลล่าสุด</button>
+    <button class="btn" onclick="if(confirm('ล้างข้อมูลทั้งหมด?')){clearAll()}">🗑 ล้าง</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ FOLLOW-UP ══ -->
+<div class="page" id="page-followup">
+  <div class="info" style="background:#f0fdf4;border-color:#86efac;color:#166534">
+    <strong>📋 ตามงานน้อง</strong> — บันทึกสถานะการกรอกข้อมูลของน้องแต่ละคน · วันที่ <strong>15</strong> และ <strong>27</strong> ของทุกเดือน (กรอกข้อมูล) · วันที่ <strong>30</strong> (กรอก Engagement)
+  </div>
+
+  <!-- เลือกเดือน -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap">
+    <div class="tg">
+      <button class="tgb" onclick="prevFuMo()">◀</button>
+      <span id="fu-mo-label" style="padding:4px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;min-width:90px;text-align:center"></span>
+      <button class="tgb" onclick="nextFuMo()">▶</button>
+    </div>
+    <div class="pills" id="fuMoPills" style="margin-bottom:0"></div>
+    <button class="btn pr" onclick="saveFu()" style="margin-left:auto">💾 บันทึก + Sync</button>
+  </div>
+
+  <!-- Summary -->
+  <div id="fuSummary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem"></div>
+
+  <!-- Table -->
+  <div class="panel" style="overflow-x:auto;padding:0">
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="background:var(--sf2)">
+          <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd);min-width:120px">น้อง</th>
+          <th style="padding:10px 14px;text-align:center;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">งานทั้งหมด</th>
+          <th style="padding:10px 14px;text-align:center;font-size:11px;color:#0284c7;border-bottom:2px solid var(--bd)">📅 วันที่ 15<br><span style="font-weight:400;font-size:10px">กรอกข้อมูล</span></th>
+          <th style="padding:10px 14px;text-align:center;font-size:11px;color:#059669;border-bottom:2px solid var(--bd)">📅 วันที่ 27<br><span style="font-weight:400;font-size:10px">กรอกข้อมูล</span></th>
+          <th style="padding:10px 14px;text-align:center;font-size:11px;color:#7c3aed;border-bottom:2px solid var(--bd)">📊 วันที่ 30<br><span style="font-weight:400;font-size:10px">กรอก Engagement</span></th>
+          <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd);min-width:180px">📝 หมายเหตุ / ตาม</th>
+          <th style="padding:10px 14px;text-align:center;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">สถานะ</th>
+        </tr>
+      </thead>
+      <tbody id="fuBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ประวัติ follow up -->
+  <div class="stitle" style="margin-top:1.5rem">📜 ประวัติตามงานทุกเดือน</div>
+  <div class="panel" style="overflow-x:auto;padding:0">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="background:var(--sf2)">
+          <th style="padding:8px 12px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">น้อง</th>
+          <th id="fu-hist-header" style="padding:8px 12px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)"></th>
+        </tr>
+      </thead>
+      <tbody id="fuHistBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ MANAGE MEMBERS ══ -->
+<div class="page" id="page-manage">
+  <div class="info" style="background:#fff8e7;border-color:#fde68a;color:#92400e">
+    <strong>⚙️ จัดการน้องอินฟลู</strong> — เพิ่ม / แก้ไข / ลบรายชื่อน้อง · ข้อมูลจะอัพเดตทุกหน้าทันที · <span style="color:#dc2626;font-weight:700">⚠️ การลบจะลบข้อมูลที่กรอกไปด้วย</span>
+  </div>
+
+  <!-- เพิ่มน้องใหม่ -->
+  <div class="panel">
+    <div class="ptitle">➕ เพิ่มน้องใหม่</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px">
+      <label style="font-size:12px;color:var(--mu);font-weight:500">ชื่อ (ภาษาไทย)<br><input type="text" id="add_name" placeholder="เช่น มายด์" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Sans Thai',sans-serif;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">TikTok Handle<br><input type="text" id="add_tt" placeholder="@handle" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">IG Handle<br><input type="text" id="add_ig" placeholder="@handle" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">Tier<br><select id="add_tier" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Sans Thai',sans-serif;outline:none;background:var(--sf)"><option value="Tier 1">Tier 1 (50K+)</option><option value="Tier 2" selected>Tier 2 (100K+)</option><option value="Tier 3">Tier 3 (300K+)</option></select></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">IG Followers<br><input type="number" id="add_ig_fol" placeholder="0" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">TT Followers<br><input type="number" id="add_tt_fol" placeholder="0" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">จำนวนงาน<br><input type="number" id="add_jobs" placeholder="0" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+    </div>
+    <button class="btn pr" onclick="addMember()">➕ เพิ่มน้องใหม่</button>
+  </div>
+
+  <!-- รายชื่อปัจจุบัน -->
+  <div class="panel" style="overflow-x:auto;padding:0">
+    <div style="padding:14px 16px 10px;font-size:14px;font-weight:600">รายชื่อน้องทั้งหมด (${MB.length} คน)</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px" id="manageTbl">
+      <thead>
+        <tr style="background:var(--sf2)">
+          <th style="padding:9px 12px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">#</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">ชื่อ</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">TikTok / IG</th>
+          <th style="padding:9px 12px;text-align:center;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">Tier</th>
+          <th style="padding:9px 12px;text-align:right;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">งาน</th>
+          <th style="padding:9px 12px;text-align:right;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">IG Fol</th>
+          <th style="padding:9px 12px;text-align:right;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">TT Fol</th>
+          <th style="padding:9px 12px;text-align:center;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd)">จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="manageBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Edit Member Modal -->
+<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--sf);border-radius:16px;padding:2rem;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto">
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">✏️ แก้ไขข้อมูลน้อง</h2>
+    <input type="hidden" id="edit_idx">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px">
+      <label style="font-size:12px;color:var(--mu);font-weight:500">ชื่อ (ภาษาไทย)<br><input type="text" id="edit_name" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Sans Thai',sans-serif;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">TikTok Handle<br><input type="text" id="edit_tt" placeholder="@handle" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">IG Handle<br><input type="text" id="edit_ig" placeholder="@handle" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">Tier<br><select id="edit_tier" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Sans Thai',sans-serif;outline:none;background:var(--sf)"><option value="Tier 1">Tier 1 (50K+)</option><option value="Tier 2">Tier 2 (100K+)</option><option value="Tier 3">Tier 3 (300K+)</option></select></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">IG Followers<br><input type="number" id="edit_ig_fol" placeholder="0" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">TT Followers<br><input type="number" id="edit_tt_fol" placeholder="0" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+      <label style="font-size:12px;color:var(--mu);font-weight:500">จำนวนงาน<br><input type="number" id="edit_jobs" placeholder="0" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:'IBM Plex Mono',monospace;outline:none"></label>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn pr" onclick="saveEdit()">💾 บันทึกการแก้ไข</button>
+      <button class="btn" onclick="closeEditModal()">✕ ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRODUCTS INFLU ══ -->
+<div class="page" id="page-products">
+  <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center">
+    <select id="prod_mo_select" onchange="buildProductTable()" style="padding:8px 12px;border:1.5px solid var(--bd);border-radius:8px;font-size:13px;font-family:'IBM Plex Sans Thai',sans-serif;outline:none;background:var(--sf);color:var(--tx);font-weight:600"></select>
+    <button class="btn pr" onclick="saveProducts()">💾 บันทึก</button>
+    <button class="btn sc" onclick="addProductRow()">➕ เพิ่มสินค้า</button>
+    <span style="font-size:11px;color:var(--mu)">แก้ไขได้ทุกช่อง · กดชื่อน้องเพื่อดูสรุป</span>
+  </div>
+  <div id="prod-member-pills" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem"></div>
+  <div class="metrics" id="prod-summary" style="margin-bottom:1.25rem"></div>
+  <div class="panel" style="padding:0">
+    <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span style="font-size:14px;font-weight:700" id="prod-tbl-title">📅 INFLU —</span>
+      <span style="font-size:11px;color:var(--mu)" id="prod-tbl-sub"></span>
+    </div>
+    <div style="overflow-x:auto;padding-bottom:8px">
+      <table class="channel-table" style="min-width:800px">
+        <thead><tr id="prod-new-head" style="background:var(--sf2)"></tr></thead>
+        <tbody id="prod-new-body"></tbody>
+        <tfoot id="prod-new-foot"></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MEMBER PRODUCT POPUP ══ -->
+<div id="prodPopupBackdrop" onclick="closeProdPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;backdrop-filter:blur(3px)"></div>
+<div id="prodPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2001;width:min(92vw,560px);max-height:88vh;background:var(--sf);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.25);overflow:hidden;flex-direction:column">
+  <div id="prodPopupHeader" style="padding:20px 22px 14px;border-bottom:1.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <div>
+      <div id="prodPopupName" style="font-size:18px;font-weight:800;letter-spacing:-.3px"></div>
+      <div id="prodPopupMo" style="font-size:12px;color:var(--mu);margin-top:2px"></div>
+    </div>
+    <button onclick="closeProdPopup()" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--sf2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--mu);line-height:1">✕</button>
+  </div>
+  <div id="prodPopupSummary" style="padding:12px 22px;background:var(--sf2);border-bottom:1.5px solid var(--bd);display:flex;gap:20px;flex-wrap:wrap;flex-shrink:0"></div>
+  <div id="prodPopupList" style="overflow-y:auto;padding:14px 22px 20px;flex:1"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ════════════════════════════════════
+// CONFIG — ข้อมูลจริงจาก Excel (มี.ค. 2569)
+// ════════════════════════════════════
+const MB_COLORS = ['#7c3aed','#0284c7','#059669','#0891b2','#db2777','#ea580c','#d97706','#be185d','#16a34a','#7c2d12','#1e40af','#92400e','#065f46','#831843'];
+const MB_DEFAULT = [
+  {name:'Creator 1',  ttH:'@••••••••', igH:'@••••••••', tier:'Tier 2',tc:'t2',color:'#059669',
+   ig_fol:115000, tt_fol:232200, ig_er:10.05, tt_er:4.95,  ig_views:800000,   tt_views:45000,  jobs:36},
+  {name:'Creator 2', ttH:'@••••••••',igH:'@••••••••',         tier:'Tier 1',tc:'t1',color:'#d97706',
+   ig_fol:1502,   tt_fol:70983,  ig_er:2.39,  tt_er:2.55,  ig_views:141399,   tt_views:360000, jobs:22},
+  {name:'Creator 3', ttH:'@••••••••',    igH:'@••••••••',       tier:'Tier 2',tc:'t2',color:'#db2777',
+   ig_fol:8566,   tt_fol:133346, ig_er:0.79,  tt_er:26.50, ig_views:23600,    tt_views:231000, jobs:36},
+  {name:'Creator 4',   ttH:'@••••••••',    igH:'@••••••••',         tier:'Tier 1',tc:'t1',color:'#ea580c',
+   ig_fol:11810,  tt_fol:70132,  ig_er:4.99,  tt_er:10.02, ig_views:128260,   tt_views:134000, jobs:27},
+  {name:'Creator 5', ttH:'@••••••••',     igH:'@••••••••',        tier:'Tier 2',tc:'t2',color:'#0284c7',
+   ig_fol:8833,   tt_fol:129700, ig_er:1.65,  tt_er:15.02, ig_views:93900,    tt_views:874000, jobs:36},
+  {name:'Creator 6',  ttH:'@••••••••',   igH:'@••••••••',        tier:'Tier 2',tc:'t2',color:'#7c3aed',
+   ig_fol:104000, tt_fol:16400,  ig_er:19.98, tt_er:11.83, ig_views:14608028, tt_views:1100000,jobs:36},
+  {name:'Creator 7',    ttH:'@••••••••',    igH:'@••••••••',         tier:'Tier 2',tc:'t2',color:'#0891b2',
+   ig_fol:10852,  tt_fol:119011, ig_er:1.42,  tt_er:4.79,  ig_views:103152,   tt_views:283000, jobs:42},
+];
+
+// Load MB from localStorage if customized
+function loadMB(){
+  try{const s=localStorage.getItem('n9_mb');if(s)return JSON.parse(s);}catch(e){}
+  return MB_DEFAULT.map(m=>({...m}));
+}
+function saveMB(arr){localStorage.setItem('n9_mb',JSON.stringify(arr));}
+let MB = loadMB();
+
+// dummy placeholder to keep original reference intact
+const MB_PLACEHOLDER_OLD = [
+  {name:'Creator 6',  ttH:'@••••••••',    igH:'@••••••••',      tier:'Tier 2',tc:'t2',color:'#7c3aed',
+   ig_fol:104000, tt_fol:16400,  ig_er:19.98, tt_er:11.83, ig_views:14608028, tt_views:1100000},
+  {name:'Creator 5', ttH:'@••••••••',      igH:'@••••••••',      tier:'Tier 2',tc:'t2',color:'#0284c7',
+   ig_fol:8833,   tt_fol:129700, ig_er:1.65,  tt_er:15.02, ig_views:93900,    tt_views:874000},
+  {name:'Creator 1', ttH:'@••••••••', igH:'@••••••••', tier:'Tier 2',tc:'t2',color:'#059669',
+   ig_fol:115000, tt_fol:232200, ig_er:10.05, tt_er:4.95,  ig_views:800000,   tt_views:45000},
+  {name:'Creator 7',    ttH:'@••••••••',     igH:'@••••••••',       tier:'Tier 2',tc:'t2',color:'#0891b2',
+   ig_fol:10852,  tt_fol:119011, ig_er:1.42,  tt_er:4.79,  ig_views:103152,   tt_views:283000},
+  {name:'Creator 3', ttH:'@••••••••',   igH:'@••••••••',      tier:'Tier 2',tc:'t2',color:'#db2777',
+   ig_fol:8566,   tt_fol:133346, ig_er:0.79,  tt_er:26.50, ig_views:23600,    tt_views:231000},
+  {name:'Creator 4',   ttH:'@••••••••',    igH:'@••••••••',       tier:'Tier 1',tc:'t1',color:'#ea580c',
+   ig_fol:11810,  tt_fol:70132,  ig_er:4.99,  tt_er:10.02, ig_views:128260,   tt_views:134000},
+  {name:'Creator 2', ttH:'@••••••••',igH:'@••••••••',       tier:'Tier 1',tc:'t1',color:'#d97706',
+   ig_fol:1502,   tt_fol:70983,  ig_er:2.39,  tt_er:2.55,  ig_views:141399,   tt_views:360000},
+]; // end MB_PLACEHOLDER_OLD (unused)
+
+// Tier growth targets — สมเหตุสมผลตามขนาด base จริง
+// Tier 1 (50K) โตช้ากว่าเป็นตัวเลขจริง แต่ % อาจดูเยอะเพราะ base เล็ก
+// ใช้ flat_fol_mo = จำนวนคนจริงที่ควรเพิ่ม (สำคัญกว่า %)
+const TIER_CFG = {
+  // Tier 1: Nano 50K+ → เพิ่ม ~500–1,500 คน/เดือน (ไม่ใช่ % สูงๆ)
+  'Tier 1': { fol_mo:[1,2], fol_half:[0.5,1], flat_fol_mo:[500,1500], flat_fol_half:[250,750],
+              views_mo:10, eng_mo:7, tt_er_min:4.0, ig_er_min:3.0,
+              note:'Nano 50K+ · เพิ่ม ~500–1,500 คน/เดือน · Views โต 10%+' },
+  // Tier 2: Micro 100K+ → เพิ่ม ~2,000–4,000 คน/เดือน
+  'Tier 2': { fol_mo:[2,3], fol_half:[1,1.5], flat_fol_mo:[2000,4000], flat_fol_half:[1000,2000],
+              views_mo:10, eng_mo:7, tt_er_min:4.0, ig_er_min:3.0,
+              note:'Micro 100K+ · เพิ่ม ~2,000–4,000 คน/เดือน · Views โต 10%+' },
+  // Tier 3: Mid 300K+ → เพิ่ม ~3,000–6,000 คน/เดือน
+  'Tier 3': { fol_mo:[1,2], fol_half:[0.5,1], flat_fol_mo:[3000,6000], flat_fol_half:[1500,3000],
+              views_mo:7,  eng_mo:5, tt_er_min:2.5, ig_er_min:1.5,
+              note:'Mid 300K+ · เพิ่ม ~3,000–6,000 คน/เดือน · % น้อยลงแต่ตัวเลขจริงสูง' },
+};
+
+const MO_LBL = ['ธ.ค. 68','ม.ค. 69','ก.พ. 69','มี.ค. 69','เม.ย. 69','พ.ค. 69','มิ.ย. 69','ก.ค. 69','ส.ค. 69','ก.ย. 69','ต.ค. 69','พ.ย. 69','ธ.ค. 69'];
+// Entry months — มี.ค. 69 = baseline ก่อนทำงานกับ Creator Hub
+const ENTRY_MO = ['มี.ค. 69','เม.ย. 69','พ.ค. 69','มิ.ย. 69','ก.ค. 69','ส.ค. 69','ก.ย. 69','ต.ค. 69','พ.ย. 69','ธ.ค. 69'];
+const get_M = ()=>MB.length;
+const MO = MO_LBL.length;
+Object.defineProperty(window,'M',{get:get_M});
+
+const DEF = {
+  views:MB.map((_,i)=>i===0?[1008492,1398678,1427495,2202646,0,0,0,0,0,0,0,0,0]:Array(MO).fill(0)),
+  eng:  MB.map((_,i)=>i===0?[237722,241228,169740,779718,0,0,0,0,0,0,0,0,0]:Array(MO).fill(0)),
+  // fol: [ig_fol, tt_fol] per member (current, updated monthly)
+  fol: MB.map(m => [m.ig_fol, m.tt_fol]),
+  // channel: per member per ENTRY_MO
+  channel: MB.map(() => ENTRY_MO.map(() => ({
+    ig_fol:0,ig_views:0,ig_likes:0,ig_comments:0,ig_saves:0,ig_shares:0,ig_new_fol:0,ig_er:0,
+    tt_fol:0,tt_post_views:0,tt_profile_views:0,tt_likes:0,tt_comments:0,tt_shares:0,tt_er:0
+  })))
+};
+
+// ════ FIREBASE FIRESTORE (REST API) ════
+const FB = {
+  apiKey:    'AIzaSyDie88WquojqSWuArbbe8kLVCM0IpC5pgQ',
+  projectId: 'overview-influ',
+  docId:     'Creator Hub-team'
+};
+function hasCfg(){ return true; }
+function setSS(state,txt){
+  const d=document.getElementById('syncDot'),l=document.getElementById('syncLabel');
+  d.className='sync-dot '+(state==='ok'?'ok':state==='err'?'err':state==='loading'?'loading':'');
+  l.textContent=txt;
+}
+
+// ════ Flatten/Unflatten (แก้ปัญหา Nested Arrays ใน Firestore) ════
+// แปลง data object → flat object (ไม่มี array ซ้อน array)
+function flattenData(d){
+  const f={};
+  // views[i][j] → "v_i_j"
+  (d.views||[]).forEach((row,i)=>(row||[]).forEach((v,j)=>f[`v_${i}_${j}`]=v||0));
+  // eng[i][j] → "e_i_j"
+  (d.eng||[]).forEach((row,i)=>(row||[]).forEach((v,j)=>f[`e_${i}_${j}`]=v||0));
+  // fol[i][0,1] → "fi_i_0", "fi_i_1"
+  (d.fol||[]).forEach((row,i)=>{f[`fi_${i}_0`]=(row||[])[0]||0;f[`fi_${i}_1`]=(row||[])[1]||0;});
+  // channel[i][mi][field] → "ch_i_mi_field"
+  (d.channel||[]).forEach((memberCh,i)=>(memberCh||[]).forEach((mo,mi)=>{
+    Object.keys(mo||{}).forEach(k=>f[`ch_${i}_${mi}_${k}`]=typeof mo[k]==='number'?mo[k]:0);
+  }));
+  // rangeData[i][mi][field] → "rd_i_mi_field"
+  (d.rangeData||[]).forEach((memberRd,i)=>(memberRd||[]).forEach((mo,mi)=>{
+    ['eng_target','views_target','eng_mid','views_mid'].forEach(k=>f[`rd_${i}_${mi}_${k}`]=(mo||{})[k]||0);
+  }));
+  // fuData keys: keep as-is (already flat strings)
+  Object.keys(d.fuData||{}).forEach(k=>f[`fu_${k}`]=d.fuData[k]||'');
+  // productData — serialize เป็น JSON string เดียว
+  f['_productData'] = JSON.stringify(d.productData||{});
+  // meta
+  f['_mb']=JSON.stringify(MB);
+  f['_mo']=MO;
+  f['_em']=ENTRY_MO.length;
+  f['_m']=MB.length;
+  return f;
+}
+
+// แปลง flat object กลับ → data object
+function unflattenData(f){
+  const m=parseInt(f['_m'])||MB.length;
+  const mo=parseInt(f['_mo'])||MO;
+  const em=parseInt(f['_em'])||ENTRY_MO.length;
+  const FIELDS_CH=['ig_fol','ig_views','ig_likes','ig_comments','ig_saves','ig_shares','ig_new_fol','ig_er','tt_fol','tt_post_views','tt_profile_views','tt_likes','tt_comments','tt_shares','tt_er'];
+
+  const views=Array.from({length:m},(_,i)=>Array.from({length:mo},(_,j)=>parseFloat(f[`v_${i}_${j}`])||0));
+  const eng=  Array.from({length:m},(_,i)=>Array.from({length:mo},(_,j)=>parseFloat(f[`e_${i}_${j}`])||0));
+  const fol=  Array.from({length:m},(_,i)=>[parseFloat(f[`fi_${i}_0`])||0,parseFloat(f[`fi_${i}_1`])||0]);
+  const channel=Array.from({length:m},(_,i)=>Array.from({length:em},(_,mi)=>{
+    const o={};FIELDS_CH.forEach(k=>o[k]=parseFloat(f[`ch_${i}_${mi}_${k}`])||0);return o;
+  }));
+  const rangeData=Array.from({length:m},(_,i)=>Array.from({length:em},(_,mi)=>({
+    eng_target:parseFloat(f[`rd_${i}_${mi}_eng_target`])||0,
+    views_target:parseFloat(f[`rd_${i}_${mi}_views_target`])||0,
+    eng_mid:parseFloat(f[`rd_${i}_${mi}_eng_mid`])||0,
+    views_mid:parseFloat(f[`rd_${i}_${mi}_views_mid`])||0,
+  })));
+  const fuData={};
+  Object.keys(f).forEach(k=>{if(k.startsWith('fu_'))fuData[k.slice(3)]=f[k];});
+
+  // productData — parse กลับจาก JSON string
+  let productData={};
+  if(f['_productData']){try{productData=JSON.parse(f['_productData']);}catch(e){productData={};}}
+
+  // restore MB ถ้ามี
+  if(f['_mb']){try{const saved=JSON.parse(f['_mb']);if(Array.isArray(saved)&&saved.length>0){MB=saved;saveMB(MB);}}catch(e){}}
+
+  return{views,eng,fol,channel,rangeData,fuData,productData};
+}
+
+// แปลง flat object → Firestore fields (เฉพาะ string/number/bool — ไม่มี array)
+function toFS(flat){
+  const fields={};
+  Object.keys(flat).forEach(k=>{
+    const v=flat[k];
+    if(typeof v==='number'){
+      const n=isNaN(v)||!isFinite(v)?0:v;
+      fields[k]=Number.isInteger(n)?{integerValue:String(n)}:{doubleValue:n};
+    } else {
+      fields[k]={stringValue:String(v==null?'':v)};
+    }
+  });
+  return{fields};
+}
+
+// แปลง Firestore fields → flat object
+function fromFS(fields){
+  const o={};
+  Object.keys(fields||{}).forEach(k=>{
+    const v=fields[k];
+    if(!v)return;
+    if('integerValue' in v) o[k]=parseInt(v.integerValue);
+    else if('doubleValue' in v) o[k]=v.doubleValue;
+    else if('stringValue' in v) o[k]=v.stringValue;
+    else if('booleanValue' in v) o[k]=v.booleanValue;
+  });
+  return o;
+}
+
+function fbUrl(){
+  return`https://firestore.googleapis.com/v1/projects/${FB.projectId}/databases/(default)/documents/dashboard/${FB.docId}?key=${FB.apiKey}`;
+}
+
+async function remoteLoad(){
+  setSS('loading','กำลังโหลด...');
+  try{
+    const r=await fetch(fbUrl());
+    if(r.status===404){setSS('ok','ยังไม่มีข้อมูล Cloud');return null;}
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const json=await r.json();
+    const flat=fromFS(json.fields);
+    if(!flat['_m']){setSS('ok','ยังไม่มีข้อมูล Cloud');return null;}
+    const d=unflattenData(flat);
+    setSS('ok','Synced ✓');return d;
+  }catch(e){setSS('err','โหลดไม่ได้: '+e.message);return null;}
+}
+
+async function remoteSave(data){
+  setSS('loading','กำลังบันทึก...');
+  try{
+    const flat=flattenData(data);
+    const r=await fetch(fbUrl(),{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(toFS(flat))
+    });
+    if(!r.ok){
+      const ej=await r.json().catch(()=>({}));
+      throw new Error((ej.error&&ej.error.message)||`HTTP ${r.status}`);
+    }
+    setSS('ok','Saved ✓');return true;
+  }catch(e){
+    setSS('err','บันทึกไม่ได้: '+e.message);
+    console.error('Firebase save error:',e.message);
+    return false;
+  }
+}
+
+// ════ DATA ════
+const EMPTY_MONTH = {ig_fol:0,ig_views:0,ig_likes:0,ig_comments:0,ig_saves:0,ig_shares:0,ig_new_fol:0,ig_er:0,tt_fol:0,tt_post_views:0,tt_profile_views:0,tt_likes:0,tt_comments:0,tt_shares:0,tt_er:0};
+const STORAGE_KEY = 'n9_v7'; // เปลี่ยน key ใหม่ทุกครั้งที่ ENTRY_MO เปลี่ยน
+
+function fixChannel(ch){
+  // ให้มั่นใจว่า channel ทุก member มีครบ ENTRY_MO.length เดือนเสมอ
+  return MB.map((m,i)=>{
+    const existing = (ch && ch[i]) ? ch[i] : [];
+    if(existing.length === ENTRY_MO.length) return existing;
+    // เติม empty เดือนให้ครบ (prepend ถ้าน้อยกว่า)
+    const pad = ENTRY_MO.length - existing.length;
+    if(pad > 0) return [...Array(pad).fill(null).map(()=>({...EMPTY_MONTH})), ...existing];
+    return existing.slice(0, ENTRY_MO.length);
+  });
+}
+
+function localLoad(){
+  const s = localStorage.getItem(STORAGE_KEY);
+  if(s){
+    try{
+      const d = JSON.parse(s);
+      if(!d.fol) d.fol = DEF.fol.map(r=>[...r]);
+      d.channel = fixChannel(d.channel);
+      if(!d.rangeData) d.rangeData = MB.map(()=>ENTRY_MO.map(()=>({eng_target:0,views_target:0,eng_mid:0,views_mid:0})));
+      if(!d.fuData) d.fuData = {};
+      if(!d.productData) d.productData = {};
+      return d;
+    }catch(e){}
+  }
+  // ลอง migrate จาก version เก่า
+  const old = localStorage.getItem('n9_v6') || localStorage.getItem('n9_v5');
+  if(old){
+    try{
+      const d = JSON.parse(old);
+      if(!d.fol) d.fol = DEF.fol.map(r=>[...r]);
+      d.channel = fixChannel(d.channel);
+      if(!d.rangeData) d.rangeData = MB.map(()=>ENTRY_MO.map(()=>({eng_target:0,views_target:0,eng_mid:0,views_mid:0})));
+      if(!d.fuData) d.fuData = {};
+      if(!d.productData) d.productData = {};
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+      return d;
+    }catch(e){}
+  }
+  return{
+    views: DEF.views.map(r=>[...r]),
+    eng:   DEF.eng.map(r=>[...r]),
+    fol:   DEF.fol.map(r=>[...r]),
+    channel: MB.map(()=>ENTRY_MO.map(()=>({...EMPTY_MONTH}))),
+    rangeData: MB.map(()=>ENTRY_MO.map(()=>({eng_target:0,views_target:0,eng_mid:0,views_mid:0}))),
+    fuData: {},
+    productData: {}
+  };
+}
+function localSave(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}
+
+function readInps(){
+  const d={views:[],eng:[]};
+  for(let i=0;i<M;i++){d.views[i]=[];d.eng[i]=[];
+    for(let j=0;j<MO;j++){
+      const ve=document.getElementById(`v_${i}_${j}`),ee=document.getElementById(`e_${i}_${j}`);
+      d.views[i][j]=ve?parseInt(ve.value.replace(/,/g,''))||0:0;
+      d.eng[i][j]=ee?parseInt(ee.value.replace(/,/g,''))||0:0;
+    }}return d;
+}
+function readChannelInps(){
+  const ch=cd.channel.map(m=>m.map(mo=>({...mo})));
+  for(let i=0;i<M;i++){
+    for(let mi=0;mi<ENTRY_MO.length;mi++){
+      const fields=['ig_fol','ig_views','ig_likes','ig_comments','ig_saves','ig_shares','ig_new_fol','tt_fol','tt_post_views','tt_profile_views','tt_likes','tt_comments','tt_shares'];
+      fields.forEach(f=>{const el=document.getElementById(`ch_${i}_${mi}_${f}`);if(el)ch[i][mi][f]=parseInt(el.value.replace(/,/g,''))||0;});
+      // auto-calc ER
+      const igV=ch[i][mi].ig_views||1;
+      ch[i][mi].ig_er = igV>0 ? ((ch[i][mi].ig_likes+ch[i][mi].ig_comments+ch[i][mi].ig_saves+ch[i][mi].ig_shares)/igV*100) : 0;
+      const ttV=ch[i][mi].tt_post_views||1;
+      ch[i][mi].tt_er = ttV>0 ? ((ch[i][mi].tt_likes+ch[i][mi].tt_comments+ch[i][mi].tt_shares)/ttV*100) : 0;
+    }
+  }
+  return ch;
+}
+
+async function doSave(){
+  const d=readInps();
+  d.fol=cd.fol;
+  d.channel=readChannelInps();
+  d.rangeData=readRangeInps();
+  d.fuData=cd.fuData||{};
+  d.productData=cd.productData||{};
+  localSave(d);cd=d;
+  const ok=await remoteSave(d);
+  showToast(ok?'บันทึก + Sync แล้ว ✓':'บันทึก Local แล้ว (Sync ไม่สำเร็จ)');
+  refreshAll();
+}
+async function doLoad(){
+  // แสดงข้อมูล local ก่อนเลย ไม่รอ Firebase
+  cd=localLoad();buildTbl();buildEntryTable();buildFolTables();buildRange();refreshAll();
+  // แล้วค่อย sync จาก Firebase ทับ
+  let d=await remoteLoad();
+  if(d&&d.views&&d.views.length>0){
+    if(!d.fol||!d.fol.length) d.fol=DEF.fol.map(r=>[...r]);
+    if(!d.channel||!d.channel.length) d.channel=MB.map(()=>ENTRY_MO.map(()=>({...EMPTY_MONTH})));
+    if(!d.rangeData||!d.rangeData.length) d.rangeData=MB.map(()=>ENTRY_MO.map(()=>({eng_target:0,views_target:0,eng_mid:0,views_mid:0})));
+    if(!d.fuData) d.fuData={};
+    if(!d.productData) d.productData={};
+    localSave(d);cd=d;
+    buildTbl();buildEntryTable();buildFolTables();buildRange();refreshAll();
+    if(document.getElementById('page-products')&&document.getElementById('page-products').classList.contains('active')){
+      initProductsPage();
+    }
+    showToast('โหลดข้อมูลล่าสุดแล้ว ✓');
+  }else{
+    showToast('ใช้ข้อมูล Local (Cloud ยังไม่มีข้อมูล)');
+  }
+}
+function clearAll(){localStorage.removeItem(STORAGE_KEY);cd=localLoad();buildTbl();buildEntryTable();buildFolTables();buildRange();refreshAll();showToast('ล้างข้อมูลแล้ว');}
+
+// ฟังก์ชันเก่า JSONBin — คงไว้ไม่ให้ error ถ้ายังมีการเรียก
+function saveSetup(){}
+function useLocalOnly(){cd=localLoad();buildTbl();buildEntryTable();buildFolTables();buildRange();refreshAll();}
+function openSettings(){showToast('เชื่อมต่อ Firebase แล้ว ไม่ต้องตั้งค่าเพิ่ม ✓');}
+
+let cd = localLoad();
+const s = r => r.reduce((a,b)=>a+b,0);
+const fN = n => n>=1e6?(n/1e6).toFixed(2)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(Math.round(n));
+const fF = n => n.toLocaleString();
+const pF = n => n.toFixed(2)+'%';
+
+function cmp(d){
+  const et=d.eng.map(s),vt=d.views.map(s),te=s(et),tv=s(vt);
+  const mes=MO_LBL.map((_,j)=>d.eng.reduce((a,r)=>a+r[j],0));
+  const mvs=MO_LBL.map((_,j)=>d.views.reduce((a,r)=>a+r[j],0));
+  const byE=[...MB.map((m,i)=>({...m,i,e:et[i],v:vt[i]}))].sort((a,b)=>b.e-a.e||a.i-b.i);
+  const byV=[...MB.map((m,i)=>({...m,i,e:et[i],v:vt[i]}))].sort((a,b)=>b.v-a.v||a.i-b.i);
+  return{et,vt,te,tv,mes,mvs,bemi:mes.indexOf(Math.max(...mes)),bvmi:mvs.indexOf(Math.max(...mvs)),byE,byV};
+}
+
+let hs=new Set(),ovm='eng',rkm='eng',Ch={};
+
+// ════ OVERVIEW ════
+function buildMC(c){
+  document.getElementById('mCards').innerHTML=[
+    {lb:'Engagement รวม',v:fF(c.te),sub:'ทุกคนรวมกัน',cl:'ce'},
+    {lb:'ยอดวิว รวม',v:fF(c.tv),sub:'ทุกคนรวมกัน',cl:'cv'},
+    {lb:'เดือน Eng ดีสุด',v:MO_LBL[c.bemi],sub:fF(c.mes[c.bemi])+' Eng',cl:'cg'},
+    {lb:'เดือน Views ดีสุด',v:MO_LBL[c.bvmi],sub:fF(c.mvs[c.bvmi])+' Views',cl:'cg2'},
+  ].map(x=>`<div class="mc ${x.cl}"><div class="mc-lb">${x.lb}</div><div class="mc-v">${x.v}</div><div class="mc-sub">${x.sub}</div></div>`).join('');
+}
+function buildLeg(){
+  document.getElementById('leg').innerHTML=MB.map((m,i)=>`<div class="li ${hs.has(i)?'off':''}" onclick="tgS(${i})"><div class="ld" style="background:${m.color}"></div>${m.name}</div>`).join('');
+  document.getElementById('pills').innerHTML=`<button class="pill" onclick="showAll()">ทุกคน</button>`+MB.map((m,i)=>`<button class="pill" onclick="tgS(${i})" style="border-color:${m.color}70;color:${hs.has(i)?'var(--mu)':m.color}">${m.name}</button>`).join('');
+}
+function tgS(i){hs.has(i)?hs.delete(i):hs.add(i);buildLeg();buildTrend();}
+function showAll(){hs.clear();buildLeg();buildTrend();}
+function setOvM(m){ovm=m;document.getElementById('ov-te').classList.toggle('on',m==='eng');document.getElementById('ov-tv').classList.toggle('on',m==='views');buildTrend();}
+function buildTrend(){
+  if(Ch.tr)Ch.tr.destroy();
+  const mx=ovm==='eng'?cd.eng:cd.views;
+  Ch.tr=new Chart(document.getElementById('trendC').getContext('2d'),{type:'line',
+    data:{labels:MO_LBL,datasets:MB.map((m,i)=>({label:m.name,data:mx[i],borderColor:hs.has(i)?'transparent':m.color,backgroundColor:hs.has(i)?'transparent':m.color+'18',fill:false,tension:.35,pointRadius:4,pointHoverRadius:6,borderWidth:2.5,hidden:hs.has(i)}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fF(c.parsed.y)}`}}},
+      scales:{x:{grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:11},maxRotation:0,autoSkip:false}},y:{grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:11},callback:v=>fN(v)}}}}});
+}
+
+// ════ MONTHLY ENTRY (กรอกยอดรายเดือน) ════
+let entryMo = 0; // index into ENTRY_MO
+function prevEntryMo(){entryMo=Math.max(0,entryMo-1);buildEntryTable();}
+function nextEntryMo(){entryMo=Math.min(ENTRY_MO.length-1,entryMo+1);buildEntryTable();}
+
+function buildEntryPills(){
+  document.getElementById('entryMoPills').innerHTML=ENTRY_MO.map((mo,i)=>
+    `<button class="pill" onclick="entryMo=${i};buildEntryTable()" id="emp_${i}">${mo}</button>`
+  ).join('');
+}
+
+function buildEntryTable(){
+  document.getElementById('entry-mo-label').textContent=ENTRY_MO[entryMo];
+  ENTRY_MO.forEach((_,i)=>{const p=document.getElementById(`emp_${i}`);if(!p)return;p.style.borderColor=i===entryMo?'var(--ac)':'var(--bd)';p.style.color=i===entryMo?'var(--ac)':'var(--mu)';});
+
+  const isBaseline = entryMo === 0; // มี.ค. 69 = baseline
+  const ch = cd.channel||DEF.channel.map(m=>m.map(mo=>({...mo})));
+  document.getElementById('entryCards').innerHTML = (isBaseline ? `
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 16px;font-size:12px;color:#166534;margin-bottom:1rem;display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:18px;flex-shrink:0">📌</span>
+      <div>
+        <strong>มีนาคม 69 = Baseline ก่อนทำงานกับ Creator Hub</strong><br>
+        กรอกยอดจริงของน้องแต่ละคนก่อนเริ่มต้นทำงาน เพื่อใช้เปรียบเทียบการเติบโตในเดือนถัดไป
+        <div style="margin-top:6px"><button class="btn" style="font-size:11px;padding:4px 10px" onclick="prefillBaseline()">⚡ Auto-fill จาก Baseline Data</button></div>
+      </div>
+    </div>` : '') + MB.map((m,i)=>{
+    const d = ch[i][entryMo];
+    const prevD = entryMo > 0 ? ch[i][entryMo-1] : null;
+    const igGrowth = prevD && prevD.ig_fol > 0 ? ((d.ig_fol - prevD.ig_fol)/prevD.ig_fol*100).toFixed(1) : null;
+    const ttGrowth = prevD && prevD.tt_fol > 0 ? ((d.tt_fol - prevD.tt_fol)/prevD.tt_fol*100).toFixed(1) : null;
+    const T = TIER_CFG[m.tier];
+
+    return `<div class="range-card" style="margin-bottom:12px">
+      <div class="range-header">
+        <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px">
+          <div class="mdot" style="background:${m.color};width:12px;height:12px;border-radius:50%"></div>
+          <span style="color:${m.color}">${m.name}</span>
+          <span class="tier ${m.tc}">${m.tier}</span>
+          <span style="font-size:11px;color:var(--mu)">${m.ttH} / ${m.igH}</span>
+        </div>
+        <div style="font-size:11px;color:var(--mu)">Baseline IG: ${fF(m.ig_fol)} · TT: ${fF(m.tt_fol)}</div>
+      </div>
+      <div class="grid2">
+        <!-- IG -->
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#9d174d;margin-bottom:10px;padding:5px 8px;background:#fce7f3;border-radius:6px">📸 Instagram</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <label style="font-size:11px;color:var(--mu)">Followers<br><input class="inp ig" id="ch_${i}_${entryMo}_ig_fol" type="text" value="${d.ig_fol||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Views/Post<br><input class="inp" id="ch_${i}_${entryMo}_ig_views" type="text" value="${d.ig_views||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Likes<br><input class="inp" id="ch_${i}_${entryMo}_ig_likes" type="text" value="${d.ig_likes||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Comments<br><input class="inp" id="ch_${i}_${entryMo}_ig_comments" type="text" value="${d.ig_comments||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Saves<br><input class="inp" id="ch_${i}_${entryMo}_ig_saves" type="text" value="${d.ig_saves||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Shares<br><input class="inp" id="ch_${i}_${entryMo}_ig_shares" type="text" value="${d.ig_shares||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">New Followers<br><input class="inp ig" id="ch_${i}_${entryMo}_ig_new_fol" type="text" value="${d.ig_new_fol||0}" onblur="fmt(this)"></label>
+          </div>
+          <div style="margin-top:10px;padding:10px;background:var(--sf2);border-radius:8px">
+            <div style="font-size:11px;color:var(--mu);margin-bottom:4px">IG ER% (คำนวณอัตโนมัติ)</div>
+            <div class="mc-v" id="live_ig_er_${i}_${entryMo}" style="font-size:18px;color:#9d174d">${d.ig_er?.toFixed(2)||'0.00'}%</div>
+            <div style="font-size:10px;color:var(--mu);margin-top:3px">เป้า Tier ${m.tier}: ≥${T.ig_er_min}% · <span class="${d.ig_er>=T.ig_er_min?'badge badge-ok':'badge badge-bad'}">${d.ig_er>=T.ig_er_min?'✓ ผ่านเป้า':'ต่ำกว่าเป้า'}</span></div>
+            ${igGrowth!==null?`<div style="font-size:11px;margin-top:4px">Fol เพิ่ม: <span class="${parseFloat(igGrowth)>0?'delta-up':'delta-dn'}">${igGrowth>0?'+':''}${igGrowth}%</span> · เป้า Tier: +${T.flat_fol_mo[0].toLocaleString()}–${T.flat_fol_mo[1].toLocaleString()} คน/เดือน</div>`:''}
+          </div>
+        </div>
+        <!-- TikTok -->
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#9f1239;margin-bottom:10px;padding:5px 8px;background:#fef2f2;border-radius:6px">🎵 TikTok</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <label style="font-size:11px;color:var(--mu)">Followers<br><input class="inp ig" id="ch_${i}_${entryMo}_tt_fol" type="text" value="${d.tt_fol||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Post Views (รวม)<br><input class="inp" id="ch_${i}_${entryMo}_tt_post_views" type="text" value="${d.tt_post_views||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Profile Views<br><input class="inp" id="ch_${i}_${entryMo}_tt_profile_views" type="text" value="${d.tt_profile_views||0}" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Likes<br><input class="inp" id="ch_${i}_${entryMo}_tt_likes" type="text" value="${d.tt_likes||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Comments<br><input class="inp" id="ch_${i}_${entryMo}_tt_comments" type="text" value="${d.tt_comments||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+            <label style="font-size:11px;color:var(--mu)">Avg Shares<br><input class="inp" id="ch_${i}_${entryMo}_tt_shares" type="text" value="${d.tt_shares||0}" oninput="liveER(${i},${entryMo})" onblur="fmt(this)"></label>
+          </div>
+          <div style="margin-top:10px;padding:10px;background:var(--sf2);border-radius:8px">
+            <div style="font-size:11px;color:var(--mu);margin-bottom:4px">TT ER% (คำนวณอัตโนมัติ)</div>
+            <div class="mc-v" id="live_tt_er_${i}_${entryMo}" style="font-size:18px;color:#9f1239">${d.tt_er?.toFixed(2)||'0.00'}%</div>
+            <div style="font-size:10px;color:var(--mu);margin-top:3px">เป้า Tier ${m.tier}: ≥${T.tt_er_min}% · <span class="${d.tt_er>=T.tt_er_min?'badge badge-ok':'badge badge-bad'}">${d.tt_er>=T.tt_er_min?'✓ ผ่านเป้า':'ต่ำกว่าเป้า'}</span></div>
+            ${ttGrowth!==null?`<div style="font-size:11px;margin-top:4px">Fol เพิ่ม: <span class="${parseFloat(ttGrowth)>0?'delta-up':'delta-dn'}">${ttGrowth>0?'+':''}${ttGrowth}%</span> · เป้า Tier: +${T.flat_fol_mo[0].toLocaleString()}–${T.flat_fol_mo[1].toLocaleString()} คน/เดือน</div>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Pre-fill March baseline from actual Excel data
+function prefillBaseline(){
+  if(!confirm('Auto-fill ยอด Baseline มี.ค. 69 จากข้อมูลจริง Excel?\n(จะแทนที่ค่าที่กรอกไว้)')) return;
+  const BASELINE = [
+    // ig_fol, ig_views, ig_likes, ig_comments, ig_saves, ig_shares, ig_new_fol,
+    // tt_fol, tt_post_views, tt_profile_views, tt_likes, tt_comments, tt_shares
+    [104000, 14608028, 0, 0, 0, 0, 0,  16400,  1100000, 0, 0, 0, 0],  // ยูริน
+    [8833,   93900,    0, 0, 0, 0, 0, 129700,   874000, 0, 0, 0, 0],  // เฟิร์ส
+    [115000, 800000,   0, 0, 0, 0, 0, 232200,    45000, 0, 0, 0, 0],  // เวียร์
+    [10852,  103152,   0, 0, 0, 0, 0, 119011,   283000, 0, 0, 0, 0],  // เนม
+    [8566,   23600,    0, 0, 0, 0, 0, 133346,   231000, 0, 0, 0, 0],  // เอมมี่
+    [11810,  128260,   0, 0, 0, 0, 0,  70132,   134000, 0, 0, 0, 0],  // พราว
+    [1502,   141399,   0, 0, 0, 0, 0,  70983,   360000, 0, 0, 0, 0],  // อินดี้
+  ];
+  const fields = ['ig_fol','ig_views','ig_likes','ig_comments','ig_saves','ig_shares','ig_new_fol',
+                  'tt_fol','tt_post_views','tt_profile_views','tt_likes','tt_comments','tt_shares'];
+  MB.forEach((m, mi) => {
+    const vals = BASELINE[mi];
+    fields.forEach((f, fi) => {
+      const el = document.getElementById(`ch_${mi}_0_${f}`);
+      if(el) el.value = vals[fi];
+    });
+    liveER(mi, 0);
+  });
+  showToast('Auto-fill Baseline มี.ค. 69 แล้ว · กด 💾 บันทึก เพื่อเซฟ');
+}
+
+function liveER(mi, moi){
+  // Live-compute ER as user types
+  const igViews = parseInt(document.getElementById(`ch_${mi}_${moi}_ig_views`)?.value)||0;
+  const igLikes = parseInt(document.getElementById(`ch_${mi}_${moi}_ig_likes`)?.value)||0;
+  const igComments = parseInt(document.getElementById(`ch_${mi}_${moi}_ig_comments`)?.value)||0;
+  const igSaves = parseInt(document.getElementById(`ch_${mi}_${moi}_ig_saves`)?.value)||0;
+  const igShares = parseInt(document.getElementById(`ch_${mi}_${moi}_ig_shares`)?.value)||0;
+  const igER = igViews > 0 ? ((igLikes+igComments+igSaves+igShares)/igViews*100) : 0;
+  const el1 = document.getElementById(`live_ig_er_${mi}_${moi}`);
+  if(el1) el1.textContent = igER.toFixed(2)+'%';
+
+  const ttViews = parseInt(document.getElementById(`ch_${mi}_${moi}_tt_post_views`)?.value)||0;
+  const ttLikes = parseInt(document.getElementById(`ch_${mi}_${moi}_tt_likes`)?.value)||0;
+  const ttComments = parseInt(document.getElementById(`ch_${mi}_${moi}_tt_comments`)?.value)||0;
+  const ttShares = parseInt(document.getElementById(`ch_${mi}_${moi}_tt_shares`)?.value)||0;
+  const ttER = ttViews > 0 ? ((ttLikes+ttComments+ttShares)/ttViews*100) : 0;
+  const el2 = document.getElementById(`live_tt_er_${mi}_${moi}`);
+  if(el2) el2.textContent = ttER.toFixed(2)+'%';
+}
+function saveEntry(){doSave();}
+
+// ════ GROWTH TARGETS ════
+function buildGrowthTargets(){
+  document.getElementById('memberTargetBody').innerHTML = MB.map((m,i)=>{
+    const T = TIER_CFG[m.tier];
+    // Use flat absolute numbers (สมเหตุสมผลกว่า %)
+    const folMo  = `+${fF(T.flat_fol_mo[0])}–${fF(T.flat_fol_mo[1])} คน`;
+    const folHalf = `+${fF(T.flat_fol_half[0])}–${fF(T.flat_fol_half[1])} คน`;
+    const ttErTgt = Math.min(m.tt_er * 1.05, 30).toFixed(2);
+    const igErTgt = Math.min(m.ig_er * 1.05, 25).toFixed(2);
+    const ttErOk = m.tt_er >= T.tt_er_min;
+    const igErOk = m.ig_er >= T.ig_er_min;
+    return `<tr>
+      <td><div class="mn" style="color:${m.color}">${m.name}</div><div class="mh">${m.ttH}</div></td>
+      <td><span class="tier ${m.tc}">${m.tier}</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace">${fF(m.ig_fol)}</td>
+      <td style="font-family:'IBM Plex Mono',monospace">${fF(m.tt_fol)}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;color:#059669;font-weight:700">${folMo}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;color:#6c5ce7;font-weight:700">${folHalf}</td>
+      <td style="font-family:'IBM Plex Mono',monospace" class="${ttErOk?'er-good':'er-bad'}">${m.tt_er}%</td>
+      <td style="font-family:'IBM Plex Mono',monospace;color:#059669;font-weight:700">≥${ttErTgt}%</td>
+      <td style="font-family:'IBM Plex Mono',monospace" class="${igErOk?'er-good':'er-bad'}">${m.ig_er}%</td>
+      <td style="font-family:'IBM Plex Mono',monospace;color:#059669;font-weight:700">≥${igErTgt}%</td>
+      <td style="font-weight:700;color:#0984e3">+${T.views_mo}%</td>
+      <td style="font-weight:700;color:#6c5ce7">+${T.eng_mo}%</td>
+    </tr>`;
+  }).join('');
+}
+
+// ════ RANKING ════
+function setRkM(m){
+  rkm=m;
+  document.getElementById('rk-te').classList.toggle('on',m==='eng');document.getElementById('rk-tv').classList.toggle('on',m==='views');
+  document.getElementById('rk-title').textContent='🏆 Ranking รวมทั้งหมด — '+(m==='eng'?'Engagement':'ยอดวิว');
+  document.getElementById('rk-bt').textContent='📊 '+(m==='eng'?'Engagement':'ยอดวิว')+' รวม';
+  document.getElementById('rk-ca').textContent=(m==='eng'?'Engagement':'ยอดวิว')+' รวม';
+  document.getElementById('rk-cb').textContent=(m==='eng'?'ยอดวิว':'Engagement')+' รวม';
+  const c=cmp(cd);buildRkTbl(c);buildRkBar(c);
+}
+function buildRkTbl(c){
+  const rkd=rkm==='eng'?c.byE:c.byV,mx=Math.max(...(rkm==='eng'?c.et:c.vt),1);
+  const bd=['rb1','rb2','rb3','rbn','rbn','rbn','rbn'];
+  document.getElementById('rankBody').innerHTML=rkd.map((m,ri)=>{
+    const pri=rkm==='eng'?m.e:m.v,sec=rkm==='eng'?m.v:m.e;
+    return`<tr><td><span class="rbadge ${bd[ri]}">${ri+1}</span></td>
+    <td><div class="mn" style="color:${m.color}">${m.name}</div><div class="mh">${m.ttH}</div></td>
+    <td><span class="tier ${m.tc}">${m.tier}</span></td>
+    <td><div class="numr">${fF(pri)}</div><div class="bbg"><div class="bfill" style="width:${(pri/mx*100).toFixed(1)}%;background:${m.color}"></div></div></td>
+    <td><div class="numr2">${fF(sec)}</div></td></tr>`;
+  }).join('');
+}
+function buildRkBar(c){
+  if(Ch.rkb)Ch.rkb.destroy();
+  const rkd=rkm==='eng'?c.byE:c.byV,vals=rkd.map(m=>rkm==='eng'?m.e:m.v);
+  Ch.rkb=new Chart(document.getElementById('rkBarC').getContext('2d'),{type:'bar',
+    data:{labels:rkd.map(m=>m.name),datasets:[{data:vals,backgroundColor:rkd.map(m=>m.color+'99'),borderColor:rkd.map(m=>m.color),borderWidth:1,borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fF(c.parsed.x)}`}}},
+      scales:{x:{grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:10},callback:v=>fN(v)}},y:{grid:{color:'transparent'},ticks:{color:'#1a1d2e',font:{size:12}}}}}});
+}
+
+// ════ FOLLOWERS ════
+function buildFolTables(){
+  const fol=cd.fol||DEF.fol;
+  const ttData=[...MB.map((m,i)=>({...m,i,fol:fol[i][1]}))].sort((a,b)=>b.fol-a.fol);
+  const igData=[...MB.map((m,i)=>({...m,i,fol:fol[i][0]}))].sort((a,b)=>b.fol-a.fol);
+  const maxTT=Math.max(...ttData.map(d=>d.fol),1);
+  const maxIG=Math.max(...igData.map(d=>d.fol),1);
+  const bd=['rb1','rb2','rb3','rbn','rbn','rbn','rbn'];
+  const renderFol=(data,maxV,isIG)=>`<thead><tr><th style="width:30px">#</th><th>น้อง</th><th style="text-align:right">Followers</th><th>Bar</th></tr></thead><tbody>`+data.map((m,ri)=>
+    `<tr><td><span class="rbadge ${bd[ri]}">${ri+1}</span></td>
+    <td><div style="font-weight:600;color:${m.color}">${m.name}</div><div style="font-size:10px;color:var(--mu)">${isIG?m.igH:m.ttH}</div></td>
+    <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:700;color:${m.color}">${m.fol>0?fF(m.fol):'—'}</td>
+    <td style="width:120px"><div class="bbg"><div class="bfill" style="width:${(m.fol/maxV*100).toFixed(1)}%;background:${m.color}"></div></div></td>
+    </tr>`).join('')+'</tbody>';
+  document.getElementById('ttFolTable').innerHTML=renderFol(ttData,maxTT,false);
+  document.getElementById('igFolTable').innerHTML=renderFol(igData,maxIG,true);
+  const fol2=cd.fol||DEF.fol;
+  document.getElementById('folInputTable').innerHTML=`<thead><tr><th>น้อง</th><th>Tier</th><th>IG Handle</th><th>IG Followers</th><th>TT Handle</th><th>TT Followers</th></tr></thead><tbody>`
+    +MB.map((m,i)=>`<tr>
+    <td><div style="font-weight:600;color:${m.color}">${m.name}</div></td>
+    <td><span class="tier ${m.tc}">${m.tier}</span></td>
+    <td style="font-size:11px;color:var(--mu)">${m.igH}</td>
+    <td><input class="inp ig" id="fol_ig_${i}" value="${fol2[i][0]}" type="text"></td>
+    <td style="font-size:11px;color:var(--mu)">${m.ttH}</td>
+    <td><input class="inp ig" id="fol_tt_${i}" value="${fol2[i][1]}" type="text"></td>
+    </tr>`).join('')+'</tbody>';
+}
+async function saveFol(){
+  const fol=MB.map((m,i)=>[parseInt(document.getElementById(`fol_ig_${i}`).value)||0,parseInt(document.getElementById(`fol_tt_${i}`).value)||0]);
+  cd.fol=fol;localSave(cd);
+  const ok=await remoteSave(cd);
+  showToast(ok?'บันทึก Followers แล้ว ✓':'บันทึก Local แล้ว');buildFolTables();
+}
+
+// ════ RANGE — เป้ารายเดือน + Progress ครึ่งเดือน ════
+// rangeMo = index ใน ENTRY_MO (0=มี.ค., 1=เม.ย., ...)
+let rangeMo = 1; // default เม.ย.
+
+function prevRangeMo(){ rangeMo=Math.max(0,rangeMo-1); buildRange(); }
+function nextRangeMo(){ rangeMo=Math.min(ENTRY_MO.length-1,rangeMo+1); buildRange(); }
+
+function buildRangePills(){
+  document.getElementById('rangeMoPills').innerHTML = ENTRY_MO.map((mo,i)=>
+    `<button class="pill" onclick="rangeMo=${i};buildRange()" id="rngp_${i}">${mo}</button>`
+  ).join('');
+}
+
+// rangeData: per member per ENTRY_MO month
+// each entry: { eng_target, views_target, eng_mid, views_mid }
+function getRangeData(){
+  if(!cd.rangeData){
+    cd.rangeData = MB.map(()=>ENTRY_MO.map(()=>({eng_target:0,views_target:0,eng_mid:0,views_mid:0})));
+  }
+  // ensure correct size
+  cd.rangeData = MB.map((m,i)=>{
+    const existing = cd.rangeData[i]||[];
+    return ENTRY_MO.map((_,j)=>existing[j]||{eng_target:0,views_target:0,eng_mid:0,views_mid:0});
+  });
+  return cd.rangeData;
+}
+
+function readRangeInps(){
+  const rd = getRangeData();
+  MB.forEach((m,i)=>{
+    ['eng_target','views_target','eng_mid','views_mid'].forEach(f=>{
+      const el=document.getElementById(`rng_${i}_${rangeMo}_${f}`);
+      if(el) rd[i][rangeMo][f]=parseInt(el.value.replace(/,/g,''))||0;
+    });
+  });
+  return rd;
+}
+
+async function saveRange(){
+  cd.rangeData = readRangeInps();
+  localSave(cd);
+  const ok = await remoteSave(cd);
+  showToast(ok?'บันทึก Range แล้ว ✓':'บันทึก Local แล้ว');
+  buildRange();
+}
+
+function buildRange(){
+  const mo = ENTRY_MO[rangeMo];
+  document.getElementById('range-mo-label').textContent = mo;
+
+  // update pills highlight
+  ENTRY_MO.forEach((_,i)=>{
+    const p=document.getElementById(`rngp_${i}`);if(!p)return;
+    p.style.borderColor=i===rangeMo?'var(--ac)':'var(--bd)';
+    p.style.color=i===rangeMo?'var(--ac)':'var(--mu)';
+  });
+
+  const rd = getRangeData();
+  const data = MB.map((m,i)=>({...m,i,...rd[i][rangeMo]}));
+
+  // Summary
+  const totalEngTgt = data.reduce((s,d)=>s+(d.eng_target||0),0);
+  const totalViewsTgt = data.reduce((s,d)=>s+(d.views_target||0),0);
+  const totalEngMid = data.reduce((s,d)=>s+(d.eng_mid||0),0);
+  const totalViewsMid = data.reduce((s,d)=>s+(d.views_mid||0),0);
+  const onTrackEng = data.filter(d=>d.eng_target>0&&d.eng_mid/d.eng_target>=0.5).length;
+  const onTrackViews = data.filter(d=>d.views_target>0&&d.views_mid/d.views_target>=0.5).length;
+
+  document.getElementById('rangeSummary').innerHTML=[
+    {lb:'เป้า Eng รวม',v:fN(totalEngTgt),sub:'ทุกคนรวมกัน',c:'#6c5ce7'},
+    {lb:'Eng ยอดล่าสุด',v:fN(totalEngMid),sub:totalEngTgt>0?(totalEngMid/totalEngTgt*100).toFixed(1)+'% ของเป้า':'รอกรอกเป้า',c:totalEngTgt>0&&totalEngMid/totalEngTgt>=0.5?'#059669':'#e17055'},
+    {lb:'เป้า Views รวม',v:fN(totalViewsTgt),sub:'ทุกคนรวมกัน',c:'#0984e3'},
+    {lb:'Views ยอดล่าสุด',v:fN(totalViewsMid),sub:totalViewsTgt>0?(totalViewsMid/totalViewsTgt*100).toFixed(1)+'% ของเป้า':'รอกรอกเป้า',c:totalViewsTgt>0&&totalViewsMid/totalViewsTgt>=0.5?'#059669':'#e17055'},
+    {lb:'On Track Eng',v:onTrackEng+'/'+M,sub:'คนที่ผ่าน 50%',c:'#059669'},
+    {lb:'On Track Views',v:onTrackViews+'/'+M,sub:'คนที่ผ่าน 50%',c:'#0984e3'},
+  ].map(x=>`<div class="rscard" style="border-top:3px solid ${x.c}"><div class="rscard-label">${x.lb}</div><div class="rscard-val" style="color:${x.c}">${x.v}</div><div class="rscard-sub">${x.sub}</div></div>`).join('');
+
+  // Per-member cards
+  document.getElementById('rangeCards').innerHTML = data.map((m,idx)=>{
+    const T = TIER_CFG[m.tier];
+    const et=m.eng_target||0, vt=m.views_target||0;
+    const em=m.eng_mid||0,    vm=m.views_mid||0;
+    const ePct = et>0?(em/et*100):0;
+    const vPct = vt>0?(vm/vt*100):0;
+    const eW = Math.min(ePct,100).toFixed(1);
+    const vW = Math.min(vPct,100).toFixed(1);
+    const eNeed = Math.max(0,et-em);
+    const vNeed = Math.max(0,vt-vm);
+    const eOk = ePct>=50, vOk = vPct>=50;
+    const eC = ePct>=50?'#059669':ePct>=30?'#d97706':'#dc2626';
+    const vC = vPct>=50?'#059669':vPct>=30?'#d97706':'#dc2626';
+    // status
+    let stTxt,stCls;
+    if(et===0&&vt===0){stTxt='⬜ ยังไม่กรอกเป้า';stCls='badge-na';}
+    else if(eOk&&vOk){stTxt='✅ On Track';stCls='badge-ok';}
+    else if(ePct>=30||vPct>=30){stTxt='🟡 ระวัง';stCls='badge-warn';}
+    else{stTxt='🔴 ต้องเร่ง';stCls='badge-bad';}
+
+    return `<div class="range-card" style="margin-bottom:10px">
+      <div class="range-header">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="mdot" style="background:${m.color};width:11px;height:11px;border-radius:50%"></div>
+          <span style="font-weight:700;font-size:14px;color:${m.color}">${m.name}</span>
+          <span class="tier ${m.tc}">${m.tier}</span>
+          <span style="font-size:11px;color:var(--mu)">${m.ttH}</span>
+        </div>
+        <span class="badge ${stCls}">${stTxt}</span>
+      </div>
+
+      <div class="grid2" style="gap:12px;margin-bottom:0">
+        <!-- ENGAGEMENT -->
+        <div style="background:var(--sf2);border-radius:8px;padding:12px">
+          <div style="font-size:10px;font-weight:700;color:#6c5ce7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">❤️ Engagement — ${mo}</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+            <label style="font-size:11px;color:var(--mu)">🎯 เป้าทั้งเดือน<br>
+              <input class="inp ie" id="rng_${idx}_${rangeMo}_eng_target" type="text" value="${et||''}" placeholder="0" onblur="fmt(this)" style="width:100px;margin-top:3px">
+            </label>
+            <label style="font-size:11px;color:var(--mu)">📥 ยอดล่าสุด<br>
+              <input class="inp ig" id="rng_${idx}_${rangeMo}_eng_mid" type="text" value="${em||''}" placeholder="0" oninput="liveRange(${idx})" onblur="fmt(this)" style="width:100px;margin-top:3px">
+            </label>
+          </div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${eC};text-align:center;margin-bottom:6px" id="rng_epct_${idx}">${et>0?ePct.toFixed(1)+'%':'—'}</div>
+          <div class="range-prog-bg" style="margin-bottom:5px">
+            <div class="range-prog-fill" id="rng_ebar_${idx}" style="width:${eW}%;background:${eC}"></div>
+            <div class="range-prog-mid"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mu)"><span>0%</span><span style="color:#6c5ce7;font-weight:700">50% เป้า</span><span>100%</span></div>
+          ${et>0&&eNeed>0?`<div style="font-size:11px;color:#dc2626;font-weight:600;text-align:center;margin-top:5px">ยังขาด ${fF(eNeed)} Eng</div>`:''}
+          <div style="font-size:10px;color:var(--mu);text-align:center;margin-top:3px">Tier ${m.tier}: โต ≥${T.eng_mo}%/เดือน</div>
+        </div>
+
+        <!-- VIEWS -->
+        <div style="background:var(--sf2);border-radius:8px;padding:12px">
+          <div style="font-size:10px;font-weight:700;color:#0984e3;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">👁 ยอดวิว — ${mo}</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+            <label style="font-size:11px;color:var(--mu)">🎯 เป้าทั้งเดือน<br>
+              <input class="inp iv" id="rng_${idx}_${rangeMo}_views_target" type="text" value="${vt||''}" placeholder="0" onblur="fmt(this)" style="width:100px;margin-top:3px">
+            </label>
+            <label style="font-size:11px;color:var(--mu)">📥 ยอดล่าสุด<br>
+              <input class="inp ig" id="rng_${idx}_${rangeMo}_views_mid" type="text" value="${vm||''}" placeholder="0" oninput="liveRange(${idx})" onblur="fmt(this)" style="width:100px;margin-top:3px">
+            </label>
+          </div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:${vC};text-align:center;margin-bottom:6px" id="rng_vpct_${idx}">${vt>0?vPct.toFixed(1)+'%':'—'}</div>
+          <div class="range-prog-bg" style="margin-bottom:5px">
+            <div class="range-prog-fill" id="rng_vbar_${idx}" style="width:${vW}%;background:${vC}"></div>
+            <div class="range-prog-mid"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mu)"><span>0%</span><span style="color:#6c5ce7;font-weight:700">50% เป้า</span><span>100%</span></div>
+          ${vt>0&&vNeed>0?`<div style="font-size:11px;color:#dc2626;font-weight:600;text-align:center;margin-top:5px">ยังขาด ${fF(vNeed)} Views</div>`:''}
+          <div style="font-size:10px;color:var(--mu);text-align:center;margin-top:3px">Tier ${m.tier}: โต ≥${T.views_mo}%/เดือน</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function liveRange(idx){
+  const et=parseInt(document.getElementById(`rng_${idx}_${rangeMo}_eng_target`)?.value)||0;
+  const em=parseInt(document.getElementById(`rng_${idx}_${rangeMo}_eng_mid`)?.value)||0;
+  const vt=parseInt(document.getElementById(`rng_${idx}_${rangeMo}_views_target`)?.value)||0;
+  const vm=parseInt(document.getElementById(`rng_${idx}_${rangeMo}_views_mid`)?.value)||0;
+  const ePct=et>0?(em/et*100):0, vPct=vt>0?(vm/vt*100):0;
+  const eC=ePct>=50?'#059669':ePct>=30?'#d97706':'#dc2626';
+  const vC=vPct>=50?'#059669':vPct>=30?'#d97706':'#dc2626';
+  const ep=document.getElementById(`rng_epct_${idx}`);
+  const vp=document.getElementById(`rng_vpct_${idx}`);
+  const eb=document.getElementById(`rng_ebar_${idx}`);
+  const vb=document.getElementById(`rng_vbar_${idx}`);
+  if(ep){ep.textContent=et>0?ePct.toFixed(1)+'%':'—';ep.style.color=eC;}
+  if(vp){vp.textContent=vt>0?vPct.toFixed(1)+'%':'—';vp.style.color=vC;}
+  if(eb){eb.style.width=Math.min(ePct,100).toFixed(1)+'%';eb.style.background=eC;}
+  if(vb){vb.style.width=Math.min(vPct,100).toFixed(1)+'%';vb.style.background=vC;}
+  // update rangeData live
+  const rd=getRangeData();
+  rd[idx][rangeMo]={eng_target:et,views_target:vt,eng_mid:em,views_mid:vm};
+}
+
+// ════ COMPARE ════
+function buildStacked(id,mx,key){
+  if(Ch[key])Ch[key].destroy();
+  Ch[key]=new Chart(document.getElementById(id).getContext('2d'),{type:'bar',
+    data:{labels:MO_LBL,datasets:MB.map((m,i)=>({label:m.name,data:mx[i],backgroundColor:m.color+'aa',borderColor:m.color,borderWidth:1,borderRadius:2}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fF(c.parsed.y)}`}}},
+      scales:{x:{stacked:true,grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:11},maxRotation:0,autoSkip:false}},y:{stacked:true,grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:11},callback:v=>fN(v)}}}}});
+}
+function buildVE(c){
+  if(Ch.ve)Ch.ve.destroy();
+  Ch.ve=new Chart(document.getElementById('veC').getContext('2d'),{type:'bar',
+    data:{labels:MB.map(m=>m.name),datasets:[
+      {label:'ยอดวิว',data:c.vt,backgroundColor:MB.map(m=>m.color+'55'),borderColor:MB.map(m=>m.color),borderWidth:1,borderRadius:4},
+      {label:'Engagement',data:c.et,backgroundColor:MB.map(m=>m.color+'cc'),borderColor:MB.map(m=>m.color),borderWidth:2,borderRadius:4},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#8892a4',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fF(c.parsed.y)}`}}},
+      scales:{x:{grid:{color:'#e8ecf4'},ticks:{color:'#1a1d2e',font:{size:12}}},y:{grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:11},callback:v=>fN(v)}}}}});
+}
+function buildCmp(){const c=cmp(cd);buildStacked('vsC',cd.views,'vs');buildStacked('esC',cd.eng,'es');buildVE(c);}
+
+// ════ INPUT TABLE ════
+function buildTbl(){
+  let h=`<tr><th class="sl" style="min-width:120px">น้อง</th>`;
+  MO_LBL.forEach(mo=>{h+=`<th colspan="2" style="color:var(--ac)">${mo}</th>`;});
+  h+=`<th colspan="2" style="color:var(--ac2)">รวม</th></tr>`;
+  h+=`<tr><th class="sl"></th>`;
+  MO_LBL.forEach(()=>{h+=`<th style="color:var(--blue);font-size:9px;width:72px">👁 วิว</th><th style="color:var(--ac);font-size:9px;width:72px">❤️ Eng</th>`;});
+  h+=`<th style="color:var(--blue);font-size:9px">👁 วิว</th><th style="color:var(--ac);font-size:9px">❤️ Eng</th></tr>`;
+  document.getElementById('dHead').innerHTML=h;
+  let b='';
+  for(let i=0;i<M;i++){
+    const m=MB[i],tv=s(cd.views[i]),te=s(cd.eng[i]);
+    b+=`<tr><td class="sl"><div class="mcell"><div class="mdot" style="background:${m.color}"></div><div><div style="font-weight:500;font-size:12px">${m.name}</div><div style="font-size:10px;color:var(--mu)">${m.ttH}</div><span class="tier ${m.tc}" style="font-size:9px">${m.tier}</span></div></div></td>`;
+    for(let j=0;j<MO;j++){
+      b+=`<td><input class="inp iv" id="v_${i}_${j}" type="text" value="${cd.views[i][j]||0}" oninput="onI(${i})" onblur="fmt(this)"></td>`;
+      b+=`<td><input class="inp ie" id="e_${i}_${j}" type="text" value="${cd.eng[i][j]||0}" oninput="onI(${i})" onblur="fmt(this)"></td>`;
+    }
+    b+=`<td><span class="tc tcv" id="tv_${i}">${fF(tv)}</span></td><td><span class="tc tce" id="te_${i}">${fF(te)}</span></td></tr>`;
+  }
+  document.getElementById('dBody').innerHTML=b;
+  let f=`<tr><td class="sl" style="font-size:11px;color:var(--mu);padding:8px">รวมทุกคน</td>`;
+  for(let j=0;j<MO;j++){const sv=cd.views.reduce((a,r)=>a+r[j],0),se=cd.eng.reduce((a,r)=>a+r[j],0);f+=`<td><span class="tc tcv" id="fv_${j}">${fF(sv)}</span></td><td><span class="tc tce" id="fe_${j}">${fF(se)}</span></td>`;}
+  f+=`<td><span class="tc tcv">${fF(cd.views.reduce((a,r)=>a+s(r),0))}</span></td><td><span class="tc tce">${fF(cd.eng.reduce((a,r)=>a+s(r),0))}</span></td></tr>`;
+  document.getElementById('dFoot').innerHTML=f;
+}
+function onI(i){
+  let tv=0,te=0;
+  for(let j=0;j<MO;j++){
+    const v=parseInt((document.getElementById(`v_${i}_${j}`)||{}).value||'0')||0;
+    const e=parseInt((document.getElementById(`e_${i}_${j}`)||{}).value||'0')||0;
+    tv+=v;te+=e;
+    let cv=0,ce=0;
+    for(let i2=0;i2<M;i2++){cv+=parseInt((document.getElementById(`v_${i2}_${j}`)||{}).value||'0')||0;ce+=parseInt((document.getElementById(`e_${i2}_${j}`)||{}).value||'0')||0;}
+    const fve=document.getElementById(`fv_${j}`);if(fve)fve.textContent=fF(cv);
+    const fee=document.getElementById(`fe_${j}`);if(fee)fee.textContent=fF(ce);
+  }
+  const tve=document.getElementById(`tv_${i}`);if(tve)tve.textContent=fF(tv);
+  const tee=document.getElementById(`te_${i}`);if(tee)tee.textContent=fF(te);
+}
+function fmt(el){el.value=parseInt(el.value.replace(/,/g,''))||0;}
+
+function exportCSV(){
+  let csv='น้อง,Handle,Tier';MO_LBL.forEach(m=>{csv+=`,${m} Views,${m} Engagement`;});csv+=',Views รวม,Engagement รวม\n';
+  for(let i=0;i<M;i++){const m=MB[i];csv+=`${m.name},${m.ttH},${m.tier}`;for(let j=0;j<MO;j++)csv+=`,${cd.views[i][j]},${cd.eng[i][j]}`;csv+=`,${s(cd.views[i])},${s(cd.eng[i])}\n`;}
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Creator Hub_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+
+// ════ MONTHLY ════
+let selMo=0,moMetric='eng';
+function setMoM(m){moMetric=m;document.getElementById('mo-te').classList.toggle('on',m==='eng');document.getElementById('mo-tv').classList.toggle('on',m==='views');buildMonthly();}
+function prevMo(){selMo=Math.max(0,selMo-1);buildMonthly();}
+function nextMo(){selMo=Math.min(MO-1,selMo+1);buildMonthly();}
+function buildMoPills(){
+  document.getElementById('moPills').innerHTML=MO_LBL.map((mo,i)=>`<button class="pill" onclick="selMo=${i};buildMonthly()" id="mop_${i}">${mo}</button>`).join('');
+}
+function buildMonthly(){
+  const mx=moMetric==='eng'?cd.eng:cd.views,moLabel=MO_LBL[selMo];
+  document.getElementById('mo-label').textContent=moLabel;
+  MO_LBL.forEach((_,i)=>{const p=document.getElementById(`mop_${i}`);if(!p)return;p.style.borderColor=i===selMo?'var(--ac)':'var(--bd)';p.style.color=i===selMo?'var(--ac)':'var(--mu)';});
+  const vals=MB.map((m,i)=>({...m,i,val:mx[i][selMo]}));
+  const ranked=[...vals].sort((a,b)=>b.val-a.val);
+  const total=ranked.reduce((s,m)=>s+m.val,0),maxVal=Math.max(...vals.map(v=>v.val),1);
+  const metLabel=moMetric==='eng'?'Engagement':'ยอดวิว';
+  document.getElementById('mo-bar-title').textContent=`📊 ${metLabel} ${moLabel}`;
+  document.getElementById('mo-donut-title').textContent=`🥧 สัดส่วน ${metLabel} ${moLabel}`;
+  document.getElementById('mo-mom-title').textContent=`📅 เทียบกับเดือนก่อน (${selMo>0?MO_LBL[selMo-1]:'—'} → ${moLabel})`;
+  const topMember=ranked[0],ac=ranked.filter(m=>m.val>0).length;
+  document.getElementById('moCards').innerHTML=[
+    {lb:`${metLabel} รวม`,v:fF(total),sub:`${ac} คนมีข้อมูล`,cl:'ce'},
+    {lb:'อันดับ 1',v:topMember.val>0?topMember.name:'—',sub:topMember.val>0?fF(topMember.val)+' '+metLabel:'ยังไม่มีข้อมูล',cl:'cv'},
+    {lb:'สัดส่วนสูงสุด',v:topMember.val>0&&total>0?((topMember.val/total*100).toFixed(1)+'%'):'—',sub:topMember.val>0?topMember.name:'',cl:'cg'},
+    {lb:'เฉลี่ยต่อคน',v:fN(Math.round(total/M)),sub:`จาก ${M} คน`,cl:'cg2'},
+  ].map(x=>`<div class="mc ${x.cl}"><div class="mc-lb">${x.lb}</div><div class="mc-v">${x.v}</div><div class="mc-sub">${x.sub}</div></div>`).join('');
+  const rnkC=['rank-1','rank-2','rank-3','rank-n','rank-n','rank-n','rank-n'];
+  const rnkNC=['mo-rank-1','mo-rank-2','mo-rank-3','mo-rank-n','mo-rank-n','mo-rank-n','mo-rank-n'];
+  const em=['🥇','🥈','🥉','4','5','6','7'];
+  document.getElementById('moRankCards').innerHTML=ranked.map((m,ri)=>`<div class="mo-card ${rnkC[ri]}">
+    <div class="mo-rank-num ${rnkNC[ri]}">${em[ri]}</div>
+    <div class="mo-card-info"><div class="mo-card-name" style="color:${m.color}">${m.name}</div>
+    <div class="mo-card-val" style="color:${m.color}">${fF(m.val)}</div>
+    <div class="mo-card-sub">${metLabel} · ${total>0?(m.val/total*100).toFixed(1):'0'}% ของรวม</div></div>
+    <div class="mo-card-bar"><div class="mo-card-bar-fill" style="width:${(m.val/maxVal*100).toFixed(1)}%;background:${m.color}"></div></div>
+  </div>`).join('');
+  if(Ch.moBar)Ch.moBar.destroy();
+  Ch.moBar=new Chart(document.getElementById('moBarC').getContext('2d'),{type:'bar',
+    data:{labels:ranked.map(m=>m.name),datasets:[{data:ranked.map(m=>m.val),backgroundColor:ranked.map(m=>m.color+'99'),borderColor:ranked.map(m=>m.color),borderWidth:1,borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fF(c.parsed.x)}`}}},
+      scales:{x:{grid:{color:'#e8ecf4'},ticks:{color:'#8892a4',font:{size:10},callback:v=>fN(v)}},y:{grid:{color:'transparent'},ticks:{color:'#1a1d2e',font:{size:12}}}}}});
+  if(Ch.moDnt)Ch.moDnt.destroy();
+  const hasD=ranked.some(m=>m.val>0);
+  Ch.moDnt=new Chart(document.getElementById('moDonutC').getContext('2d'),{type:'doughnut',
+    data:{labels:ranked.map(m=>m.name),datasets:[{data:hasD?ranked.map(m=>m.val):MB.map(()=>1),backgroundColor:hasD?ranked.map(m=>m.color+'cc'):MB.map(()=>'#e8ecf4'),borderColor:hasD?ranked.map(m=>m.color):MB.map(()=>'#d1d9e8'),borderWidth:2,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'right',labels:{color:'#8892a4',font:{size:11},boxWidth:10}},
+      tooltip:{callbacks:{label:c=>{if(!hasD)return' ยังไม่มีข้อมูล';const v=c.parsed;return` ${c.label}: ${fF(v)} (${total>0?(v/total*100).toFixed(1):'0'}%)`;}}}},cutout:'55%'}});
+  const prevMx=selMo>0?(moMetric==='eng'?cd.eng:cd.views):null;
+  document.getElementById('moMoM').innerHTML=MB.map((m,i)=>{
+    const cur=mx[i][selMo],prev=prevMx&&selMo>0?prevMx[i][selMo-1]:null;
+    let dH='';
+    if(prev!==null){const diff=cur-prev,pct=prev>0?((diff/prev)*100).toFixed(1):null,cls=diff>0?'delta-up':diff<0?'delta-dn':'delta-eq',ar=diff>0?'↑':diff<0?'↓':'—';dH=`<div class="mom-delta"><span class="${cls}">${ar} ${fF(Math.abs(diff))}${pct?` (${pct}%)`:''}</span></div>`;}
+    else dH=`<div class="mom-delta"><span class="delta-eq">— ไม่มีเดือนก่อน</span></div>`;
+    return`<div class="mom-card"><div class="mom-name"><div class="mdot" style="background:${m.color};width:8px;height:8px;border-radius:50%;flex-shrink:0"></div>${m.name}</div>
+    <div class="mom-val" style="color:${m.color}">${fF(cur)}</div>${dH}
+    ${prev!==null?`<div style="font-size:10px;color:var(--mu);margin-top:2px">เดือนก่อน: ${fF(prev)}</div>`:''}</div>`;
+  }).join('');
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ล้าง cache เก่าทั้งหมดและรีโหลด
+function hardReset(){
+  if(!confirm('ล้าง Cache เบราว์เซอร์ทั้งหมด?\n(ข้อมูลที่กรอกไว้ใน Local จะหาย แต่ข้อมูลใน Cloud ยังอยู่)')) return;
+  ['n9_v5','n9_v6','n9_v7','n9_v4'].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+function refreshAll(){
+  const c=cmp(cd);
+  buildMC(c);buildLeg();buildTrend();buildRkTbl(c);buildRkBar(c);buildCmp();
+  buildMoPills();buildMonthly();buildFolTables();buildRange();buildGrowthTargets();
+}
+
+function switchTab(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');el.classList.add('active');
+  if(name==='compare')buildCmp();
+  if(name==='monthly'){buildMoPills();buildMonthly();}
+  if(name==='followers')buildFolTables();
+  if(name==='range'){buildRangePills();buildRange();}
+  if(name==='growth')buildGrowthTargets();
+  if(name==='monthly_entry'){buildEntryPills();buildEntryTable();}
+  if(name==='followup'){buildFuPills();buildFuTable();buildFuHist();}
+  if(name==='manage')buildManage();
+  if(name==='products')initProductsPage();
+}
+
+// ════ FOLLOW-UP ════
+let fuMo = 0; // index into ENTRY_MO
+
+function getFuData(){
+  if(!cd.fuData){
+    cd.fuData = {};
+  }
+  return cd.fuData;
+}
+
+function fuKey(mo,mi,field){return `${mo}__${mi}__${field}`;}
+
+function prevFuMo(){fuMo=Math.max(0,fuMo-1);buildFuTable();buildFuHist();}
+function nextFuMo(){fuMo=Math.min(ENTRY_MO.length-1,fuMo+1);buildFuTable();buildFuHist();}
+
+function buildFuPills(){
+  document.getElementById('fuMoPills').innerHTML=ENTRY_MO.map((mo,i)=>
+    `<button class="pill" onclick="fuMo=${i};buildFuTable();buildFuHist()" id="fup_${i}">${mo}</button>`
+  ).join('');
+}
+
+function buildFuTable(){
+  const mo = ENTRY_MO[fuMo];
+  document.getElementById('fu-mo-label').textContent = mo;
+  ENTRY_MO.forEach((_,i)=>{const p=document.getElementById(`fup_${i}`);if(!p)return;p.style.borderColor=i===fuMo?'var(--ac)':'var(--bd)';p.style.color=i===fuMo?'var(--ac)':'var(--mu)';});
+  const fd = getFuData();
+  const M2 = MB.length;
+
+  // Summary
+  const d15ok = MB.filter((m,i)=>fd[fuKey(fuMo,i,'d15')]==='done').length;
+  const d27ok = MB.filter((m,i)=>fd[fuKey(fuMo,i,'d27')]==='done').length;
+  const d30ok = MB.filter((m,i)=>fd[fuKey(fuMo,i,'d30')]==='done').length;
+  document.getElementById('fuSummary').innerHTML=[
+    {lb:'กรอกแล้ว วันที่ 15',v:`${d15ok}/${M2}`,c:d15ok===M2?'#059669':d15ok>0?'#d97706':'#dc2626'},
+    {lb:'กรอกแล้ว วันที่ 27',v:`${d27ok}/${M2}`,c:d27ok===M2?'#059669':d27ok>0?'#d97706':'#dc2626'},
+    {lb:'กรอก Eng วันที่ 30',v:`${d30ok}/${M2}`,c:d30ok===M2?'#059669':d30ok>0?'#d97706':'#dc2626'},
+    {lb:'ครบทุก Deadline',v:`${MB.filter((m,i)=>fd[fuKey(fuMo,i,'d15')]==='done'&&fd[fuKey(fuMo,i,'d27')]==='done'&&fd[fuKey(fuMo,i,'d30')]==='done').length}/${M2}`,c:'#6c5ce7'},
+  ].map(x=>`<div class="rscard" style="border-top:3px solid ${x.c}"><div class="rscard-label">${x.lb}</div><div class="rscard-val" style="color:${x.c}">${x.v}</div></div>`).join('');
+
+  document.getElementById('fuBody').innerHTML = MB.map((m,i)=>{
+    const s15=fd[fuKey(fuMo,i,'d15')]||'none';
+    const s27=fd[fuKey(fuMo,i,'d27')]||'none';
+    const s30=fd[fuKey(fuMo,i,'d30')]||'none';
+    const note=fd[fuKey(fuMo,i,'note')]||'';
+    const done=[s15,s27,s30].filter(s=>s==='done').length;
+    let stH,stCls;
+    if(done===3){stH='✅ ครบแล้ว';stCls='fs-ok';}
+    else if(done>0){stH=`⏳ ${done}/3 อย่าง`;stCls='fs-partial';}
+    else{stH='❌ ยังไม่กรอก';stCls='fs-none';}
+
+    const mkBtn=(field,state,label)=>`<button class="fu-check ${state==='done'?'done':''}" title="${state==='done'?'กรอกแล้ว':'ยังไม่กรอก'}" onclick="toggleFu(${i},'${field}')" id="fu_${i}_${field}">${state==='done'?'✓':'○'}</button>`;
+
+    return `<tr style="border-bottom:1px solid var(--bd)">
+      <td style="padding:10px 14px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:10px;height:10px;border-radius:50%;background:${m.color};flex-shrink:0"></div>
+          <div>
+            <div style="font-weight:700;color:${m.color}">${m.name}</div>
+            <div style="font-size:10px;color:var(--mu)">${m.ttH}</div>
+          </div>
+        </div>
+      </td>
+      <td style="padding:10px 14px;text-align:center">
+        <span style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ac)">${m.jobs||0}</span>
+        <div style="font-size:10px;color:var(--mu)">งาน</div>
+      </td>
+      <td style="padding:10px 14px;text-align:center">${mkBtn('d15',s15,'15')}</td>
+      <td style="padding:10px 14px;text-align:center">${mkBtn('d27',s27,'27')}</td>
+      <td style="padding:10px 14px;text-align:center">${mkBtn('d30',s30,'30')}</td>
+      <td style="padding:6px 10px">
+        <textarea class="fu-note" id="fu_note_${i}" placeholder="บันทึกการตาม / หมายเหตุ..." onchange="noteFu(${i})">${note}</textarea>
+      </td>
+      <td style="padding:10px 14px;text-align:center"><span class="fu-status-all ${stCls}">${stH}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleFu(mi,field){
+  const fd=getFuData();
+  const k=fuKey(fuMo,mi,field);
+  fd[k]=fd[k]==='done'?'none':'done';
+  cd.fuData=fd;
+  buildFuTable();buildFuHist();
+  localSave(cd);if(hasCfg())remoteSave(cd);
+}
+function noteFu(mi){
+  const fd=getFuData();
+  fd[fuKey(fuMo,mi,'note')]=(document.getElementById(`fu_note_${mi}`)||{}).value||'';
+  cd.fuData=fd;localSave(cd);
+}
+async function saveFu(){
+  cd.fuData=getFuData();localSave(cd);
+  const ok=await remoteSave(cd);
+  showToast(ok?'บันทึก Follow-up แล้ว ✓':'บันทึก Local แล้ว');
+}
+
+function buildFuHist(){
+  // Build history columns = all ENTRY_MO
+  const fd=getFuData();
+  const hdrs = ENTRY_MO.map((mo,j)=>`<th colspan="3" style="padding:7px 10px;border-bottom:2px solid var(--bd);font-size:10px;color:var(--mu);font-weight:700;text-align:center;background:var(--sf2);${j===fuMo?'border-top:3px solid var(--ac);':''}">${mo}</th>`).join('');
+  const subHdrs = ENTRY_MO.map(()=>`<th style="padding:5px 7px;border-bottom:1px solid var(--bd);font-size:9px;color:#0284c7;text-align:center">15</th><th style="padding:5px 7px;border-bottom:1px solid var(--bd);font-size:9px;color:#059669;text-align:center">27</th><th style="padding:5px 7px;border-bottom:1px solid var(--bd);font-size:9px;color:#7c3aed;text-align:center">30</th>`).join('');
+  document.getElementById('fu-hist-header').colSpan = ENTRY_MO.length * 3;
+  const histHead = document.querySelector('#fuHistBody')?.previousElementSibling;
+  if(histHead){
+    histHead.innerHTML=`<tr><th style="padding:8px 12px;text-align:left;font-size:11px;color:var(--mu);border-bottom:2px solid var(--bd);background:var(--sf2)">น้อง</th>${hdrs}</tr><tr><th style="background:var(--sf2);border-bottom:1px solid var(--bd)"></th>${subHdrs}</tr>`;
+  }
+  document.getElementById('fuHistBody').innerHTML = MB.map((m,i)=>{
+    const cells = ENTRY_MO.map((_,j)=>{
+      const s15=fd[fuKey(j,i,'d15')]||'none';
+      const s27=fd[fuKey(j,i,'d27')]||'none';
+      const s30=fd[fuKey(j,i,'d30')]||'none';
+      const bg = j===fuMo?'background:#f8f7ff;':'' ;
+      const mk=s=>`<td style="padding:6px 7px;text-align:center;${bg}border-bottom:1px solid var(--bd)"><span style="font-size:13px">${s==='done'?'✅':'⬜'}</span></td>`;
+      return mk(s15)+mk(s27)+mk(s30);
+    }).join('');
+    return `<tr><td style="padding:8px 12px;font-weight:600;color:${m.color};border-bottom:1px solid var(--bd);white-space:nowrap"><div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:${m.color}"></div>${m.name}</div></td>${cells}</tr>`;
+  }).join('');
+}
+
+// ════ MANAGE MEMBERS ════
+function buildManage(){
+  const tbl = document.getElementById('manageTbl');
+  if(tbl) tbl.querySelector('thead tr th:first-child').colSpan=1;
+  // update count in header
+  const h = document.querySelector('#page-manage .panel:last-child div');
+  if(h) h.textContent=`รายชื่อน้องทั้งหมด (${MB.length} คน)`;
+  document.getElementById('manageBody').innerHTML = MB.map((m,i)=>`<tr style="border-bottom:1px solid var(--bd)" id="mgrow_${i}">
+    <td style="padding:9px 12px;font-family:'IBM Plex Mono',monospace;color:var(--mu);font-size:11px">${i+1}</td>
+    <td style="padding:9px 12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:10px;height:10px;border-radius:50%;background:${m.color};flex-shrink:0"></div>
+        <span style="font-weight:700;color:${m.color}">${m.name}</span>
+      </div>
+    </td>
+    <td style="padding:9px 12px;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--mu)">${m.ttH}<br>${m.igH}</td>
+    <td style="padding:9px 12px;text-align:center"><span class="tier ${m.tc}">${m.tier}</span></td>
+    <td style="padding:9px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ac)">${m.jobs||0}</td>
+    <td style="padding:9px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px">${fF(m.ig_fol)}</td>
+    <td style="padding:9px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px">${fF(m.tt_fol)}</td>
+    <td style="padding:9px 12px;text-align:center">
+      <div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" style="font-size:11px;padding:4px 10px;color:#2563eb;border-color:#93c5fd" onclick="openEditModal(${i})">✏️ แก้ไข</button>
+        <button class="btn" style="font-size:11px;padding:4px 10px;color:#dc2626;border-color:#fca5a5" onclick="removeMember(${i})">🗑 ลบ</button>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+function addMember(){
+  const name = (document.getElementById('add_name').value||'').trim();
+  const tt = (document.getElementById('add_tt').value||'').trim();
+  const ig = (document.getElementById('add_ig').value||'').trim();
+  const tier = document.getElementById('add_tier').value;
+  const igFol = parseInt(document.getElementById('add_ig_fol').value)||0;
+  const ttFol = parseInt(document.getElementById('add_tt_fol').value)||0;
+  const jobs = parseInt(document.getElementById('add_jobs').value)||0;
+  if(!name){showToast('⚠️ กรุณากรอกชื่อน้อง');return;}
+  const tc = tier==='Tier 1'?'t1':tier==='Tier 3'?'t3':'t2';
+  const color = MB_COLORS[MB.length % MB_COLORS.length];
+  const newMember = {name,ttH:tt||'@'+name,igH:ig||'@'+name,tier,tc,color,ig_fol:igFol,tt_fol:ttFol,ig_er:0,tt_er:0,ig_views:0,tt_views:0,jobs};
+  MB.push(newMember);
+  // Expand cd data arrays
+  cd.views.push(Array(MO).fill(0));
+  cd.eng.push(Array(MO).fill(0));
+  cd.fol.push([igFol,ttFol]);
+  if(cd.channel) cd.channel.push(ENTRY_MO.map(()=>({...EMPTY_MONTH})));
+  if(cd.rangeData) cd.rangeData.push(ENTRY_MO.map(()=>({eng_target:0,views_target:0,eng_mid:0,views_mid:0})));
+  saveMB(MB);localSave(cd);if(hasCfg())remoteSave(cd);
+  // Clear inputs
+  ['add_name','add_tt','add_ig','add_ig_fol','add_tt_fol','add_jobs'].forEach(id=>{document.getElementById(id).value='';});
+  buildManage();refreshAll();buildTbl();buildEntryTable();buildFolTables();
+  showToast(`เพิ่ม "${name}" แล้ว ✓`);
+}
+
+function removeMember(idx){
+  if(!confirm(`ลบ "${MB[idx].name}" ออกจากระบบ?\n⚠️ ข้อมูลที่กรอกทั้งหมดจะหายไปด้วย`)) return;
+  const name=MB[idx].name;
+  MB.splice(idx,1);
+  cd.views.splice(idx,1);cd.eng.splice(idx,1);cd.fol.splice(idx,1);
+  if(cd.channel)cd.channel.splice(idx,1);
+  if(cd.rangeData)cd.rangeData.splice(idx,1);
+  // clean fuData for this member
+  if(cd.fuData){
+    Object.keys(cd.fuData).forEach(k=>{if(k.includes(`__${idx}__`))delete cd.fuData[k];});
+    // re-index fuData for members after idx
+    const newFu={};
+    Object.keys(cd.fuData).forEach(k=>{
+      const parts=k.split('__');
+      if(parts.length===3){
+        const mi=parseInt(parts[1]);
+        if(mi>idx) newFu[`${parts[0]}__${mi-1}__${parts[2]}`]=cd.fuData[k];
+        else if(mi<idx) newFu[k]=cd.fuData[k];
+      }
+    });
+    cd.fuData=newFu;
+  }
+  saveMB(MB);localSave(cd);if(hasCfg())remoteSave(cd);
+  buildManage();refreshAll();buildTbl();buildEntryTable();buildFolTables();
+  showToast(`ลบ "${name}" แล้ว`);
+}
+
+function openEditModal(idx){
+  const m = MB[idx];
+  document.getElementById('edit_idx').value = idx;
+  document.getElementById('edit_name').value = m.name;
+  document.getElementById('edit_tt').value = m.ttH;
+  document.getElementById('edit_ig').value = m.igH;
+  document.getElementById('edit_tier').value = m.tier;
+  document.getElementById('edit_ig_fol').value = m.ig_fol||0;
+  document.getElementById('edit_tt_fol').value = m.tt_fol||0;
+  document.getElementById('edit_jobs').value = m.jobs||0;
+  const modal = document.getElementById('editModal');
+  modal.style.display = 'flex';
+}
+function closeEditModal(){
+  document.getElementById('editModal').style.display = 'none';
+}
+function saveEdit(){
+  const idx = parseInt(document.getElementById('edit_idx').value);
+  const name = (document.getElementById('edit_name').value||'').trim();
+  if(!name){showToast('⚠️ กรุณากรอกชื่อน้อง');return;}
+  const tier = document.getElementById('edit_tier').value;
+  const tc = tier==='Tier 1'?'t1':tier==='Tier 3'?'t3':'t2';
+  MB[idx].name = name;
+  MB[idx].ttH = (document.getElementById('edit_tt').value||'').trim()||'@'+name;
+  MB[idx].igH = (document.getElementById('edit_ig').value||'').trim()||'@'+name;
+  MB[idx].tier = tier;
+  MB[idx].tc = tc;
+  MB[idx].ig_fol = parseInt(document.getElementById('edit_ig_fol').value)||0;
+  MB[idx].tt_fol = parseInt(document.getElementById('edit_tt_fol').value)||0;
+  MB[idx].jobs = parseInt(document.getElementById('edit_jobs').value)||0;
+  // sync fol data
+  if(cd.fol && cd.fol[idx]){
+    cd.fol[idx][0] = MB[idx].ig_fol;
+    cd.fol[idx][1] = MB[idx].tt_fol;
+  }
+  saveMB(MB);localSave(cd);if(hasCfg())remoteSave(cd);
+  closeEditModal();
+  buildManage();refreshAll();buildTbl();buildEntryTable();buildFolTables();
+  showToast(`แก้ไข "${name}" แล้ว ✓`);
+}
+// Close modal when clicking backdrop
+document.getElementById('editModal').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
+
+// ════ PRODUCTS INFLU ════
+
+const INFLU_MOS = ['เม.ย. 69','พ.ค. 69','มิ.ย. 69','ก.ค. 69','ส.ค. 69','ก.ย. 69','ต.ค. 69','พ.ย. 69','ธ.ค. 69'];
+function influMoKey(label){ return 'influ_'+label.replace(/[ .]/g,'_'); }
+function influMoEn(label){ return 'INFLU '+label; }
+
+function getProductData(){
+  if(!cd.productData) cd.productData = {};
+  return cd.productData;
+}
+
+const PROD_PRELOAD = {
+'influ_เม_ย__69':[
+{name:'SH_Daniel (Blue)',qty:1,price:490,members:[0,0,490,0,0,0,0],date:'27/3/2026',collection:''},
+{name:'BG_Tote Sleepybear (Brown)',qty:1,price:690,members:[0,0,690,0,0,0,0],date:'27/3/2026',collection:''},
+{name:'SW_Nappy Bear (Grey)',qty:1,price:690,members:[0,0,690,0,0,0,0],date:'27/3/2026',collection:''},
+{name:'SK_Looney plain (Brown)',qty:1,price:590,members:[0,0,590,0,0,0,0],date:'27/3/2026',collection:''},
+{name:'CD_Esprella (Brown)',qty:1,price:690,members:[0,690,0,0,0,0,0],date:'21/3/2026',collection:''},
+{name:'TW_LS Mandy (White-Brown)',qty:1,price:690,members:[0,690,0,0,0,0,0],date:'21/3/2026',collection:''},
+{name:'TT_Apollo (Black)',qty:1,price:250,members:[0,250,0,0,0,0,0],date:'21/3/2026',collection:''},
+{name:'PS_Sindy',qty:1,price:390,members:[0,390,0,0,0,0,0],date:'21/3/2026',collection:''},
+{name:'KN_Minkie (Off White)',qty:1,price:450,members:[0,450,0,0,0,0,0],date:'21/3/2026',collection:''},
+{name:'PL_Everyday Pants (Off White)',qty:1,price:690,members:[0,0,0,690,0,0,0],date:'16/3/2026',collection:''},
+{name:'PO_Paper (Brown)',qty:1,price:590,members:[0,0,0,590,0,0,0],date:'16/3/2026',collection:''},
+{name:'KN_PO Anatasia (Navy Blue)',qty:1,price:890,members:[0,0,0,890,0,0,0],date:'21/3/2026',collection:''},
+{name:'PJ_SET Bearbie (Red)',qty:1,price:990,members:[0,0,0,990,0,0,0],date:'21/3/2026',collection:''},
+{name:'PS_Caily (Navy Blue)',qty:1,price:390,members:[0,0,0,390,0,0,0],date:'21/3/2026',collection:''},
+{name:'PL_Gene (Black)',qty:1,price:690,members:[0,0,0,0,690,0,0],date:'27/3/2026',collection:''},
+{name:'CT_Love heart (Grey)',qty:1,price:490,members:[0,0,0,0,490,0,0],date:'27/3/2026',collection:''},
+{name:'PO_Paper (Brown) 2',qty:1,price:590,members:[0,0,0,0,0,0,590],date:'27/3/2026',collection:''},
+{name:'BT_Basic Rg Basicly (Pink)',qty:1,price:250,members:[0,0,0,0,0,0,250],date:'27/3/2026',collection:''},
+{name:'PS_Caily (Navy Blue) 2',qty:1,price:390,members:[0,0,0,0,0,0,390],date:'27/3/2026',collection:''},
+{name:'PS_Starship (Blue)',qty:1,price:390,members:[390,0,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Drake (Black)',qty:1,price:450,members:[450,0,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'SH_Friend Dot (White)',qty:1,price:590,members:[590,0,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TW_Fiona (Pink-White)',qty:1,price:350,members:[350,0,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'SK_Darryl (Black)',qty:1,price:690,members:[690,0,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'PS_Caily (Grey)',qty:1,price:390,members:[0,0,0,0,390,0,0],date:'10/4/2026',collection:''},
+{name:'TT_Alina (Black)',qty:1,price:290,members:[0,0,0,0,290,0,0],date:'10/4/2026',collection:''},
+{name:'TT_Bonjour (Blue)',qty:1,price:350,members:[0,0,0,0,350,0,0],date:'10/4/2026',collection:''},
+{name:'TT_Bonjour (Red)',qty:1,price:350,members:[0,0,0,0,350,0,0],date:'10/4/2026',collection:''},
+{name:'BT_Basic Rg Creator Hub (Brown) S',qty:1,price:350,members:[0,0,0,350,0,0,0],date:'9/4/2026',collection:''},
+{name:'BG_Tote Lulu (Off White)',qty:1,price:490,members:[0,0,0,490,0,0,0],date:'9/4/2026',collection:''},
+{name:'SL_Holly (Black)',qty:1,price:350,members:[0,0,0,350,0,0,0],date:'9/4/2026',collection:''},
+{name:'CT_Nature (White)',qty:1,price:450,members:[0,0,0,450,0,0,0],date:'9/4/2026',collection:''},
+{name:'CT_Dutty (Dark Red)',qty:1,price:290,members:[0,0,0,290,0,0,0],date:'9/4/2026',collection:''},
+{name:'BT_Basic Rg Creator Hub (Cream) S',qty:1,price:350,members:[0,0,0,350,0,0,0],date:'9/4/2026',collection:''},
+{name:'TW_Fiona (Pink-White) 2',qty:1,price:350,members:[0,0,0,0,0,0,350],date:'9/4/2026',collection:''},
+{name:'PS_Caily (Grey) 2',qty:1,price:390,members:[0,0,0,0,0,0,390],date:'9/4/2026',collection:''},
+{name:'BT_Basic Rg Creator Hub (Red) S',qty:1,price:350,members:[0,0,0,0,0,0,350],date:'9/4/2026',collection:''},
+{name:'BG_Tote Lulu (Off White) 2',qty:1,price:490,members:[0,0,0,0,490,0,0],date:'9/4/2026',collection:''},
+{name:'PS_Caily (Grey) 3',qty:1,price:390,members:[0,0,0,0,390,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Alina (Blue)',qty:1,price:290,members:[0,0,0,0,290,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Alina (Black) 2',qty:1,price:290,members:[0,290,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Bonita (White-Blue)',qty:1,price:290,members:[0,290,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'PS_Caily (Grey) 4',qty:1,price:390,members:[0,390,0,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Bonjour (Red) 2',qty:1,price:350,members:[0,0,350,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Any (White)',qty:1,price:290,members:[0,0,290,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Angelo (Grey)',qty:1,price:290,members:[0,0,290,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'TT_Any (Pink)',qty:1,price:290,members:[0,0,290,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'SL_Holly (Black) 2',qty:1,price:350,members:[0,0,350,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'BT_Basic Rg Creator Hub (Cream) L',qty:1,price:350,members:[0,0,350,0,0,0,0],date:'9/4/2026',collection:''},
+{name:'ST_Keychain Stilla (Silver)',qty:1,price:149,members:[0,0,0,0,149,0,0],date:'20/4/2026',collection:''},
+{name:'SW_Sweet Soul (White)',qty:1,price:450,members:[0,0,0,0,450,0,0],date:'20/4/2026',collection:''},
+{name:'PS_Sketchy (Pink)',qty:1,price:550,members:[0,0,0,0,550,0,0],date:'20/4/2026',collection:''},
+{name:'PO_Candy (Pink)',qty:1,price:550,members:[0,0,0,0,550,0,0],date:'20/4/2026',collection:''},
+{name:'SH_Friend (Blue)',qty:1,price:590,members:[0,0,0,0,590,0,0],date:'20/4/2026',collection:''},
+{name:'SH_Greet (White)',qty:1,price:590,members:[0,0,590,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'OV_Lobs (White)',qty:1,price:450,members:[0,450,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'TT_Lazy Lazy (Cream-Brown)',qty:1,price:390,members:[0,390,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'TT_Drake (White)',qty:1,price:450,members:[0,450,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'ST_Keychain Stilla (Silver) 2',qty:1,price:149,members:[0,149,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'PO_Candy (Pink) 2',qty:1,price:550,members:[550,0,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'PS_Sketchy (Pink) 2',qty:1,price:550,members:[550,0,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'PL_Pastelly (Blue)',qty:1,price:790,members:[790,0,0,0,0,0,0],date:'20/4/2026',collection:''},
+{name:'LS_Doodly (Pink)',qty:1,price:590,members:[590,0,0,0,0,0,0],date:'20/4/2026',collection:''},
+],
+'influ_พ_ค__69':[
+{name:'KN_CD Lauren (Pink)',qty:1,price:590,members:[590,0,0,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'SH_Greet (Pink)',qty:1,price:590,members:[590,0,0,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'TT_Tiny (Blue)',qty:1,price:390,members:[390,0,0,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'SH_Friend (Brown)',qty:1,price:590,members:[0,0,590,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'CT_Love heart (Black)',qty:1,price:490,members:[0,0,490,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'KN_CD Lauren (Pink) 2',qty:1,price:590,members:[0,0,590,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'PL_Dream (Navy Blue)',qty:1,price:590,members:[0,0,590,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'CT_Nature (White)',qty:1,price:450,members:[0,0,450,0,0,0,0],date:'4/5/2026',collection:''},
+{name:'SH_Greet (Pink) 2',qty:1,price:590,members:[0,0,0,0,0,590,0],date:'4/5/2026',collection:''},
+{name:'TT_Daji (Black) S',qty:1,price:350,members:[0,0,0,0,0,350,0],date:'4/5/2026',collection:''},
+{name:'CT_Pinna (White-Pink)',qty:1,price:350,members:[0,0,0,0,0,350,0],date:'4/5/2026',collection:''},
+{name:'OJ_Overalls BFF (Black)',qty:1,price:1190,members:[0,0,0,0,1190,0,0],date:'4/5/2026',collection:''},
+{name:'LS_Paola (Cream)',qty:1,price:490,members:[0,0,0,0,490,0,0],date:'4/5/2026',collection:''},
+{name:'TT_Lazy Lazy (Brown-Cream)',qty:1,price:390,members:[0,0,0,0,390,0,0],date:'4/5/2026',collection:''},
+{name:'KN_CD Harmony (Cream)',qty:1,price:550,members:[0,0,550,0,0,0,0],date:'12/5/2026',collection:''},
+{name:'TT_Daji (Blue) S',qty:1,price:350,members:[0,0,350,0,0,0,0],date:'12/5/2026',collection:''},
+{name:'KN_CD Lauren (Grey)',qty:1,price:590,members:[0,0,590,0,0,0,0],date:'12/5/2026',collection:''},
+{name:'CT_Dolphin (Pink)',qty:1,price:490,members:[0,0,490,0,0,0,0],date:'12/5/2026',collection:''},
+{name:'TT_Daji (Cream) S',qty:1,price:350,members:[0,0,0,0,350,0,0],date:'18/5/2026',collection:''},
+{name:'PS_Sindy (Black)',qty:1,price:450,members:[0,0,0,0,0,450,0],date:'',collection:''},
+{name:'JA_Jacket Maira (Black)',qty:1,price:790,members:[0,0,0,0,0,790,0],date:'',collection:''},
+{name:'SH_Homeroom (Navy Blue)',qty:1,price:590,members:[0,0,0,0,0,590,0],date:'',collection:''},
+{name:'CT_Dolphin (Blue)',qty:1,price:490,members:[0,0,0,0,0,490,0],date:'',collection:''},
+{name:'PL_Tide (Light Blue)',qty:1,price:750,members:[0,0,0,0,0,750,0],date:'',collection:''},
+{name:'KN_Edel (Black)',qty:1,price:590,members:[0,0,0,0,0,590,0],date:'',collection:''},
+{name:'CT_Dolphin (Blue) 2',qty:1,price:490,members:[490,0,0,0,0,0,0],date:'',collection:''},
+{name:'TT_Daji (White) S',qty:1,price:350,members:[350,0,0,0,0,0,0],date:'',collection:''},
+{name:'SL_Mochi (Black) S',qty:1,price:350,members:[350,0,0,0,0,0,0],date:'',collection:''},
+{name:'PL_Tide (White)',qty:1,price:750,members:[750,0,0,0,0,0,0],date:'',collection:''},
+{name:'TT_Daji (Blue) S 2',qty:1,price:350,members:[350,0,0,0,0,0,0],date:'',collection:''},
+{name:'RG_Mia (Pink)',qty:1,price:350,members:[350,0,0,0,0,0,0],date:'',collection:''},
+{name:'BG_Tote Ely (Black)',qty:1,price:690,members:[690,0,0,0,0,0,0],date:'',collection:''},
+],
+'influ_มิ_ย__69':[
+{name:'BG_Shoulder Diva (Brown)',qty:1,price:1290,members:[0,0,1290,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'TT_Baby Ribbon (Brown)',qty:1,price:490,members:[0,0,490,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'SW_Hoodie Fighting (Grey)',qty:1,price:690,members:[0,0,690,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'SK_Notee (White)',qty:1,price:390,members:[390,0,0,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'SK_Sandy (Black)',qty:1,price:650,members:[650,0,0,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'SK_Notee (Pink)',qty:1,price:390,members:[390,0,0,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'PO_Cody (White)',qty:1,price:450,members:[450,0,0,0,0,0,0],date:'2/6/2026',collection:''},
+{name:'PS_Sindy (White)',qty:1,price:450,members:[0,0,0,0,0,450,0],date:'4/6/2026',collection:''},
+{name:'PS_Mila (Blue)',qty:1,price:590,members:[0,0,0,0,0,590,0],date:'4/6/2026',collection:''},
+{name:'KN_CD Lauren (Grey)',qty:1,price:590,members:[0,0,0,0,0,590,0],date:'4/6/2026',collection:''},
+{name:'BT_Basic Rg Creator Hub (Pink) S',qty:1,price:350,members:[0,0,0,0,0,350,0],date:'4/6/2026',collection:''},
+{name:'KN_PO Polen (Off White)',qty:1,price:490,members:[0,0,0,0,490,0,0],date:'4/6/2026',collection:''},
+{name:'PS_Mila (Blue) 2',qty:1,price:590,members:[0,0,0,0,590,0,0],date:'4/6/2026',collection:''},
+{name:'SK_Notee (White) 2',qty:1,price:390,members:[0,0,0,0,390,0,0],date:'4/6/2026',collection:''},
+],
+};
+
+function preloadProductData(){
+  const pd = getProductData();
+  Object.keys(PROD_PRELOAD).forEach(key=>{
+    if(!pd[key]||pd[key].length===0){
+      pd[key]=JSON.parse(JSON.stringify(PROD_PRELOAD[key]));
+    }
+  });
+  cd.productData=pd;
+}
+
+function buildProductMoSel(){
+  const sel=document.getElementById('prod_mo_select');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML=INFLU_MOS.map(m=>`<option value="${m}"${m===cur?' selected':''}>${influMoEn(m)}</option>`).join('');
+  if(!sel.value)sel.value=INFLU_MOS[0]||'';
+  buildProductTable();
+}
+
+function buildProductTable(){
+  const sel=document.getElementById('prod_mo_select');
+  if(!sel)return;
+  const mo=sel.value;
+  const key=influMoKey(mo);
+  const pd=getProductData();
+  const rows=pd[key]?pd[key]:[];
+  const title=document.getElementById('prod-tbl-title');
+  const sub=document.getElementById('prod-tbl-sub');
+  if(title)title.textContent='📅 '+influMoEn(mo);
+  if(sub)sub.textContent=rows.length+' รายการ';
+  const head=document.getElementById('prod-new-head');
+  head.innerHTML=[
+    '<th style="min-width:180px;padding:9px 10px">สินค้า</th>',
+    '<th class="center" style="min-width:52px;padding:9px 8px">จำนวน</th>',
+    '<th class="center" style="min-width:68px;padding:9px 8px">ราคา (฿)</th>',
+    '<th class="center" style="min-width:68px;padding:9px 8px">รวม</th>',
+    ...MB.map(m=>`<th class="center" style="min-width:72px;padding:9px 6px;color:${m.color}">${m.name}</th>`),
+    '<th style="min-width:92px;padding:9px 10px">วันที่รับ</th>',
+    '<th style="min-width:110px;padding:9px 10px">Collection</th>',
+    '<th style="min-width:30px;padding:9px 4px"></th>',
+  ].join('');
+  const body=document.getElementById('prod-new-body');
+  if(rows.length===0){
+    body.innerHTML=`<tr><td colspan="${5+MB.length}" style="text-align:center;color:var(--mu);padding:28px;font-size:12px">ยังไม่มีข้อมูล — กด ➕ เพิ่มสินค้า</td></tr>`;
+  } else {
+    body.innerHTML=rows.map((r,ri)=>{
+      const tot=(r.qty||1)*(r.price||0);
+      return `<tr>
+<td style="padding:4px 8px"><input class="prod-inp" value="${(r.name||'').replace(/"/g,'&quot;')}" oninput="setProdF('${key}',${ri},'name',this.value)" placeholder="ชื่อสินค้า"></td>
+<td style="padding:4px 5px"><input class="prod-inp num" type="number" min="1" value="${r.qty||1}" oninput="setProdF('${key}',${ri},'qty',+this.value);rTot('${key}',${ri})" style="width:48px"></td>
+<td style="padding:4px 5px"><input class="prod-inp num" type="number" min="0" value="${r.price||0}" oninput="setProdF('${key}',${ri},'price',+this.value);rTot('${key}',${ri})" style="width:62px"></td>
+<td style="padding:4px 8px;font-family:'IBM Plex Mono',monospace;text-align:right;font-size:11px;color:var(--ac);font-weight:700;white-space:nowrap" id="ptot_${ri}">${fN(tot)}</td>
+${MB.map((_,mi)=>`<td style="padding:4px 3px"><input class="prod-inp num" type="number" min="0" value="${(r.members&&r.members[mi])||0}" oninput="setProdM('${key}',${ri},${mi},+this.value)" style="width:66px"></td>`).join('')}
+<td style="padding:4px 8px"><input class="prod-inp" value="${(r.date||'').replace(/"/g,'&quot;')}" oninput="setProdF('${key}',${ri},'date',this.value)" placeholder="dd/mm/yyyy" style="min-width:86px"></td>
+<td style="padding:4px 8px"><input class="prod-inp" value="${(r.collection||'').replace(/"/g,'&quot;')}" oninput="setProdF('${key}',${ri},'collection',this.value)" placeholder="Collection" style="min-width:100px"></td>
+<td style="padding:4px 4px;text-align:center"><button class="prod-del" onclick="delProdRow('${key}',${ri})">✕</button></td>
+</tr>`;
+    }).join('');
+  }
+  buildProdFoot(rows);buildProdSummary();buildMemberPills();
+}
+
+function setProdF(key,ri,field,val){
+  const pd=getProductData();
+  if(!pd[key])pd[key]=[];
+  if(!pd[key][ri])pd[key][ri]={name:'',qty:1,price:0,members:MB.map(()=>0),date:'',collection:''};
+  pd[key][ri][field]=val;
+}
+function setProdM(key,ri,mi,val){
+  const pd=getProductData();
+  if(!pd[key]||!pd[key][ri])return;
+  if(!pd[key][ri].members)pd[key][ri].members=MB.map(()=>0);
+  while(pd[key][ri].members.length<MB.length)pd[key][ri].members.push(0);
+  pd[key][ri].members[mi]=val;
+  buildProdSummary();
+}
+function rTot(key,ri){
+  const pd=getProductData();
+  const r=pd[key]&&pd[key][ri];
+  const el=document.getElementById(`ptot_${ri}`);
+  if(el&&r)el.textContent=fN((r.qty||1)*(r.price||0));
+}
+function addProductRow(){
+  const sel=document.getElementById('prod_mo_select');
+  if(!sel){showToast('⚠️ กรุณาเปิด Tab สินค้า Influ ก่อน');return;}
+  const key=influMoKey(sel.value);
+  const pd=getProductData();
+  if(!pd[key])pd[key]=[];
+  pd[key].push({name:'',qty:1,price:0,members:MB.map(()=>0),date:'',collection:''});
+  buildProductTable();
+}
+function delProdRow(key,ri){
+  const pd=getProductData();
+  if(pd[key])pd[key].splice(ri,1);
+  buildProductTable();
+}
+async function saveProducts(){
+  cd.productData=getProductData();
+  localSave(cd);
+  const ok=await remoteSave(cd);
+  showToast(ok?'💾 บันทึกสินค้าแล้ว ✓':'บันทึก Local แล้ว');
+}
+function buildProdFoot(rows){
+  const foot=document.getElementById('prod-new-foot');
+  if(!foot)return;
+  const totalQty=rows.reduce((a,r)=>a+(+r.qty||1),0);
+  const totalVal=rows.reduce((a,r)=>a+((+r.qty||1)*(+r.price||0)),0);
+  const pm=MB.map((_,mi)=>rows.reduce((a,r)=>a+((r.members&&+r.members[mi])||0),0));
+  foot.innerHTML=`<tr style="background:var(--sf2);font-weight:700;font-size:12px">
+<td style="padding:8px 10px;color:var(--mu)">รวม ${rows.length} รายการ</td>
+<td style="padding:8px 8px;text-align:center;font-family:'IBM Plex Mono',monospace">${totalQty}</td>
+<td></td>
+<td style="padding:8px 8px;text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--ac)">${fN(totalVal)}</td>
+${pm.map(v=>`<td style="padding:8px 6px;text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--ac2)">${v?fN(v):'-'}</td>`).join('')}
+<td colspan="3"></td></tr>`;
+}
+function buildProdSummary(){
+  const el=document.getElementById('prod-summary');
+  if(!el)return;
+  const pd=getProductData();
+  let grand=0,grandQ=0;
+  const hasMo=INFLU_MOS.map(mo=>{
+    const rows=pd[influMoKey(mo)]||[];
+    const val=rows.reduce((a,r)=>a+((+r.qty||1)*(+r.price||0)),0);
+    grand+=val;grandQ+=rows.length;
+    return {mo,val,qty:rows.length};
+  }).filter(x=>x.val>0).slice(-3);
+  const cls=['ce','cv','cg'];
+  el.innerHTML=[
+    ...hasMo.map((x,i)=>`<div class="mc ${cls[i]||'ce'}"><div class="mc-lb">${influMoEn(x.mo)}</div><div class="mc-v">${fN(x.val)}</div><div class="mc-sub">${x.qty} รายการ</div></div>`),
+    `<div class="mc cg2"><div class="mc-lb">💰 รวมทุกเดือน</div><div class="mc-v">${fN(grand)}</div><div class="mc-sub">${grandQ} รายการทั้งหมด</div></div>`,
+  ].join('');
+}
+function buildMemberPills(){
+  const wrap=document.getElementById('prod-member-pills');
+  if(!wrap)return;
+  const sel=document.getElementById('prod_mo_select');
+  const key=sel?influMoKey(sel.value):'';
+  const rows=key?(getProductData()[key]||[]):[];
+  wrap.innerHTML=MB.map((m,mi)=>{
+    const cnt=rows.filter(r=>r.members&&+r.members[mi]>0).length;
+    const total=rows.reduce((a,r)=>a+((r.members&&+r.members[mi])||0),0);
+    const hasItems=cnt>0;
+    return `<button class="mbpill" onclick="openProdPopup(${mi})"
+      style="border-color:${m.color};color:${hasItems?m.color:'var(--mu)'};
+             background:${hasItems?m.color+'18':'var(--sf2)'};opacity:${hasItems?'1':'.45'}">
+      ${m.name}${hasItems?` <span style="font-size:10px;font-weight:900;opacity:.8">${cnt}</span>`:''}
+    </button>`;
+  }).join('');
+}
+function openProdPopup(mi){
+  const sel=document.getElementById('prod_mo_select');
+  if(!sel)return;
+  const mo=sel.value;
+  const key=influMoKey(mo);
+  const pd=getProductData();
+  const rows=(pd[key]||[]).filter(r=>r.members&&+r.members[mi]>0);
+  const m=MB[mi];
+  document.getElementById('prodPopupName').textContent=m.name;
+  document.getElementById('prodPopupName').style.color=m.color;
+  document.getElementById('prodPopupMo').textContent=influMoEn(mo);
+  const total=rows.reduce((a,r)=>a+(+r.members[mi]||0),0);
+  const cols=[...new Set(rows.map(r=>r.collection).filter(Boolean))];
+  document.getElementById('prodPopupSummary').innerHTML=[
+    `<div><div style="font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase">สินค้าทั้งหมด</div><div style="font-size:22px;font-weight:800;font-family:'IBM Plex Mono',monospace">${rows.length} <span style="font-size:13px;font-weight:500;color:var(--mu)">รายการ</span></div></div>`,
+    `<div><div style="font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase">มูลค่ารวม</div><div style="font-size:22px;font-weight:800;font-family:'IBM Plex Mono',monospace;color:${m.color}">฿${fN(total)}</div></div>`,
+    cols.length?`<div><div style="font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase">Collections</div><div style="font-size:13px;font-weight:700;margin-top:2px">${cols.join(', ')}</div></div>`:'',
+  ].join('');
+  if(rows.length===0){
+    document.getElementById('prodPopupList').innerHTML=`<div style="text-align:center;padding:32px 0;color:var(--mu);font-size:13px">ไม่มีสินค้าในเดือนนี้</div>`;
+  }else{
+    const grouped={};
+    rows.forEach(r=>{const col=r.collection||'—';if(!grouped[col])grouped[col]=[];grouped[col].push(r);});
+    let html='';
+    Object.entries(grouped).forEach(([col,items])=>{
+      if(Object.keys(grouped).length>1||col!=='—')html+=`<div style="font-size:10px;font-weight:800;color:${m.color};text-transform:uppercase;letter-spacing:.8px;margin:10px 0 6px">${col==='—'?'ไม่ระบุ Collection':'📦 '+col}</div>`;
+      items.forEach(r=>{
+        const val=+r.members[mi]||0;
+        html+=`<div class="prod-popup-item"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;line-height:1.3">${r.name||'—'}</div><div class="prod-popup-stat">${r.date?`📅 ${r.date}`:''}</div></div><div style="text-align:right;flex-shrink:0"><div class="prod-popup-price" style="color:${m.color}">฿${fN(val)}</div>${r.price&&r.price!==val?`<div style="font-size:10px;color:var(--mu)">ราคา ฿${fN(r.price)}</div>`:''}</div></div>`;
+      });
+    });
+    document.getElementById('prodPopupList').innerHTML=html;
+  }
+  const backdrop=document.getElementById('prodPopupBackdrop');
+  const popup=document.getElementById('prodPopup');
+  backdrop.style.display='block';popup.style.display='flex';
+  popup.style.opacity='0';popup.style.transform='translate(-50%,-48%)';
+  requestAnimationFrame(()=>{popup.style.transition='opacity .2s ease,transform .2s ease';popup.style.opacity='1';popup.style.transform='translate(-50%,-50%)';});
+}
+function closeProdPopup(){
+  const backdrop=document.getElementById('prodPopupBackdrop');
+  const popup=document.getElementById('prodPopup');
+  popup.style.opacity='0';popup.style.transform='translate(-50%,-48%)';
+  setTimeout(()=>{backdrop.style.display='none';popup.style.display='none';popup.style.transition='';},180);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProdPopup();});
+function initProductsPage(){
+  preloadProductData();
+  buildMemberPills();
+  buildProductMoSel();
+  buildProdSummary();
+}
+
+// ════ INIT ════
+
+buildTbl();buildEntryPills();buildEntryTable();buildRangePills();buildFuPills();
+refreshAll();
+initProductsPage();
+
+// โหลดจาก Firebase ทันที
+setSS('loading','กำลังโหลด...');
+doLoad();
+
+// Auto-save ทุก 60 วินาที
+setInterval(()=>{
+  const d = readInps();
+  d.fol = cd.fol;
+  d.channel = cd.channel;
+  d.rangeData = cd.rangeData;
+  d.fuData = cd.fuData||{};
+  d.productData = cd.productData||{};
+  localSave(d); cd = d;
+  remoteSave(d);
+}, 60000);
+
+// Auto-refresh ทุก 1 ชั่วโมง
+setInterval(()=>{ doLoad(); }, 3600000);
+</script>
+</body>
+</html>

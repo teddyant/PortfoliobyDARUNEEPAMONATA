@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Management — ตัวอย่างผลงาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.past-row{opacity:.55;filter:grayscale(.3);background:#f9f9f9;}
+.past-row:hover{opacity:1;filter:none;}
+#cal-timeline-list td{border-bottom:1px solid rgba(211,47,47,.05);}
+.cal-date-cell{font-weight:700;color:var(--muted);}
+.cal-task-name{font-weight:600;color:var(--red2);}
+:root{--red:#5D4037;--red2:#3E2723;--red3:#A5D6A7;--red-lt:#F1F8E9;--red-md:#DCEDC8;--white:#FFFFFF;--off:#FAFDF7;--cream:#F1F8E9;--text:#1B1B1B;--muted:#6D4C41;--border:rgba(93,64,55,0.15);--card-bg:rgba(255,255,255,0.97);--shadow:0 4px 24px rgba(93,64,55,0.10);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{padding-bottom:44px;font-family:'Sarabun',sans-serif;background:var(--off);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.floaties{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.floaty{position:absolute;animation:floatDown linear infinite;opacity:.15;user-select:none;}
+@keyframes floatDown{0%{transform:translateY(-80px) rotate(0deg);opacity:0;}10%{opacity:.2;}90%{opacity:.15;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:228px;background:var(--red2);z-index:200;display:flex;flex-direction:column;}
+.sidebar::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,.025) 20px,rgba(255,255,255,.025) 40px);}
+.logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.12);position:relative;}
+.logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.logo-icon{width:38px;height:38px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-text h1{font-family:'Prompt',sans-serif;font-size:14px;font-weight:800;color:#fff;line-height:1.1;}
+.logo-text span{font-size:10px;color:rgba(255,255,255,.5);}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:rgba(255,255,255,.65);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
+.sync-dot.syncing{background:#FF9800;}
+.sync-dot.error{background:#F44336;animation:none;}
+.nav{padding:10px 8px;flex:1;overflow-y:auto;position:relative;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.32);padding:10px 10px 4px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.6);transition:all .15s;margin-bottom:1px;}
+.nav-item:hover{background:rgba(255,255,255,.1);color:#fff;}
+.nav-item.active{background:#fff;color:var(--red2);font-weight:700;}
+.nav-item .ico{font-size:16px;width:20px;text-align:center;}
+.main{margin-left:228px;min-height:100vh;position:relative;z-index:1;}
+.topbar{position:sticky;top:0;background:rgba(255,248,248,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 26px;height:56px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
+.topbar-title{font-family:'Prompt',sans-serif;font-size:16px;font-weight:700;color:var(--red2);}
+.topbar-right{display:flex;gap:8px;align-items:center;}
+.btn{padding:7px 16px;border-radius:8px;border:none;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 3px 10px rgba(93,64,55,.28);}
+.btn-primary:hover{background:var(--red2);transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-outline:hover{border-color:var(--red3);color:var(--red);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.page{display:none;padding:22px 26px;animation:fadeIn .2s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:22px;}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:var(--red);opacity:.06;}
+.stat-ico{font-size:24px;margin-bottom:7px;}
+.stat-val{font-family:'Prompt',sans-serif;font-size:24px;font-weight:800;color:var(--red2);line-height:1;}
+.stat-lbl{font-size:12px;color:var(--muted);margin-top:3px;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--red);}
+th{padding:10px 13px;text-align:left;font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.9);text-transform:uppercase;white-space:nowrap;}
+td{padding:9px 13px;font-size:13px;border-top:1px solid rgba(211,47,47,.06);vertical-align:middle;}
+tr:hover td{background:rgba(211,47,47,.02);}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.b-done{background:#E8F5E9;color:#2E7D32;}
+.b-inprog{background:#E3F2FD;color:#1565C0;}
+.b-edit{background:#FFF3E0;color:#E65100;}
+.b-wait{background:#FAFAFA;color:#616161;border:1px solid #E0E0E0;}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-title{font-family:'Prompt',sans-serif;font-size:15px;font-weight:700;color:var(--red2);}
+.filter-bar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.filter-bar select,.filter-bar input{height:35px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);padding:0 10px;outline:none;min-width:120px;transition:border-color .15s;}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--red3);}
+.task-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+.task-col{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:13px;box-shadow:var(--shadow);}
+.task-col-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.task-col-title{font-size:13px;font-weight:700;}
+.task-cnt{font-size:11px;background:var(--red-lt);color:var(--red);padding:2px 7px;border-radius:10px;font-weight:700;}
+.task-card{background:#fff;border:1px solid rgba(93,64,55,.1);border-radius:10px;padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.task-card:hover{border-color:var(--red3);transform:translateX(2px);}
+.task-card-title{font-size:13px;font-weight:600;margin-bottom:4px;}
+.task-meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.tag{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:600;}
+.t-clip{background:#FFEBEE;color:#C62828;}.t-script{background:#E8EAF6;color:#283593;}
+.t-design{background:#F3E5F5;color:#6A1B9A;}.t-post{background:#E0F7FA;color:#006064;}
+.t-meet{background:#FFF8E1;color:#F57F17;}.t-other{background:#F5F5F5;color:#424242;}
+.channel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px;margin-bottom:20px;}
+.ch-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:17px;box-shadow:var(--shadow);transition:transform .2s;}
+.ch-card:hover{transform:translateY(-2px);}
+.ch-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px;}
+.ch-name{font-family:'Prompt',sans-serif;font-size:15px;font-weight:700;color:var(--red2);}
+.plat{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:700;}
+.plat-yt{background:#FFEBEE;color:#C62828;}.plat-tt{background:#E8EAF6;color:#311B92;}
+.plat-fb{background:#E3F2FD;color:#1565C0;}.plat-ig{background:#FCE4EC;color:#880E4F;}
+.plat-tw{background:#E1F5FE;color:#01579B;}.plat-oth{background:#FAFAFA;color:#424242;}
+.ch-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ch-sv{font-family:'Prompt',sans-serif;font-weight:700;font-size:17px;color:var(--red);}
+.ch-sl{font-size:11px;color:var(--muted);}
+.cal-hdr{display:flex;gap:10px;align-items:center;margin-bottom:13px;}
+.cal-nav{display:flex;align-items:center;gap:9px;}
+.cal-nav button{background:var(--red-lt);border:none;color:var(--red);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:700;transition:all .15s;}
+.cal-nav button:hover{background:var(--red);color:#fff;}
+.cal-month-lbl{font-family:'Prompt',sans-serif;font-size:17px;font-weight:800;color:var(--red2);min-width:180px;}
+.cal-grid-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+.cal-days-hdr{display:grid;grid-template-columns:repeat(7,1fr);background:var(--red);}
+.cal-dname{text-align:center;padding:8px 0;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.cal-day{min-height:90px;padding:6px;border:.5px solid rgba(211,47,47,.07);cursor:pointer;transition:background .12s;overflow:hidden;}
+.cal-day:hover{background:var(--red-lt);}
+.cal-day.today{background:rgba(165,214,167,.12);}
+.cal-day.other{opacity:.35;}
+.cal-date{font-size:12px;font-weight:700;margin-bottom:3px;}
+.cal-evt{font-size:10px;padding:2px 5px;border-radius:4px;margin-bottom:2px;overflow:hidden;line-height:1.3;cursor:pointer;transition:opacity .1s;}
+.cal-evt:hover{opacity:.8;}
+.ev-clip{background:#F3E5F5;color:#6A1B9A;}.ev-script{background:#E8EAF6;color:#283593;}
+.ev-post{background:#E0F2F1;color:#004D40;}.ev-meet{background:#FFF3E0;color:#BF360C;}.ev-other{background:#F5F5F5;color:#424242;}
+.meet-card{background:var(--card-bg);border:1px solid var(--border);border-radius:13px;padding:16px;box-shadow:var(--shadow);margin-bottom:11px;transition:border-color .15s;}
+.meet-card:hover{border-color:var(--red3);}
+.meet-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;}
+.meet-title{font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;color:var(--red2);}
+.meet-date{font-size:12px;color:var(--muted);margin-top:2px;}
+.meet-body{font-size:13px;color:#4A4A4A;line-height:1.65;white-space:pre-wrap;}
+.meet-tags{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.chart-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow);margin-bottom:20px;}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(62,39,35,.14);backdrop-filter:blur(5px);z-index:1000;align-items:center;justify-content:center;}
+.modal-ov.open{display:flex;}
+.modal{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;width:90%;max-width:570px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(62,39,35,.16);animation:mIn .22s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mIn{from{opacity:0;transform:scale(.92) translateY(14px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;}
+.modal-title{font-family:'Prompt',sans-serif;font-size:16px;font-weight:700;color:var(--red2);}
+.close-btn{background:var(--red-lt);border:none;color:var(--red);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.close-btn:hover{background:var(--red);color:#fff;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;}
+.fg input,.fg select,.fg textarea{background:var(--cream);border:1px solid rgba(211,47,47,.15);border-radius:9px;color:var(--text);font-family:'Sarabun',sans-serif;font-size:13px;padding:8px 12px;outline:none;transition:border-color .15s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--red3);background:#fff;}
+.fg select option{background:#fff;}
+.fg textarea{resize:vertical;min-height:72px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.form-grid .full{grid-column:1/-1;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;}
+.del-btn,.ed-btn{background:transparent;border:none;cursor:pointer;padding:4px;border-radius:6px;font-size:14px;transition:all .15s;}
+.del-btn:hover{background:#FFEBEE;color:#C62828;}
+.ed-btn:hover{background:#E3F2FD;color:#1565C0;}
+.act-cell{display:flex;gap:3px;}
+.empty{text-align:center;padding:36px;color:var(--muted);}
+.empty-ico{font-size:36px;margin-bottom:9px;opacity:.45;}
+.notice{background:var(--red-lt);border:1px solid var(--red-md);border-radius:10px;padding:9px 13px;font-size:12px;color:var(--red2);margin-bottom:13px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(93,64,55,.2);border-radius:3px;}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--red2);color:#fff;padding:9px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(62,39,35,.3);z-index:9999;animation:toastIn .22s ease;display:none;}
+.toast.show{display:block;}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.sidebar{width:58px;}.logo-text,.nav-lbl,.nav-item span:not(.ico),.sync-badge{display:none;}.main{margin-left:58px;}.form-grid{grid-template-columns:1fr;}.stat-grid{grid-template-columns:1fr 1fr;}}
+.eng-compare-wrap{overflow-x:auto;margin-bottom:20px;}
+.eng-compare-table{width:100%;border-collapse:collapse;min-width:600px;}
+.eng-compare-table th{background:var(--red);color:#fff;padding:10px 13px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;text-align:center;}
+.eng-compare-table th:first-child{text-align:left;}
+.eng-compare-table td{padding:9px 13px;font-size:13px;border-top:1px solid rgba(211,47,47,.06);text-align:center;vertical-align:middle;}
+.eng-compare-table td:first-child{text-align:left;font-weight:700;color:var(--red2);}
+.eng-compare-table tr:hover td{background:rgba(211,47,47,.02);}
+.trend-up{color:#2E7D32;font-weight:700;font-size:12px;}
+.trend-dn{color:#C62828;font-weight:700;font-size:12px;}
+.mini-bar-wrap{display:flex;align-items:center;gap:6px;}
+.mini-bar{height:8px;border-radius:4px;background:var(--red);min-width:2px;}
+.mini-bar-val{font-size:12px;font-weight:700;white-space:nowrap;}
+.multi-bar-chart{display:flex;gap:12px;align-items:flex-end;height:160px;overflow-x:auto;padding-bottom:4px;}
+.mbc-grp{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;}
+.mbc-bars{display:flex;gap:2px;align-items:flex-end;height:140px;}
+.mbc-bar{width:12px;border-radius:3px 3px 0 0;cursor:pointer;position:relative;}
+.mbc-bar:hover::after{content:attr(title);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;padding:3px 7px;border-radius:5px;font-size:10px;white-space:nowrap;pointer-events:none;margin-bottom:3px;}
+.mbc-lbl{font-size:10px;color:var(--muted);text-align:center;white-space:nowrap;}
+.chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
+.legend-dot{width:10px;height:10px;border-radius:2px;}
+.ai-review-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+@media(max-width:900px){.ai-review-layout{grid-template-columns:1fr;}}
+.ai-input-card,.ai-result-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow);}
+.ai-result-card{display:flex;flex-direction:column;}
+.ai-type-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ai-tab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.ai-tab.active{background:var(--red);border-color:var(--red);color:#fff;}
+.ai-textarea{width:100%;min-height:180px;resize:vertical;border:1px solid rgba(211,47,47,.18);border-radius:10px;padding:12px;font-family:'Sarabun',sans-serif;font-size:13px;line-height:1.65;outline:none;background:var(--cream);color:var(--text);}
+.ai-textarea:focus{border-color:var(--red3);background:#fff;}
+.ai-img-upload{border:2px dashed rgba(211,47,47,.25);border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:var(--cream);}
+.ai-img-upload:hover{border-color:var(--red3);background:var(--red-lt);}
+.ai-img-preview{max-width:100%;max-height:200px;border-radius:8px;margin-top:10px;display:none;}
+.ai-result-box{flex:1;border:1px solid rgba(211,47,47,.12);border-radius:10px;padding:14px;background:var(--cream);font-size:13px;line-height:1.75;color:var(--text);min-height:200px;white-space:pre-wrap;}
+.ai-score-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.ai-score-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.score-great{background:#E8F5E9;color:#2E7D32;}
+.score-ok{background:#FFF8E1;color:#F57F17;}
+.score-fix{background:#FFEBEE;color:#C62828;}
+.ai-loading{display:none;text-align:center;padding:30px;color:var(--muted);}
+.ai-loading.show{display:block;}
+.ai-spinner{font-size:28px;animation:spin 1s linear infinite;display:inline-block;margin-bottom:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-history-item{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.ai-history-item:hover{border-color:var(--red3);}
+.ai-history-meta{display:flex;gap:8px;align-items:center;margin-bottom:4px;flex-wrap:wrap;}
+.ai-history-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ai-char-count{font-size:11px;color:var(--muted);text-align:right;margin-top:4px;}
+ 
+/* ── IFRAME MODAL shared style ── */
+.iframe-modal-inner{background:#fff;border:1px solid var(--border);border-radius:16px;width:98%;max-width:1200px;max-height:96vh;padding:0;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(62,39,35,.2);animation:mIn .22s cubic-bezier(.34,1.56,.64,1);}
+.iframe-modal-bar{padding:13px 18px;border-bottom:1px solid var(--border);flex-shrink:0;background:#fff;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10;}
+.iframe-modal-body{flex:1;position:relative;min-height:520px;background:#f9f9f9;isolation:isolate;}
+.iframe-modal-body iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:1;}
+.iframe-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:14px;z-index:2;pointer-events:none;}
+.iframe-loading-ico{font-size:36px;animation:spin 1.2s linear infinite;display:inline-block;}
+</style>
+</head>
+<body>
+<style>
+.portfolio-banner{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:8px 16px;font-family:sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;box-shadow:0 2px 12px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.portfolio-banner span.tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:11px;letter-spacing:2px;}
+.portfolio-banner span.pipe{opacity:.4;}
+body{padding-top:40px !important;}
+</style>
+<div class="portfolio-banner">
+  <span class="tag">PORTFOLIO</span>
+  <span class="pipe">|</span>
+  ✦ ตัวอย่างผลงาน — ข้อมูลจำลองเพื่อการนำเสนอ ✦
+  <span class="pipe">|</span>
+  <span class="tag">MOCK-UP</span>
+</div>
+
+<div class="floaties" id="floaties"></div>
+<div class="toast" id="toast"></div>
+ 
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-icon">🍫</div>
+      <div class="logo-text"><h1>Content Hub</h1><span>Content Management</span></div>
+    </div>
+    
+  </div>
+  <div class="nav">
+    <div class="nav-lbl">หลัก</div>
+    <div class="nav-item active" onclick="go('dashboard')"><span class="ico">📊</span><span>Dashboard</span></div>
+    
+    <div class="nav-item" onclick="go('content')"><span class="ico">🎥</span><span>Content</span></div>
+    <div class="nav-item" onclick="go('tasks')"><span class="ico">✅</span><span>Task Board</span></div>
+    <div class="nav-item" onclick="go('calendar')"><span class="ico">📅</span><span>ปฏิทิน</span></div>
+    <div class="nav-lbl">วิเคราะห์</div>
+    <div class="nav-item" onclick="go('engagement')"><span class="ico">📈</span><span>Engagement</span></div>
+    <div class="nav-item" onclick="go('channels')"><span class="ico">📡</span><span>ช่องทาง</span></div>
+    <div class="nav-lbl">การตลาด</div>
+    <div class="nav-item" onclick="go('pillars')"><span class="ico">🎯</span><span>Content Pillar</span></div>
+    <div class="nav-lbl">บันทึก</div>
+    <div class="nav-item" onclick="go('meetings')"><span class="ico">📝</span><span>ประชุม</span></div>
+    <div class="nav-item" onclick="go('revenue')"><span class="ico">💰</span><span>Revenue</span></div>
+    <div class="nav-item" onclick="go('members')"><span class="ico">👥</span><span>ทีมงาน</span></div>
+    <div class="nav-lbl">AI Tools</div>
+    <div class="nav-item" onclick="go('aireview')"><span class="ico">🤖</span><span>AI ตรวจงาน</span></div>
+    
+    
+    
+  </div>
+</nav>
+ 
+<main class="main">
+ 
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar"><div class="topbar-title">📊 Dashboard</div><div class="topbar-right"></div></div>
+  <div style="padding-top:5px">
+    <div class="stat-grid" id="dash-stats"></div>
+    <div class="sec-hdr"><div class="sec-title">🔥 Content ล่าสุด</div></div>
+    <div class="table-wrap"><table><thead><tr><th>ชื่อ Content</th><th>ช่อง</th><th>คนทำ</th><th>สถานะ</th><th>View</th><th>เดือน/ปี</th></tr></thead><tbody id="dash-recent"></tbody></table></div>
+    <div class="sec-hdr"><div class="sec-title">📋 Tasks ค้างอยู่</div></div>
+    <div id="dash-pending"></div>
+  </div>
+</div>
+ 
+<!-- CONTENT -->
+<div class="page" id="page-content">
+  <div class="topbar"><div class="topbar-title">🎥 Content / โพสต์</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-content')">+ เพิ่ม Content</button></div></div>
+  <div style="padding-top:5px">
+    <div class="filter-bar">
+      <select id="fc-year" onchange="renderContent()"></select>
+      <select id="fc-month" onchange="renderContent()"><option value="">ทุกเดือน</option></select>
+      <select id="fc-channel" onchange="renderContent()"><option value="">ทุกช่อง</option></select>
+      <select id="fc-status" onchange="renderContent()"><option value="">ทุกสถานะ</option><option value="done">เสร็จแล้ว</option><option value="inprog">กำลังทำ</option><option value="edit">ตัดต่อ</option><option value="wait">รอ</option></select>
+      <select id="fc-pillar" onchange="renderContent()"><option value="">ทุก Pillar</option><option value="edu">🎓 Educate</option><option value="entertain">🎉 Entertain</option><option value="inspire">✨ Inspire</option><option value="sell">💰 Sell/CTA</option><option value="ugc">📲 UGC</option><option value="behind">🎬 BTS</option><option value="review">⭐ Review</option><option value="trend">🔥 Trend</option></select>
+      <select id="fc-pipeline" onchange="renderContent()"><option value="">ทุก Pipeline</option><option value="idea">💡 ไอเดีย</option><option value="script">📝 สคริปต์</option><option value="shoot">🎬 ถ่ายทำ</option><option value="edit">✂️ ตัดต่อ</option><option value="review">👁️ รอรีวิว</option><option value="approve">✅ อนุมัติ</option><option value="scheduled">📅 กำหนดโพสต์</option><option value="published">🚀 เผยแพร่</option></select>
+      <input type="text" id="fc-q" placeholder="🔍 ค้นหา..." oninput="renderContent()">
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>#</th><th>ชื่อ</th><th>ช่อง</th><th>Pillar</th><th>Pipeline</th><th>คนทำ</th><th>สถานะ</th><th>View</th><th>Like</th><th>เดือน/ปี</th><th>UTM</th><th></th></tr></thead><tbody id="content-tb"></tbody></table></div>
+  </div>
+</div>
+ 
+<!-- TASKS -->
+<div class="page" id="page-tasks">
+  <div class="topbar"><div class="topbar-title">✅ Task Board</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-task')">+ เพิ่ม Task</button></div></div>
+  <div style="padding-top:5px">
+    <div class="filter-bar">
+      <select id="ft-who" onchange="renderTasks()"><option value="">ทุกคน</option></select>
+      <select id="ft-type" onchange="renderTasks()"><option value="">ทุกประเภท</option><option value="clip">ตัดคลิป</option><option value="script">บทพากเสียง</option><option value="design">ออกแบบ</option><option value="post">โพสต์</option><option value="meet">ประชุม</option><option value="other">อื่นๆ</option></select>
+    </div>
+    <div class="task-board" id="task-board"></div>
+  </div>
+</div>
+ 
+<!-- CALENDAR -->
+<div class="page" id="page-calendar">
+  <div class="topbar">
+    <div class="topbar-title">📅 ปฏิทินและแผนงานรวม</div>
+    <div class="topbar-right">
+      <select id="cal-view-filter" onchange="renderCal()" style="height:32px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);padding:0 8px;outline:none;">
+        <option value="">ทุกประเภท</option><option value="clip">✂️ ตัดคลิป</option><option value="script">🎙️ บทพากเสียง</option><option value="post">📤 โพสต์</option><option value="meet">🤝 ประชุม</option><option value="other">📌 อื่นๆ</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal('m-cal')">+ เพิ่มกำหนดการ</button>
+    </div>
+  </div>
+  <div style="padding-top:5px">
+    <div class="cal-hdr">
+      <div class="cal-nav">
+        <button onclick="calNav(-1)">&#8249;</button>
+        <div class="cal-month-lbl" id="cal-title"></div>
+        <button onclick="calNav(1)">&#8250;</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:12px">
+        <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="background:#FFEBEE;width:10px;height:10px;border-radius:2px;display:inline-block"></span>ตัดคลิป</span>
+        <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="background:#E8EAF6;width:10px;height:10px;border-radius:2px;display:inline-block"></span>บทพากเสียง</span>
+        <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="background:#E0F2F1;width:10px;height:10px;border-radius:2px;display:inline-block"></span>โพสต์</span>
+        <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="background:#FFF3E0;width:10px;height:10px;border-radius:2px;display:inline-block"></span>ประชุม</span>
+      </div>
+    </div>
+    <div class="cal-grid-wrap">
+      <div class="cal-days-hdr"><div class="cal-dname">อา</div><div class="cal-dname">จ</div><div class="cal-dname">อ</div><div class="cal-dname">พ</div><div class="cal-dname">พฤ</div><div class="cal-dname">ศ</div><div class="cal-dname">ส</div></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="sec-hdr" style="margin-top:28px;"><div class="sec-title">📋 รายการงานในเดือนนี้</div><span id="cal-event-count" style="font-size:12px;color:var(--muted)"></span></div>
+    <div class="table-wrap"><table><thead><tr><th style="width:120px;">วันที่</th><th>หัวข้องาน</th><th style="width:110px;">ประเภท</th><th style="width:110px;">คนรับผิดชอบ</th><th>หมายเหตุ</th><th style="width:80px;"></th></tr></thead><tbody id="cal-timeline-list"></tbody></table></div>
+    <div class="sec-hdr" style="margin-top:8px;"><div class="sec-title">📝 Timeline แผนงานทั้งหมด (ทุกปี)</div><button class="btn btn-outline btn-sm" onclick="toggleAllTimeline()" id="toggle-all-tl-btn">แสดงทั้งหมด ▼</button></div>
+    <div id="all-timeline-wrap" style="display:none;"><div class="table-wrap"><table><thead><tr style="background:var(--red2);"><th style="width:140px;">วัน/เดือน/ปี</th><th>หัวข้องาน</th><th>ประเภท</th><th>คนทำ</th><th>หมายเหตุ</th><th style="width:90px;">จัดการ</th></tr></thead><tbody id="cal-timeline-list-all"></tbody></table></div></div>
+  </div>
+</div>
+ 
+<!-- ENGAGEMENT -->
+<div class="page" id="page-engagement">
+  <div class="topbar"><div class="topbar-title">📈 Engagement เปรียบเทียบ</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-eng')">+ บันทึก Engagement</button></div></div>
+  <div style="padding-top:5px">
+    <div class="filter-bar">
+      <select id="fe-year" onchange="renderEngagement()"></select>
+      <select id="fe-ch" onchange="renderEngagement()"><option value="">ทุกช่อง</option></select>
+      <select id="fe-metric" onchange="renderEngagement()"><option value="views">Views</option><option value="likes">Likes</option><option value="shares">Shares</option><option value="comments">Comments</option><option value="followers">Followers</option></select>
+    </div>
+    <div class="chart-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <div class="sec-title">📊 เปรียบเทียบแต่ละช่องทุกเดือน</div>
+        <div class="chart-legend" id="eng-legend"></div>
+      </div>
+      <div class="multi-bar-chart" id="eng-chart" style="margin-top:14px;"></div>
+    </div>
+    <div class="sec-hdr"><div class="sec-title">🗂️ ตารางเปรียบเทียบรายเดือน × ช่อง</div></div>
+    <div class="eng-compare-wrap"><table class="eng-compare-table" id="eng-compare-table"><thead id="eng-compare-head"></thead><tbody id="eng-compare-body"></tbody></table></div>
+    <div class="sec-hdr" style="margin-top:8px;"><div class="sec-title">📄 รายการทั้งหมด</div></div>
+    <div class="table-wrap"><table><thead><tr><th>เดือน/ปี</th><th>ช่อง</th><th>Views</th><th>Likes</th><th>Shares</th><th>Comments</th><th>Followers</th><th>เทียบเดือนก่อน</th><th></th></tr></thead><tbody id="eng-tb"></tbody></table></div>
+  </div>
+</div>
+ 
+<!-- CHANNELS -->
+<div class="page" id="page-channels">
+  <div class="topbar"><div class="topbar-title">📡 ช่องทาง</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-ch')">+ เพิ่มช่อง</button></div></div>
+  <div style="padding-top:5px"><div class="channel-grid" id="ch-grid"></div></div>
+</div>
+ 
+<!-- MEETINGS -->
+<div class="page" id="page-meetings">
+  <div class="topbar"><div class="topbar-title">📝 บันทึกประชุม</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-meet')">+ บันทึกประชุม</button></div></div>
+  <div style="padding-top:5px">
+    <div class="filter-bar">
+      <select id="fm-year" onchange="renderMeetings()"></select>
+      <select id="fm-month" onchange="renderMeetings()"><option value="">ทุกเดือน</option></select>
+    </div>
+    <div id="meet-list"></div>
+  </div>
+</div>
+ 
+<!-- REVENUE -->
+<div class="page" id="page-revenue">
+  <div class="topbar"><div class="topbar-title">💰 Revenue</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-rev')">+ บันทึก Revenue</button></div></div>
+  <div style="padding-top:5px">
+    <div class="filter-bar">
+      <select id="fr-year" onchange="renderRevenue()"></select>
+      <select id="fr-month" onchange="renderRevenue()"><option value="">ทุกเดือน</option></select>
+    </div>
+    <div class="stat-grid" id="rev-stats"></div>
+    <div class="table-wrap"><table><thead><tr><th>รายการ</th><th>ช่อง</th><th>ประเภท</th><th>จำนวน (บาท)</th><th>เดือน/ปี</th><th>หมายเหตุ</th><th></th></tr></thead><tbody id="rev-tb"></tbody></table></div>
+  </div>
+</div>
+ 
+<!-- MEMBERS -->
+<div class="page" id="page-members">
+  <div class="topbar"><div class="topbar-title">👥 ทีมงาน</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-mb')">+ เพิ่มสมาชิก</button></div></div>
+  <div style="padding-top:5px">
+    <div class="notice">💡 สมาชิกที่เพิ่มไว้จะปรากฏใน dropdown ทุกหน้าอัตโนมัติ</div>
+    <div class="table-wrap"><table><thead><tr><th>#</th><th>ชื่อ</th><th>ตำแหน่ง</th><th>ทีม</th><th>สถานะ</th><th>หมายเหตุ</th><th></th></tr></thead><tbody id="mb-tb"></tbody></table></div>
+  </div>
+</div>
+ 
+<!-- AI REVIEW -->
+<div class="page" id="page-aireview">
+  <div class="topbar"><div class="topbar-title">🤖 AI ตรวจงาน</div><div class="topbar-right"><span style="font-size:11px;color:var(--muted);background:var(--red-lt);padding:4px 10px;border-radius:20px;">Powered by Claude AI</span></div></div>
+  <div style="padding-top:5px">
+    <div class="notice">🤖 ให้ AI ช่วยตรวจสคริปต์ แคปชั่น คอนเทนต์คลิป และรูปภาพ ก่อน Publish จริง</div>
+    <div class="ai-review-layout">
+      <div class="ai-input-card">
+        <div style="font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;color:var(--red2);margin-bottom:12px;">📝 งานที่ต้องการตรวจ</div>
+        <div class="ai-type-tabs">
+          <div class="ai-tab active" onclick="setAiTab('script',this)">🎙️ สคริปต์</div>
+          <div class="ai-tab" onclick="setAiTab('caption',this)">📝 แคปชั่น</div>
+          <div class="ai-tab" onclick="setAiTab('clip',this)">🎬 Brief คลิป</div>
+          <div class="ai-tab" onclick="setAiTab('image',this)">🖼️ รูปภาพ</div>
+          <div class="ai-tab" onclick="setAiTab('hashtag',this)">🏷️ Hashtag</div>
+        </div>
+        <div id="ai-text-area">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;" id="ai-placeholder-hint">วางสคริปต์ที่ต้องการตรวจ...</div>
+          <textarea class="ai-textarea" id="ai-input-text" placeholder="วางข้อความที่นี่..." oninput="updateCharCount()"></textarea>
+          <div class="ai-char-count" id="ai-char-count">0 ตัวอักษร</div>
+        </div>
+        <div id="ai-image-area" style="display:none;">
+          <div class="ai-img-upload" onclick="document.getElementById('ai-img-file').click()">
+            <div style="font-size:30px;margin-bottom:8px;">🖼️</div>
+            <div style="font-size:13px;font-weight:600;color:var(--red2);">คลิกหรือลากรูปมาวางที่นี่</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">รองรับ JPG, PNG, WEBP</div>
+          </div>
+          <input type="file" id="ai-img-file" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
+          <img id="ai-img-preview" class="ai-img-preview">
+          <div style="margin-top:10px;" id="ai-img-caption-wrap">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:5px;">คำอธิบายเพิ่มเติม (ถ้ามี)</div>
+            <textarea class="ai-textarea" id="ai-img-caption" placeholder="บอก AI ว่ารูปนี้ใช้ทำอะไร..." style="min-height:60px;"></textarea>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+          <div class="fg" style="flex:1;min-width:130px;"><label>ช่อง / แพลตฟอร์ม</label><select id="ai-platform"><option value="">ไม่ระบุ</option><option value="YouTube">YouTube</option><option value="TikTok">TikTok</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Twitter/X">Twitter/X</option></select></div>
+          <div class="fg" style="flex:1;min-width:130px;"><label>กลุ่มเป้าหมาย</label><select id="ai-audience"><option value="ทั่วไป">ทั่วไป</option><option value="วัยรุ่น 13-18">วัยรุ่น 13-18</option><option value="คนทำงาน 25-35">คนทำงาน 25-35</option><option value="แม่บ้าน">แม่บ้าน</option><option value="นักธุรกิจ">นักธุรกิจ</option></select></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:14px;padding:11px;" onclick="runAiReview()">🤖 ให้ AI ตรวจเลย</button>
+        <div id="ai-key-row" style="margin-top:12px;background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:#E65100;margin-bottom:6px;">🔑 Anthropic API Key</div>
+          <div style="display:flex;gap:8px;"><input id="ai-api-key" type="password" style="flex:1;padding:8px 12px;border:1.5px solid #FFE082;border-radius:8px;font-size:12px;font-family:monospace;outline:none;" placeholder="sk-ant-api03-..."><button onclick="saveApiKey()" class="btn btn-primary" style="padding:8px 14px;font-size:12px;">บันทึก</button></div>
+          <div style="font-size:11px;color:#888;margin-top:5px;">รับ API Key ฟรีได้ที่ <a href="https://console.anthropic.com" target="_blank" style="color:#E65100">console.anthropic.com</a></div>
+        </div>
+      </div>
+      <div class="ai-result-card">
+        <div style="font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;color:var(--red2);margin-bottom:12px;">✅ ผลการตรวจจาก AI</div>
+        <div class="ai-loading" id="ai-loading"><div class="ai-spinner">🤖</div><div style="font-size:13px;font-weight:600;color:var(--red2);">AI กำลังวิเคราะห์...</div></div>
+        <div id="ai-score-row" class="ai-score-row" style="display:none;"></div>
+        <div class="ai-result-box" id="ai-result-box"><span style="color:var(--muted);font-size:13px;">ผลการตรวจจะแสดงที่นี่ หลังจากกด "ให้ AI ตรวจเลย" 👆</span></div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn btn-outline btn-sm" onclick="copyResult()" id="ai-copy-btn" style="display:none;">📋 คัดลอกผล</button>
+          <button class="btn btn-outline btn-sm" onclick="saveToHistory()" id="ai-save-btn" style="display:none;">💾 บันทึก</button>
+        </div>
+      </div>
+    </div>
+    <div class="sec-hdr"><div class="sec-title">🕐 ประวัติการตรวจล่าสุด</div><button class="btn btn-outline btn-sm" onclick="clearHistory()">ล้างประวัติ</button></div>
+    <div class="ai-history" id="ai-history-list"><div style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">ยังไม่มีประวัติการตรวจ</div></div>
+  </div>
+</div>
+ 
+<!-- CONTENT PILLAR -->
+<div class="page" id="page-pillars">
+  <div class="topbar"><div class="topbar-title">🎯 Content Pillar & Marketing</div><div class="topbar-right"><button class="btn btn-primary" onclick="openModal('m-pillar')">+ เพิ่ม Content</button></div></div>
+  <div style="padding-top:5px">
+    <div class="notice">🎯 จัดเรียง Content ตาม Pillar เพื่อสื่อสารกับทีม Marketing ได้ชัดเจนขึ้น</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:22px;" id="pillar-board"></div>
+    <div class="sec-hdr"><div class="sec-title">📋 รายการทั้งหมด</div></div>
+    <div class="table-wrap"><table><thead><tr><th>ชื่อ Content</th><th>Pillar</th><th>Pipeline</th><th>ช่อง</th><th>คนทำ</th><th>UTM Link</th><th>หมายเหตุ Marketing</th><th></th></tr></thead><tbody id="pillar-tb"></tbody></table></div>
+  </div>
+</div>
+ 
+</main>
+ 
+<!-- ══════════════ IFRAME MODALS ══════════════ -->
+ 
+<!-- PROMO BRIEF -->
+<div class="modal-ov" id="m-promo" style="padding:16px;align-items:center;">
+  <div class="iframe-modal-inner">
+    <div class="iframe-modal-bar">
+      <div style="font-family:'Prompt',sans-serif;font-size:16px;font-weight:700;color:var(--red2);">🏷️ บรีฟโปรโมชั่น — ฝ่ายออฟไลน์</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a id="promo-open-link" href="https://script.google.com/macros/s/AKfycbzQAhHHM7fd3tEOyua3uuTw3BpR3VBJYTC0SGdAFFSeuVL9wcARdJLKUZhtRyvIla87/exec" target="_blank" class="btn btn-outline btn-sm">↗️ เปิดแยกแท็บ</a>
+        <button class="close-btn" onclick="closeModal('m-promo')">✕</button>
+      </div>
+    </div>
+    <div class="iframe-modal-body">
+      <div class="iframe-loading" id="promo-loading">
+        <div class="iframe-loading-ico">⏳</div>
+        <div style="font-weight:600;color:var(--red2);">กำลังโหลดบรีฟ...</div>
+        <div style="font-size:12px;">ถ้าโหลดนานเกิน 10 วินาที กด "เปิดแยกแท็บ"</div>
+      </div>
+      <iframe id="promo-iframe" src="" onload="document.getElementById('promo-loading').style.display='none';"></iframe>
+    </div>
+  </div>
+</div>
+ 
+<!-- OPERATION -->
+<div class="modal-ov" id="m-operation" style="padding:16px;align-items:center;">
+  <div class="iframe-modal-inner">
+    <div class="iframe-modal-bar">
+      <div style="font-family:'Prompt',sans-serif;font-size:16px;font-weight:700;color:var(--red2);">⚙️ ออฟไลน์ Operation</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a href="https://operationand-marketing.vercel.app/" target="_blank" class="btn btn-outline btn-sm">↗️ เปิดแยกแท็บ</a>
+        <button class="close-btn" onclick="closeModal('m-operation')">✕</button>
+      </div>
+    </div>
+    <div class="iframe-modal-body">
+      <div class="iframe-loading" id="operation-loading">
+        <div class="iframe-loading-ico">⏳</div>
+        <div style="font-weight:600;color:var(--red2);">กำลังโหลด Operation...</div>
+        <div style="font-size:12px;">ถ้าโหลดนานเกิน 10 วินาที กด "เปิดแยกแท็บ"</div>
+      </div>
+      <iframe id="operation-iframe" src="" onload="document.getElementById('operation-loading').style.display='none';"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- KOL DASHBOARD -->
+<div class="modal-ov" id="m-kol" style="padding:16px;align-items:center;">
+  <div class="iframe-modal-inner">
+    <div class="iframe-modal-bar">
+      <div style="font-family:'Prompt',sans-serif;font-size:16px;font-weight:700;color:var(--red2);">🌟 KOL Dashboard</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a href="https://kol-teal.vercel.app/" target="_blank" class="btn btn-outline btn-sm">↗️ เปิดแยกแท็บ</a>
+        <button class="close-btn" onclick="closeModal('m-kol')">✕</button>
+      </div>
+    </div>
+    <div class="iframe-modal-body">
+      <div class="iframe-loading" id="kol-loading">
+        <div class="iframe-loading-ico">⏳</div>
+        <div style="font-weight:600;color:var(--red2);">กำลังโหลด KOL Dashboard...</div>
+        <div style="font-size:12px;">ถ้าโหลดนานเกิน 10 วินาที กด "เปิดแยกแท็บ"</div>
+      </div>
+      <iframe id="kol-iframe" src="" onload="document.getElementById('kol-loading').style.display='none';"></iframe>
+    </div>
+  </div>
+</div>
+ 
+<!-- ══════════════ FORM MODALS ══════════════ -->
+<div class="modal-ov" id="m-content"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">🎥 เพิ่ม / แก้ไข Content</div><button class="close-btn" onclick="closeModal('m-content')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg full"><label>ชื่อ Content</label><input id="c-title" placeholder="หัวข้อ..."></div>
+    <div class="fg"><label>ช่อง</label><select id="c-ch"></select></div>
+    <div class="fg"><label>ผู้รับผิดชอบ</label><select id="c-who"></select></div>
+    <div class="fg"><label>Content Pillar</label><select id="c-pillar"><option value="">— เลือก Pillar —</option><option value="edu">🎓 Educate</option><option value="entertain">🎉 Entertain</option><option value="inspire">✨ Inspire</option><option value="sell">💰 Sell/CTA</option><option value="ugc">📲 UGC</option><option value="behind">🎬 BTS</option><option value="review">⭐ Review</option><option value="trend">🔥 Trend</option></select></div>
+    <div class="fg"><label>Production Pipeline</label><select id="c-pipeline"><option value="idea">💡 ไอเดีย</option><option value="script">📝 สคริปต์</option><option value="shoot">🎬 ถ่ายทำ</option><option value="edit">✂️ ตัดต่อ</option><option value="review">👁️ รอรีวิว</option><option value="approve">✅ อนุมัติ</option><option value="scheduled">📅 กำหนด</option><option value="published">🚀 เผยแพร่</option></select></div>
+    <div class="fg"><label>เดือน</label><select id="c-mon"><option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option><option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option><option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div>
+    <div class="fg"><label>ปี (พ.ศ.)</label><input id="c-yr" type="number" value="2569" min="2568" max="2600"></div>
+    <div class="fg"><label>สถานะ</label><select id="c-st"><option value="wait">รอดำเนินการ</option><option value="inprog">กำลังทำ</option><option value="edit">ตัดต่อ</option><option value="done">เสร็จแล้ว</option></select></div>
+    <div class="fg"><label>View</label><input id="c-views" type="number" placeholder="0"></div>
+    <div class="fg"><label>Like</label><input id="c-likes" type="number" placeholder="0"></div>
+    <div class="fg"><label>Share</label><input id="c-shares" type="number" placeholder="0"></div>
+    <div class="fg full"><label>UTM / Tracking Link</label><input id="c-utm" placeholder="https://...?utm_source=youtube&utm_medium=organic&utm_campaign=..."></div>
+    <div class="fg full"><label>หมายเหตุ</label><textarea id="c-note"></textarea></div>
+  </div>
+  <input type="hidden" id="c-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-content')">ยกเลิก</button><button class="btn btn-primary" onclick="saveContent()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-task"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">✅ เพิ่ม Task</div><button class="close-btn" onclick="closeModal('m-task')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg full"><label>ชื่อ Task</label><input id="t-title" placeholder="งานที่ต้องทำ..."></div>
+    <div class="fg"><label>ประเภท</label><select id="t-type"><option value="clip">✂️ ตัดคลิป</option><option value="script">🎙️ บทพากเสียง</option><option value="design">🎨 ออกแบบ</option><option value="post">📤 โพสต์</option><option value="meet">🤝 ประชุม</option><option value="other">📌 อื่นๆ</option></select></div>
+    <div class="fg"><label>มอบหมายให้</label><select id="t-who"></select></div>
+    <div class="fg"><label>วันครบกำหนด</label><input id="t-due" type="date"></div>
+    <div class="fg"><label>ความสำคัญ</label><select id="t-pri"><option value="normal">ปกติ</option><option value="high">สูง 🔴</option><option value="urgent">ด่วนมาก 🚨</option></select></div>
+    <div class="fg full"><label>รายละเอียด</label><textarea id="t-desc"></textarea></div>
+  </div>
+  <input type="hidden" id="t-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-task')">ยกเลิก</button><button class="btn btn-primary" onclick="saveTask()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-cal"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">📅 เพิ่มกำหนดการ</div><button class="close-btn" onclick="closeModal('m-cal')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg full"><label>ชื่อกำหนดการ</label><input id="ce-title" placeholder="เช่น ตัดต่อ EP5, ประชุมทีม"></div>
+    <div class="fg"><label>วันที่</label><input id="ce-date" type="date"></div>
+    <div class="fg"><label>ประเภท</label><select id="ce-type"><option value="clip">✂️ ตัดคลิป</option><option value="script">🎙️ บทพากเสียง</option><option value="post">📤 โพสต์</option><option value="meet">🤝 ประชุม</option><option value="other">📌 อื่นๆ</option></select></div>
+    <div class="fg"><label>ผู้รับผิดชอบ</label><select id="ce-who"></select></div>
+    <div class="fg full"><label>หมายเหตุ</label><textarea id="ce-note"></textarea></div>
+  </div>
+  <input type="hidden" id="ce-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-cal')">ยกเลิก</button><button class="btn btn-primary" onclick="saveCalEvent()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-eng"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">📈 บันทึก Engagement</div><button class="close-btn" onclick="closeModal('m-eng')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg"><label>ช่อง</label><select id="e-ch"></select></div>
+    <div class="fg"><label>เดือน</label><select id="e-mon"><option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option><option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option><option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div>
+    <div class="fg"><label>ปี (พ.ศ.)</label><input id="e-yr" type="number" value="2569" min="2568" max="2600"></div>
+    <div class="fg"><label>Views</label><input id="e-views" type="number" placeholder="0"></div>
+    <div class="fg"><label>Likes</label><input id="e-likes" type="number" placeholder="0"></div>
+    <div class="fg"><label>Shares</label><input id="e-shares" type="number" placeholder="0"></div>
+    <div class="fg"><label>Comments</label><input id="e-com" type="number" placeholder="0"></div>
+    <div class="fg"><label>Followers รวม</label><input id="e-fol" type="number" placeholder="0"></div>
+  </div>
+  <input type="hidden" id="e-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-eng')">ยกเลิก</button><button class="btn btn-primary" onclick="saveEngagement()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-ch"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">📡 เพิ่ม / แก้ไขช่อง</div><button class="close-btn" onclick="closeModal('m-ch')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg"><label>ชื่อช่อง</label><input id="ch-name" placeholder="ชื่อช่อง..."></div>
+    <div class="fg"><label>แพลตฟอร์ม</label><select id="ch-plat"><option value="yt">YouTube</option><option value="tt">TikTok</option><option value="fb">Facebook</option><option value="ig">Instagram</option><option value="tw">Twitter/X</option><option value="oth">อื่นๆ</option></select></div>
+    <div class="fg full"><label>URL / ลิงก์</label><input id="ch-url" placeholder="https://..."></div>
+    <div class="fg"><label>Followers</label><input id="ch-fol" type="number" placeholder="0"></div>
+    <div class="fg"><label>หมายเหตุ</label><input id="ch-note" placeholder="..."></div>
+  </div>
+  <input type="hidden" id="ch-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-ch')">ยกเลิก</button><button class="btn btn-primary" onclick="saveChannel()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-meet"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">📝 บันทึกการประชุม</div><button class="close-btn" onclick="closeModal('m-meet')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg full"><label>หัวข้อ</label><input id="mt-title" placeholder="หัวข้อการประชุม..."></div>
+    <div class="fg"><label>วันที่</label><input id="mt-date" type="date"></div>
+    <div class="fg"><label>ผู้เข้าร่วม</label><input id="mt-att" placeholder="เช่น อาร์ม, บิ๊ก, มิ้น"></div>
+    <div class="fg full"><label>สรุป / Action Items</label><textarea id="mt-notes" style="min-height:100px" placeholder="- งานที่ต้องทำ&#10;- ผู้รับผิดชอบ"></textarea></div>
+    <div class="fg full"><label>แท็ก (คั่น comma)</label><input id="mt-tags" placeholder="เช่น แผน, ไอเดีย"></div>
+  </div>
+  <input type="hidden" id="mt-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-meet')">ยกเลิก</button><button class="btn btn-primary" onclick="saveMeeting()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-rev"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">💰 บันทึก Revenue</div><button class="close-btn" onclick="closeModal('m-rev')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg full"><label>รายการ</label><input id="rv-title" placeholder="เช่น AdSense, สปอนเซอร์ XYZ"></div>
+    <div class="fg"><label>ช่อง</label><select id="rv-ch"></select></div>
+    <div class="fg"><label>ประเภท</label><select id="rv-type"><option value="ad">โฆษณา (AdSense)</option><option value="sponsor">สปอนเซอร์</option><option value="sell">ขายสินค้า</option><option value="affiliate">Affiliate</option><option value="other">อื่นๆ</option></select></div>
+    <div class="fg"><label>จำนวน (บาท)</label><input id="rv-amt" type="number" placeholder="0"></div>
+    <div class="fg"><label>เดือน</label><select id="rv-mon"><option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option><option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option><option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div>
+    <div class="fg"><label>ปี (พ.ศ.)</label><input id="rv-yr" type="number" value="2569" min="2568" max="2600"></div>
+    <div class="fg full"><label>หมายเหตุ</label><input id="rv-note" placeholder="..."></div>
+  </div>
+  <input type="hidden" id="rv-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-rev')">ยกเลิก</button><button class="btn btn-primary" onclick="saveRevenue()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-mb"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">👤 เพิ่ม / แก้ไขสมาชิก</div><button class="close-btn" onclick="closeModal('m-mb')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg"><label>ชื่อ (ชื่อเล่น)</label><input id="mb-name" placeholder="เช่น อาร์ม, บิ๊ก"></div>
+    <div class="fg"><label>ตำแหน่ง / บทบาท</label><input id="mb-role" placeholder="เช่น ตัดต่อ, Host"></div>
+    <div class="fg"><label>ทีม</label><select id="mb-team"><option value="content">Content</option><option value="creative">Creative</option><option value="marketing">Marketing</option><option value="Ecommerce">Ecommerce</option><option value="other">อื่นๆ</option></select></div>
+    <div class="fg"><label>สถานะ</label><select id="mb-st"><option value="active">ทำงานอยู่</option><option value="inactive">หยุดแล้ว</option></select></div>
+    <div class="fg full"><label>หมายเหตุ</label><input id="mb-note" placeholder="..."></div>
+  </div>
+  <input type="hidden" id="mb-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-mb')">ยกเลิก</button><button class="btn btn-primary" onclick="saveMember()">💾 บันทึก</button></div>
+</div></div>
+ 
+<div class="modal-ov" id="m-pillar"><div class="modal">
+  <div class="modal-hdr"><div class="modal-title">🎯 เพิ่ม Content — Pillar & Marketing</div><button class="close-btn" onclick="closeModal('m-pillar')">✕</button></div>
+  <div class="form-grid">
+    <div class="fg full"><label>ชื่อ Content *</label><input id="pl-title" placeholder="ชื่อคอนเทนต์..."></div>
+    <div class="fg"><label>Content Pillar *</label><select id="pl-pillar"><option value="edu">🎓 Educate</option><option value="entertain">🎉 Entertain</option><option value="inspire">✨ Inspire</option><option value="sell">💰 Sell/CTA</option><option value="ugc">📲 UGC</option><option value="behind">🎬 BTS</option><option value="review">⭐ Review</option><option value="trend">🔥 Trend</option></select></div>
+    <div class="fg"><label>Production Pipeline</label><select id="pl-pipeline"><option value="idea">💡 ไอเดีย</option><option value="script">📝 สคริปต์</option><option value="shoot">🎬 ถ่ายทำ</option><option value="edit">✂️ ตัดต่อ</option><option value="review">👁️ รอรีวิว</option><option value="approve">✅ อนุมัติ</option><option value="scheduled">📅 กำหนด</option><option value="published">🚀 เผยแพร่</option></select></div>
+    <div class="fg"><label>ช่องทาง</label><select id="pl-ch"></select></div>
+    <div class="fg"><label>ผู้รับผิดชอบ</label><select id="pl-who"></select></div>
+    <div class="fg full"><label>UTM / Tracking Link</label><input id="pl-utm" placeholder="https://...?utm_source=&utm_medium=&utm_campaign="></div>
+    <div class="fg full"><label>Note สำหรับทีม Marketing</label><textarea id="pl-note" placeholder="เป้าหมาย, Target audience, Budget โฆษณา, Key Message..."></textarea></div>
+  </div>
+  <input type="hidden" id="pl-id">
+  <div class="form-actions"><button class="btn btn-outline" onclick="closeModal('m-pillar')">ยกเลิก</button><button class="btn btn-primary" onclick="savePillarItem()">💾 บันทึก</button></div>
+</div></div>
+ 
+<script>
+// ════ URLS ════════════════════════════════════════════════════
+const IFRAME_URLS = {};  // external links removed (portfolio demo)
+ 
+// ════ STORAGE (localStorage only — no Firebase) ════════════════
+const SK='cth_fb_v1';
+let db=(()=>{try{return JSON.parse(localStorage.getItem(SK))||fresh();}catch{return fresh();}})();
+function fresh(){return{members:[],channels:[],contents:[],tasks:[],calEvents:[],engagements:[],meetings:[],revenues:[],pillars:[]};}
+function save(){localStorage.setItem(SK,JSON.stringify(db));}
+const pendingDeletes=new Set();
+let fsdb=null;
+const COLS=['members','channels','contents','tasks','calEvents','engagements','meetings','revenues','pillars'];
+ 
+async function initFirebase(cfg){
+  try{
+    const{initializeApp,getApps,getApp}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+    const{getFirestore,collection,doc,setDoc,deleteDoc,onSnapshot,query}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const existingApp=getApps().find(a=>a.name==='cth-app');
+    const app=existingApp?getApp('cth-app'):initializeApp(cfg,'cth-app');
+    fsdb=getFirestore(app);setSS('syncing');
+    COLS.forEach(col=>{onSnapshot(query(collection(fsdb,col)),snap=>{db[col]=snap.docs.filter(d=>!pendingDeletes.has(col+':'+d.id)).map(d=>({id:d.id,...d.data()}));save();setSS('ok');renderCurrent();},err=>{console.error(col,err);setSS('error');});});
+    window._fbSetDoc=(col,id,obj)=>setDoc(doc(fsdb,col,String(id)),obj);
+    window._fbDelDoc=(col,id)=>deleteDoc(doc(fsdb,col,String(id)));
+    setSS('ok');toast('🔥 เชื่อมต่อ Firebase สำเร็จ!');
+  }catch(e){console.error(e);setSS('error');toast('❌ Firebase: '+e.message);}
+}
+async function upsert(col,obj){pendingDeletes.delete(col+':'+obj.id);db[col]=db[col].filter(x=>x.id!==obj.id);db[col].push(obj);save();if(window._fbSetDoc){try{setSS('syncing');await window._fbSetDoc(col,obj.id,obj);setSS('ok');}catch(e){setSS('error');toast('❌ บันทึกไม่ได้: '+e.message);}}}
+async function del(col,id,cb){if(!confirm('ยืนยันการลบ?'))return;const key=col+':'+id;pendingDeletes.add(key);db[col]=db[col].filter(x=>String(x.id)!==String(id));save();if(cb)cb();toast('🗑️ ลบเรียบร้อยแล้ว!');if(window._fbDelDoc){try{await window._fbDelDoc(col,id);pendingDeletes.delete(key);}catch(e){pendingDeletes.delete(key);toast('⚠️ ลบ Firebase ไม่สำเร็จ: '+e.message);}}else{setTimeout(()=>pendingDeletes.delete(key),5000);}}
+function setSS(s){const dot=document.getElementById('sync-dot'),lbl=document.getElementById('sync-lbl');if(!dot||!lbl)return;dot.className='sync-dot'+(s==='syncing'?' syncing':s==='error'?' error':'');lbl.textContent={syncing:'กำลังซิงค์...',error:'ซิงค์ไม่ได้',ok:'🔥 Firebase Live'}[s]||'พร้อมใช้งาน';}
+function syncAll(){toast('🔥 Firebase Real-time — อัปเดตอัตโนมัติอยู่แล้ว!');}
+ 
+// ════ HELPERS ════════════════════════════════════════════════
+const MO=['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const MS=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const SL={done:'เสร็จแล้ว',inprog:'กำลังทำ',edit:'ตัดต่อ',wait:'รอดำเนินการ'};
+const SB={done:'b-done',inprog:'b-inprog',edit:'b-edit',wait:'b-wait'};
+const TL={clip:'ตัดคลิป',script:'บทพากเสียง',design:'ออกแบบ',post:'โพสต์',meet:'ประชุม',other:'อื่นๆ'};
+const TT={clip:'t-clip',script:'t-script',design:'t-design',post:'t-post',meet:'t-meet',other:'t-other'};
+const PL={yt:'YouTube',tt:'TikTok',fb:'Facebook',ig:'Instagram',tw:'Twitter/X',oth:'อื่นๆ'};
+const PB={yt:'plat-yt',tt:'plat-tt',fb:'plat-fb',ig:'plat-ig',tw:'plat-tw',oth:'plat-oth'};
+const EC={clip:'ev-clip',script:'ev-script',post:'ev-post',meet:'ev-meet',other:'ev-other'};
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function fmt(n){return Number(n||0).toLocaleString();}
+function fmtB(n){return '฿'+Number(n||0).toLocaleString();}
+function toast(m,d=2600){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),d);}
+function getYears(){const y=[];for(let i=2568;i<=2583;i++)y.push(i);return y;}
+function fillYear(id,v){const s=document.getElementById(id);if(!s)return;s.innerHTML=getYears().map(y=>`<option value="${y}"${y===(v||2569)?'selected':''}>${y}</option>`).join('');}
+function fillMonth(id,all){const s=document.getElementById(id);if(!s)return;let h=all?'<option value="">ทุกเดือน</option>':'';for(let m=1;m<=12;m++)h+=`<option value="${m}">${MO[m]}</option>`;s.innerHTML=h;}
+function fillMember(id){const s=document.getElementById(id);if(!s)return;const v=s.value;s.innerHTML='<option value="">เลือกคน</option>'+db.members.filter(m=>m.status!=='inactive').map(m=>`<option value="${m.name}">${m.name}${m.role?` (${m.role})`:''}</option>`).join('');s.value=v;}
+function fillCh(id,all){const s=document.getElementById(id);if(!s)return;const v=s.value;s.innerHTML=(all?'<option value="">ทุกช่อง</option>':'<option value="">เลือกช่อง</option>')+db.channels.map(c=>`<option value="${c.name}">${c.name} (${PL[c.platform]||c.platform})</option>`).join('');s.value=v;}
+function refs(){['c-who','t-who','ce-who'].forEach(fillMember);fillMember('ft-who');['c-ch','e-ch','rv-ch'].forEach(id=>fillCh(id,false));['fc-channel','fe-ch'].forEach(id=>fillCh(id,true));}
+ 
+// ════ NAVIGATION ═════════════════════════════════════════════
+let cur='dashboard';
+function go(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');const el=document.querySelector(`[onclick="go('${name}')"]`);if(el)el.classList.add('active');cur=name;refs();renderCurrent();}
+function renderCurrent(){({dashboard:renderDash,content:renderContent,tasks:renderTasks,calendar:renderCal,engagement:renderEng,channels:renderChs,meetings:renderMeets,revenue:renderRev,members:renderMbs,aireview:renderAiHistory,pillars:renderPillars})[cur]?.();}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-ov'))e.target.classList.remove('open');});
+ 
+// ════ IFRAME MODAL (unified for promo + operation) ═══════════
+function openIframeModal(type){
+  const url=IFRAME_URLS[type];
+  const modalId='m-'+type;
+  const iframeId=type+'-iframe';
+  const loadingId=type+'-loading';
+  const fr=document.getElementById(iframeId);
+  const loading=document.getElementById(loadingId);
+  // โหลด iframe ครั้งแรกเท่านั้น
+  if(!fr.src||fr.src===window.location.href||fr.src==='about:blank'){
+    if(loading)loading.style.display='flex';
+    fr.src=url;
+  }
+  openModal(modalId);
+}
+ 
+// ════ DASHBOARD ══════════════════════════════════════════════
+function renderDash(){const tc=db.contents.length,dc=db.contents.filter(c=>c.status==='done').length,tv=db.contents.reduce((s,c)=>s+Number(c.views||0),0),tr=db.revenues.reduce((s,r)=>s+Number(r.amount||0),0),pt=db.tasks.filter(t=>t.status!=='done').length;document.getElementById('dash-stats').innerHTML=[['🎥','Content ทั้งหมด',tc],['✅','เสร็จแล้ว',dc],['👁️','Views รวม',fmt(tv)],['💰','Revenue รวม',fmtB(tr)],['📋','Tasks ค้าง',pt],['📡','ช่องทั้งหมด',db.channels.length]].map(([i,l,v])=>`<div class="stat-card"><div class="stat-ico">${i}</div><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`).join('');const rc=[...db.contents].reverse().slice(0,8);document.getElementById('dash-recent').innerHTML=rc.length===0?`<tr><td colspan="6"><div class="empty"><div class="empty-ico">🎬</div><p>ยังไม่มี Content</p></div></td></tr>`:rc.map(c=>`<tr><td><strong>${c.title}</strong></td><td>${c.channel||'-'}</td><td>${c.assignee||'-'}</td><td><span class="badge ${SB[c.status]}">${SL[c.status]}</span></td><td>${fmt(c.views)}</td><td>${MS[c.month]} ${c.year}</td></tr>`).join('');const pn=db.tasks.filter(t=>t.status!=='done').slice(0,4);document.getElementById('dash-pending').innerHTML=pn.length===0?'<p style="color:var(--muted);font-size:13px">ไม่มี Task ค้างอยู่ 🎉</p>':`<div style="display:flex;gap:10px;flex-wrap:wrap">${pn.map(t=>`<div class="task-card" style="min-width:170px;max-width:240px;flex:1"><div class="task-card-title">${t.title}</div><div class="task-meta"><span class="tag ${TT[t.type]||''}">${TL[t.type]||t.type}</span><span style="font-size:11px;color:var(--muted)">${t.assignee||'ไม่ระบุ'}</span></div></div>`).join('')}</div>`;}
+ 
+// ════ CONTENT ════════════════════════════════════════════════
+function renderContent(){const PILLAR_L={edu:'🎓 Educate',entertain:'🎉 Entertain',inspire:'✨ Inspire',sell:'💰 Sell',ugc:'📲 UGC',behind:'🎬 BTS',review:'⭐ Review',trend:'🔥 Trend'};const PIPE_L={idea:'💡 ไอเดีย',script:'📝 สคริปต์',shoot:'🎬 ถ่าย',edit:'✂️ ตัดต่อ',review:'👁️ รอรีวิว',approve:'✅ อนุมัติ',scheduled:'📅 กำหนด',published:'🚀 เผยแพร่'};const PIPE_B={idea:'b-wait',script:'b-wait',shoot:'b-inprog',edit:'b-edit',review:'b-edit',approve:'b-inprog',scheduled:'b-inprog',published:'b-done'};const yr=document.getElementById('fc-year')?.value,mo=document.getElementById('fc-month')?.value,ch=document.getElementById('fc-channel')?.value,st=document.getElementById('fc-status')?.value,q=document.getElementById('fc-q')?.value?.toLowerCase(),pl=document.getElementById('fc-pillar')?.value,pp=document.getElementById('fc-pipeline')?.value;let d=[...db.contents].reverse();if(yr)d=d.filter(c=>String(c.year)===yr);if(mo)d=d.filter(c=>String(c.month)===mo);if(ch)d=d.filter(c=>c.channel===ch);if(st)d=d.filter(c=>c.status===st);if(pl)d=d.filter(c=>c.pillar===pl);if(pp)d=d.filter(c=>c.pipeline===pp);if(q)d=d.filter(c=>(c.title||'').toLowerCase().includes(q)||(c.assignee||'').toLowerCase().includes(q));document.getElementById('content-tb').innerHTML=d.length===0?`<tr><td colspan="12"><div class="empty"><div class="empty-ico">🎥</div><p>ไม่มีข้อมูล</p></div></td></tr>`:d.map((c,i)=>`<tr><td style="color:var(--muted)">${i+1}</td><td><strong>${c.title}</strong>${c.note?`<div style="font-size:11px;color:var(--muted)">${c.note}</div>`:''}</td><td>${c.channel||'-'}</td><td>${c.pillar?`<span class="badge" style="background:var(--red-lt);color:var(--red2);font-size:10px">${PILLAR_L[c.pillar]||c.pillar}</span>`:'-'}</td><td>${c.pipeline?`<span class="badge ${PIPE_B[c.pipeline]||'b-wait'}" style="font-size:10px">${PIPE_L[c.pipeline]||c.pipeline}</span>`:'-'}</td><td>${c.assignee||'-'}</td><td><span class="badge ${SB[c.status]}">${SL[c.status]}</span></td><td>${fmt(c.views)}</td><td>${fmt(c.likes)}</td><td>${MS[c.month]} ${c.year}</td><td>${c.utm?`<a href="${c.utm}" target="_blank" style="font-size:10px;color:var(--red);text-decoration:none" title="${c.utm}">🔗 UTM</a>`:'-'}</td><td><div class="act-cell"><button class="ed-btn" onclick="editContent('${c.id}')">✏️</button><button class="del-btn" onclick="del('contents','${c.id}',renderContent)">🗑️</button></div></td></tr>`).join('');}
+function editContent(id){const c=db.contents.find(x=>x.id===id);if(!c)return;document.getElementById('c-title').value=c.title||'';document.getElementById('c-mon').value=c.month||1;document.getElementById('c-yr').value=c.year||2569;document.getElementById('c-st').value=c.status||'wait';document.getElementById('c-pillar').value=c.pillar||'';document.getElementById('c-pipeline').value=c.pipeline||'idea';document.getElementById('c-views').value=c.views||'';document.getElementById('c-likes').value=c.likes||'';document.getElementById('c-shares').value=c.shares||'';document.getElementById('c-utm').value=c.utm||'';document.getElementById('c-note').value=c.note||'';document.getElementById('c-id').value=c.id;setTimeout(()=>{document.getElementById('c-ch').value=c.channel||'';document.getElementById('c-who').value=c.assignee||'';},30);openModal('m-content');}
+async function saveContent(){const id=document.getElementById('c-id').value;const obj={id:id||uid(),title:document.getElementById('c-title').value.trim(),channel:document.getElementById('c-ch').value,assignee:document.getElementById('c-who').value,pillar:document.getElementById('c-pillar').value,pipeline:document.getElementById('c-pipeline').value,month:Number(document.getElementById('c-mon').value),year:Number(document.getElementById('c-yr').value),status:document.getElementById('c-st').value,views:Number(document.getElementById('c-views').value)||0,likes:Number(document.getElementById('c-likes').value)||0,shares:Number(document.getElementById('c-shares').value)||0,utm:document.getElementById('c-utm').value.trim(),note:document.getElementById('c-note').value.trim()};if(!obj.title){alert('กรุณาใส่ชื่อ Content');return;}await upsert('contents',obj);closeModal('m-content');document.getElementById('c-id').value='';renderContent();toast(id?'✅ แก้ไข Content แล้ว!':'✅ เพิ่ม Content แล้ว!');}
+ 
+// ════ TASKS ══════════════════════════════════════════════════
+function renderTasks(){const who=document.getElementById('ft-who')?.value,type=document.getElementById('ft-type')?.value;let d=[...db.tasks];if(who)d=d.filter(t=>t.assignee===who);if(type)d=d.filter(t=>t.type===type);const cols=[{k:'wait',l:'⏳ รอทำ'},{k:'inprog',l:'🔵 กำลังทำ'},{k:'review',l:'🟡 รีวิว'},{k:'done',l:'✅ เสร็จ'}];document.getElementById('task-board').innerHTML=cols.map(col=>{const items=d.filter(t=>(t.status||'wait')===col.k);return`<div class="task-col"><div class="task-col-hdr"><div class="task-col-title">${col.l}</div><span class="task-cnt">${items.length}</span></div>${items.length===0?'<div style="color:var(--muted);font-size:12px;text-align:center;padding:14px 0">ไม่มีงาน</div>':''}${items.map(t=>`<div class="task-card"><div class="task-card-title">${t.title}</div><div class="task-meta"><span class="tag ${TT[t.type]||''}">${TL[t.type]||t.type}</span><span style="font-size:11px;color:var(--muted)">${t.assignee||'ไม่ระบุ'}</span>${t.due?`<span style="font-size:10px;color:var(--muted)">${t.due}</span>`:''}</div><div style="margin-top:6px;display:flex;gap:3px;flex-wrap:wrap">${cols.filter(c2=>c2.k!==col.k).map(c2=>`<button class="btn btn-outline" style="font-size:10px;padding:2px 8px" onclick="moveTask('${t.id}','${c2.k}')">${c2.l.split(' ')[0]}</button>`).join('')}<button class="del-btn" onclick="del('tasks','${t.id}',renderTasks)">🗑️</button></div></div>`).join('')}</div>`;}).join('');}
+async function moveTask(id,st){const t=db.tasks.find(x=>x.id===id);if(!t)return;t.status=st;await upsert('tasks',t);renderTasks();}
+async function saveTask(){const obj={id:document.getElementById('t-id').value||uid(),title:document.getElementById('t-title').value.trim(),type:document.getElementById('t-type').value,assignee:document.getElementById('t-who').value,due:document.getElementById('t-due').value,priority:document.getElementById('t-pri').value,desc:document.getElementById('t-desc').value.trim(),status:'wait'};if(!obj.title){alert('กรุณาใส่ชื่อ Task');return;}await upsert('tasks',obj);closeModal('m-task');document.getElementById('t-id').value='';renderTasks();toast('✅ เพิ่ม Task แล้ว!');}
+ 
+// ════ CALENDAR ═══════════════════════════════════════════════
+let cY=2026,cM=0;
+function calNav(d){cM+=d;if(cM>11){cM=0;cY++;}if(cM<0){cM=11;cY--;}renderCal();}
+function renderCal(){
+  const titleEl=document.getElementById('cal-title'),gridEl=document.getElementById('cal-grid');if(!titleEl||!gridEl)return;
+  titleEl.textContent=`${MO[cM+1]} ${cY+543}`;
+  const fd=new Date(cY,cM,1).getDay(),dim=new Date(cY,cM+1,0).getDate(),pd=new Date(cY,cM,0).getDate(),td=new Date();td.setHours(0,0,0,0);
+  const typeFilter=document.getElementById('cal-view-filter')?.value||'';
+  let h='';
+  for(let i=fd-1;i>=0;i--)h+=`<div class="cal-day other"><div class="cal-date" style="color:#ccc">${pd-i}</div></div>`;
+  for(let d=1;d<=dim;d++){const ds=`${cY}-${String(cM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const it=td.getFullYear()===cY&&td.getMonth()===cM&&td.getDate()===d;let evs=db.calEvents.filter(e=>e.date===ds);if(typeFilter)evs=evs.filter(e=>e.type===typeFilter);const dateNum=it?`<div class="cal-date"><span style="background:var(--red);color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${d}</span></div>`:`<div class="cal-date" style="font-size:12px;font-weight:700;color:var(--muted)">${d}</div>`;const evHtml=evs.map(e=>`<div class="cal-evt ${EC[e.type]||'ev-other'}" title="${e.title}${e.assignee?' — '+e.assignee:''}" onclick="event.stopPropagation();editCalEvent('${e.id}')"><span style="font-weight:700">${e.title}</span>${e.assignee?`<span style="opacity:.75;font-size:9px;display:block;margin-top:1px">👤 ${e.assignee}</span>`:''}</div>`).join('');h+=`<div class="cal-day${it?' today':''}" onclick="quickCal('${ds}')">${dateNum}${evHtml}${evs.length===0&&it?`<div style="font-size:9px;color:rgba(211,47,47,.4);margin-top:2px">วันนี้</div>`:''}</div>`;}
+  const tot=fd+dim,rem=7-(tot%7);if(rem<7)for(let d=1;d<=rem;d++)h+=`<div class="cal-day other"><div class="cal-date" style="color:#ccc">${d}</div></div>`;
+  gridEl.innerHTML=h;
+  const evCount=db.calEvents.filter(e=>{const[y,m]=e.date.split('-');return Number(y)===cY&&Number(m)===(cM+1);}).length;
+  const countEl=document.getElementById('cal-event-count');if(countEl)countEl.textContent=`${evCount} กำหนดการ`;
+  renderTimeline(td);
+}
+function renderTimeline(today){const listBody=document.getElementById('cal-timeline-list');const allEvents=[...db.calEvents].sort((a,b)=>new Date(a.date)-new Date(b.date));listBody.innerHTML=allEvents.length===0?`<tr><td colspan="6" class="empty">ยังไม่มีแผนงานในระบบ</td></tr>`:allEvents.map(e=>{const evDate=new Date(e.date);evDate.setHours(0,0,0,0);const isPast=evDate<today;return`<tr class="${isPast?'past-row':''}"><td class="cal-date-cell">${evDate.getDate()} ${MS[evDate.getMonth()+1]} ${evDate.getFullYear()+543}</td><td class="cal-task-name">${e.title}</td><td><span class="tag ${TT[e.type]||''}">${TL[e.type]||'อื่นๆ'}</span></td><td>${e.assignee||'-'}</td><td style="font-size:12px;color:#666;">${e.note||'-'}</td><td><div class="act-cell"><button class="ed-btn" onclick="editCalEvent('${e.id}')">✏️</button><button class="del-btn" onclick="del('calEvents','${e.id}',renderCal)">🗑️</button></div></td></tr>`;}).join('');}
+function editCalEvent(id){const e=db.calEvents.find(x=>x.id===id);if(!e)return;document.getElementById('ce-id').value=e.id;document.getElementById('ce-title').value=e.title;document.getElementById('ce-date').value=e.date;document.getElementById('ce-type').value=e.type;document.getElementById('ce-note').value=e.note||'';setTimeout(()=>{document.getElementById('ce-who').value=e.assignee||'';},50);openModal('m-cal');}
+async function saveCalEvent(){const title=document.getElementById('ce-title').value.trim(),date=document.getElementById('ce-date').value;if(!title){toast('⚠️ กรุณาใส่ชื่อกำหนดการ');return;}if(!date){toast('⚠️ กรุณาเลือกวันที่');return;}const obj={id:document.getElementById('ce-id').value||uid(),title,date,type:document.getElementById('ce-type').value,assignee:document.getElementById('ce-who').value,note:document.getElementById('ce-note').value.trim()};await upsert('calEvents',obj);closeModal('m-cal');document.getElementById('ce-id').value='';renderCal();toast('✅ บันทึกกำหนดการแล้ว!');}
+function quickCal(dateStr){document.getElementById('ce-id').value='';document.getElementById('ce-title').value='';document.getElementById('ce-date').value=dateStr;document.getElementById('ce-type').value='clip';document.getElementById('ce-note').value='';setTimeout(()=>{document.getElementById('ce-who').value='';},30);openModal('m-cal');}
+function toggleAllTimeline(){const w=document.getElementById('all-timeline-wrap'),b=document.getElementById('toggle-all-tl-btn');if(w.style.display==='none'){w.style.display='block';b.textContent='ซ่อน ▲';}else{w.style.display='none';b.textContent='แสดงทั้งหมด ▼';}}
+ 
+// ════ ENGAGEMENT ═════════════════════════════════════════════
+const CH_COLORS=['#D32F2F','#1565C0','#2E7D32','#6A1B9A','#E65100','#00695C','#880E4F','#37474F'];
+function renderEng(){
+  const yr=document.getElementById('fe-year')?.value,chFilter=document.getElementById('fe-ch')?.value,metric=document.getElementById('fe-metric')?.value||'views';
+  const metricLabel={views:'Views',likes:'Likes',shares:'Shares',comments:'Comments',followers:'Followers'};
+  let d=[...db.engagements];if(yr)d=d.filter(e=>String(e.year)===yr);if(chFilter)d=d.filter(e=>e.channel===chFilter);
+  const allChannels=[...new Set(db.engagements.map(e=>e.channel).filter(Boolean))];
+  const dispChannels=chFilter?allChannels.filter(c=>c===chFilter):allChannels;
+  const monthKeys=[...new Set(d.map(e=>`${String(e.month).padStart(2,'0')}-${e.year}`))].sort();
+  const maxVal=Math.max(...d.map(e=>Number(e[metric]||0)),1);
+  document.getElementById('eng-chart').innerHTML=monthKeys.length===0?'<div style="color:var(--muted);font-size:13px;padding:36px;width:100%;text-align:center">ยังไม่มีข้อมูล</div>':monthKeys.map(mk=>{const[mo,ye]=mk.split('-');const barsHtml=dispChannels.map((ch,ci)=>{const rec=d.find(e=>String(e.month).padStart(2,'0')===mo&&String(e.year)===ye&&e.channel===ch);const val=rec?Number(rec[metric]||0):0;const h=Math.max(2,Math.round((val/maxVal)*130));return`<div class="mbc-bar" style="height:${h}px;background:${CH_COLORS[ci%CH_COLORS.length]}" title="${ch}: ${fmt(val)} ${metricLabel[metric]}"></div>`;}).join('');return`<div class="mbc-grp"><div class="mbc-bars">${barsHtml}</div><div class="mbc-lbl">${MS[Number(mo)]}${ye}</div></div>`;}).join('');
+  document.getElementById('eng-legend').innerHTML=dispChannels.map((ch,ci)=>`<div class="legend-item"><div class="legend-dot" style="background:${CH_COLORS[ci%CH_COLORS.length]}"></div>${ch}</div>`).join('');
+  const thead=document.getElementById('eng-compare-head'),tbody=document.getElementById('eng-compare-body');
+  if(thead&&tbody){if(monthKeys.length===0||dispChannels.length===0){thead.innerHTML='';tbody.innerHTML=`<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted)">ยังไม่มีข้อมูลเพียงพอ</td></tr>`;}else{thead.innerHTML=`<tr><th>เดือน / ปี</th>${dispChannels.map((ch,ci)=>`<th style="border-left:3px solid ${CH_COLORS[ci%CH_COLORS.length]}">${ch}</th>`).join('')}<th>รวม</th></tr>`;tbody.innerHTML=monthKeys.map((mk,mi)=>{const[mo,ye]=mk.split('-');const prevMk=monthKeys[mi-1];let rowTotal=0;const cells=dispChannels.map((ch,ci)=>{const rec=d.find(e=>String(e.month).padStart(2,'0')===mo&&String(e.year)===ye&&e.channel===ch);const val=rec?Number(rec[metric]||0):0;rowTotal+=val;let trendHtml='';if(prevMk){const[pmo,pye]=prevMk.split('-');const prevRec=db.engagements.find(e=>String(e.month).padStart(2,'0')===pmo&&String(e.year)===pye&&e.channel===ch);if(prevRec){const diff=val-Number(prevRec[metric]||0);if(diff>0)trendHtml=`<span class="trend-up"> ▲${fmt(diff)}</span>`;else if(diff<0)trendHtml=`<span class="trend-dn"> ▼${fmt(Math.abs(diff))}</span>`;}}const barW=maxVal>0?Math.round((val/maxVal)*80):0;return`<td style="border-left:2px solid ${CH_COLORS[ci%CH_COLORS.length]}22"><div class="mini-bar-wrap"><div class="mini-bar" style="width:${barW}px;background:${CH_COLORS[ci%CH_COLORS.length]}"></div><span class="mini-bar-val">${fmt(val)}</span></div>${trendHtml}</td>`;}).join('');return`<tr><td><strong>${MS[Number(mo)]} ${ye}</strong></td>${cells}<td style="font-weight:700;color:var(--red2)">${fmt(rowTotal)}</td></tr>`;}).join('');}}
+  const sorted=[...d].sort((a,b)=>b.year-a.year||b.month-a.month);
+  document.getElementById('eng-tb').innerHTML=sorted.length===0?`<tr><td colspan="9"><div class="empty"><div class="empty-ico">📈</div><p>ยังไม่มีข้อมูล</p></div></td></tr>`:sorted.map((e,i)=>{const same=sorted.filter(x=>x.channel===e.channel);const p=same[same.indexOf(e)+1];let tr='',tc='';if(p){const df=Number(e.views||0)-Number(p.views||0);if(df>0){tr=`▲ ${fmt(df)}`;tc='color:#2E7D32;font-weight:700;'}else if(df<0){tr=`▼ ${fmt(Math.abs(df))}`;tc='color:#C62828;font-weight:700;'}else tr='— คงที่';}return`<tr><td>${MO[e.month]} ${e.year}</td><td>${e.channel||'-'}</td><td style="font-weight:700">${fmt(e.views)}</td><td>${fmt(e.likes)}</td><td>${fmt(e.shares)}</td><td>${fmt(e.comments)}</td><td>${fmt(e.followers)}</td><td style="${tc};font-size:12px">${tr||'-'}</td><td><button class="del-btn" onclick="del('engagements','${e.id}',renderEng)">🗑️</button></td></tr>`;}).join('');
+}
+function renderEngagement(){renderEng();}
+async function saveEngagement(){const obj={id:document.getElementById('e-id').value||uid(),channel:document.getElementById('e-ch').value,month:Number(document.getElementById('e-mon').value),year:Number(document.getElementById('e-yr').value),views:Number(document.getElementById('e-views').value)||0,likes:Number(document.getElementById('e-likes').value)||0,shares:Number(document.getElementById('e-shares').value)||0,comments:Number(document.getElementById('e-com').value)||0,followers:Number(document.getElementById('e-fol').value)||0};if(!obj.channel){alert('กรุณาเลือกช่อง');return;}await upsert('engagements',obj);closeModal('m-eng');document.getElementById('e-id').value='';renderEng();toast('✅ บันทึก Engagement แล้ว!');}
+ 
+// ════ CHANNELS ═══════════════════════════════════════════════
+function renderChs(){const g=document.getElementById('ch-grid');if(db.channels.length===0){g.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-ico">📡</div><p>ยังไม่มีช่อง</p></div>';return;}g.innerHTML=db.channels.map(ch=>{const en=db.engagements.filter(e=>e.channel===ch.name),tv=en.reduce((s,e)=>s+Number(e.views||0),0),la=en[en.length-1];return`<div class="ch-card"><div class="ch-hdr"><div><div class="ch-name">${ch.name}</div>${ch.url?`<a href="${ch.url}" target="_blank" style="font-size:11px;color:var(--muted);text-decoration:none">${ch.url.slice(0,26)}...</a>`:''}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="plat ${PB[ch.platform]||'plat-oth'}">${PL[ch.platform]||ch.platform}</span><div class="act-cell"><button class="ed-btn" onclick="editCh('${ch.id}')">✏️</button><button class="del-btn" onclick="del('channels','${ch.id}',()=>{renderChs();refs();})">🗑️</button></div></div></div><div class="ch-stats"><div><div class="ch-sv">${fmt(ch.followers)}</div><div class="ch-sl">Followers</div></div><div><div class="ch-sv">${fmt(tv)}</div><div class="ch-sl">Views รวม</div></div><div><div class="ch-sv">${en.length}</div><div class="ch-sl">เดือนที่บันทึก</div></div><div><div class="ch-sv">${la?fmt(la.views):'-'}</div><div class="ch-sl">View ล่าสุด</div></div></div>${ch.note?`<div style="margin-top:8px;font-size:12px;color:var(--muted)">${ch.note}</div>`:''}</div>`;}).join('');}
+function editCh(id){const c=db.channels.find(x=>x.id===id);if(!c)return;document.getElementById('ch-name').value=c.name||'';document.getElementById('ch-plat').value=c.platform||'yt';document.getElementById('ch-url').value=c.url||'';document.getElementById('ch-fol').value=c.followers||'';document.getElementById('ch-note').value=c.note||'';document.getElementById('ch-id').value=c.id;openModal('m-ch');}
+async function saveChannel(){const obj={id:document.getElementById('ch-id').value||uid(),name:document.getElementById('ch-name').value.trim(),platform:document.getElementById('ch-plat').value,url:document.getElementById('ch-url').value.trim(),followers:Number(document.getElementById('ch-fol').value)||0,note:document.getElementById('ch-note').value.trim()};if(!obj.name){alert('กรุณาใส่ชื่อช่อง');return;}await upsert('channels',obj);closeModal('m-ch');document.getElementById('ch-id').value='';renderChs();refs();toast('✅ บันทึกช่องแล้ว!');}
+ 
+// ════ MEETINGS ═══════════════════════════════════════════════
+function renderMeets(){const yr=document.getElementById('fm-year')?.value,mo=document.getElementById('fm-month')?.value;let d=[...db.meetings].reverse();if(yr)d=d.filter(m=>{const dt=new Date(m.date);return String(dt.getFullYear()+543)===yr;});if(mo)d=d.filter(m=>{const dt=new Date(m.date);return String(dt.getMonth()+1)===mo;});document.getElementById('meet-list').innerHTML=d.length===0?`<div class="empty"><div class="empty-ico">📝</div><p>ยังไม่มีบันทึกการประชุม</p></div>`:d.map(m=>{const tg=(m.tags||'').split(',').map(t=>t.trim()).filter(Boolean);const dt=m.date?new Date(m.date):null;const ds=dt?`${dt.getDate()} ${MO[dt.getMonth()+1]} ${dt.getFullYear()+543}`:'';return`<div class="meet-card"><div class="meet-hdr"><div><div class="meet-title">${m.title}</div><div class="meet-date">📅 ${ds}${m.attendees?` · 👥 ${m.attendees}`:''}</div></div><div class="act-cell"><button class="ed-btn" onclick="editMeet('${m.id}')">✏️</button><button class="del-btn" onclick="del('meetings','${m.id}',renderMeets)">🗑️</button></div></div><div class="meet-body">${(m.notes||'').replace(/</g,'&lt;')}</div>${tg.length?`<div class="meet-tags">${tg.map(t=>`<span class="badge" style="background:var(--red-lt);color:var(--red2)">#${t}</span>`).join('')}</div>`:''}</div>`;}).join('');}
+function editMeet(id){const m=db.meetings.find(x=>x.id===id);if(!m)return;document.getElementById('mt-title').value=m.title||'';document.getElementById('mt-date').value=m.date||'';document.getElementById('mt-att').value=m.attendees||'';document.getElementById('mt-notes').value=m.notes||'';document.getElementById('mt-tags').value=m.tags||'';document.getElementById('mt-id').value=m.id;openModal('m-meet');}
+async function saveMeeting(){const obj={id:document.getElementById('mt-id').value||uid(),title:document.getElementById('mt-title').value.trim(),date:document.getElementById('mt-date').value,attendees:document.getElementById('mt-att').value.trim(),notes:document.getElementById('mt-notes').value.trim(),tags:document.getElementById('mt-tags').value.trim()};if(!obj.title){alert('กรุณาใส่หัวข้อ');return;}await upsert('meetings',obj);closeModal('m-meet');document.getElementById('mt-id').value='';renderMeets();toast('✅ บันทึกประชุมแล้ว!');}
+function renderMeetings(){renderMeets();}
+ 
+// ════ REVENUE ════════════════════════════════════════════════
+function renderRev(){const yr=document.getElementById('fr-year')?.value,mo=document.getElementById('fr-month')?.value;let d=[...db.revenues].reverse();if(yr)d=d.filter(r=>String(r.year)===yr);if(mo)d=d.filter(r=>String(r.month)===mo);const total=d.reduce((s,r)=>s+Number(r.amount||0),0),byT={};d.forEach(r=>{byT[r.type]=(byT[r.type]||0)+Number(r.amount||0);});document.getElementById('rev-stats').innerHTML=`<div class="stat-card"><div class="stat-ico">💰</div><div class="stat-val">${fmtB(total)}</div><div class="stat-lbl">รวมทั้งหมด</div></div><div class="stat-card"><div class="stat-ico">📺</div><div class="stat-val">${fmtB(byT.ad||0)}</div><div class="stat-lbl">โฆษณา</div></div><div class="stat-card"><div class="stat-ico">🤝</div><div class="stat-val">${fmtB(byT.sponsor||0)}</div><div class="stat-lbl">สปอนเซอร์</div></div><div class="stat-card"><div class="stat-ico">🛍️</div><div class="stat-val">${fmtB((byT.sell||0)+(byT.affiliate||0)+(byT.other||0))}</div><div class="stat-lbl">ขาย/อื่นๆ</div></div>`;const RL={ad:'โฆษณา',sponsor:'สปอนเซอร์',sell:'ขายสินค้า',affiliate:'Affiliate',other:'อื่นๆ'};document.getElementById('rev-tb').innerHTML=d.length===0?`<tr><td colspan="7"><div class="empty"><div class="empty-ico">💰</div><p>ไม่มีข้อมูล</p></div></td></tr>`:d.map(r=>`<tr><td><strong>${r.title}</strong></td><td>${r.channel||'-'}</td><td>${RL[r.type]||r.type}</td><td style="font-weight:700;color:#2E7D32">${fmtB(r.amount)}</td><td>${MS[r.month]} ${r.year}</td><td style="font-size:12px;color:var(--muted)">${r.note||''}</td><td><button class="del-btn" onclick="del('revenues','${r.id}',renderRev)">🗑️</button></td></tr>`).join('');}
+function renderRevenue(){renderRev();}
+async function saveRevenue(){const obj={id:document.getElementById('rv-id').value||uid(),title:document.getElementById('rv-title').value.trim(),channel:document.getElementById('rv-ch').value,type:document.getElementById('rv-type').value,amount:Number(document.getElementById('rv-amt').value)||0,month:Number(document.getElementById('rv-mon').value),year:Number(document.getElementById('rv-yr').value),note:document.getElementById('rv-note').value.trim()};if(!obj.title){alert('กรุณาใส่รายการ');return;}await upsert('revenues',obj);closeModal('m-rev');document.getElementById('rv-id').value='';renderRev();toast('✅ บันทึก Revenue แล้ว!');}
+ 
+// ════ MEMBERS ════════════════════════════════════════════════
+function renderMbs(){const TM={content:'Content',creative:'Creative',marketing:'Marketing',Ecommerce:'Ecommerce',other:'อื่นๆ'};document.getElementById('mb-tb').innerHTML=db.members.length===0?`<tr><td colspan="7"><div class="empty"><div class="empty-ico">👥</div><p>ยังไม่มีสมาชิก</p></div></td></tr>`:db.members.map((m,i)=>`<tr><td style="color:var(--muted)">${i+1}</td><td><strong>${m.name}</strong></td><td>${m.role||'-'}</td><td>${TM[m.team]||m.team}</td><td><span class="badge ${m.status==='active'?'b-done':'b-wait'}">${m.status==='active'?'ทำงานอยู่':'หยุดแล้ว'}</span></td><td style="font-size:12px;color:var(--muted)">${m.note||''}</td><td><div class="act-cell"><button class="ed-btn" onclick="editMb('${m.id}')">✏️</button><button class="del-btn" onclick="del('members','${m.id}',()=>{renderMbs();refs();})">🗑️</button></div></td></tr>`).join('');refs();}
+function editMb(id){const m=db.members.find(x=>x.id===id);if(!m)return;document.getElementById('mb-name').value=m.name||'';document.getElementById('mb-role').value=m.role||'';document.getElementById('mb-team').value=m.team||'content';document.getElementById('mb-st').value=m.status||'active';document.getElementById('mb-note').value=m.note||'';document.getElementById('mb-id').value=m.id;openModal('m-mb');}
+async function saveMember(){const obj={id:document.getElementById('mb-id').value||uid(),name:document.getElementById('mb-name').value.trim(),role:document.getElementById('mb-role').value.trim(),team:document.getElementById('mb-team').value,status:document.getElementById('mb-st').value,note:document.getElementById('mb-note').value.trim()};if(!obj.name){alert('กรุณาใส่ชื่อ');return;}await upsert('members',obj);closeModal('m-mb');document.getElementById('mb-id').value='';renderMbs();toast('✅ เพิ่มสมาชิกแล้ว!');}
+ 
+// ════ AI REVIEW ══════════════════════════════════════════════
+let aiTab='script',aiHistory=JSON.parse(localStorage.getItem('ai_review_history')||'[]'),lastAiResult='';
+const AI_PROMPTS={script:(t,p,a)=>`คุณเป็น Content Strategist ผู้เชี่ยวชาญ\n\nตรวจสคริปต์สำหรับ ${p||'Social Media'} กลุ่มเป้าหมาย: ${a}\n\n---\n${t}\n---\n\n⭐ คะแนนรวม: [X/100]\n✅ จุดเด่น:\n- ...\n⚠️ จุดที่ควรปรับ:\n- ...\n✨ ตัวอย่างที่ปรับแล้ว:\n- ...`,caption:(t,p,a)=>`คุณเป็น Social Media Expert\n\nตรวจแคปชั่นสำหรับ ${p||'Social Media'} กลุ่มเป้าหมาย: ${a}\n\n---\n${t}\n---\n\n⭐ คะแนนรวม: [X/100]\n✅ จุดเด่น:\n- ...\n⚠️ ปัญหา:\n- ...\n✨ แคปชั่นเวอร์ชั่นที่ดีขึ้น:\n[เขียนใหม่]`,clip:(t,p,a)=>`คุณเป็น Video Director\n\nตรวจ Brief คลิปสำหรับ ${p||'YouTube/TikTok'} กลุ่มเป้าหมาย: ${a}\n\n---\n${t}\n---\n\n⭐ คะแนน: [X/100]\n✅ ดี:\n- ...\n❌ ขาด:\n- ...\n✨ แนะนำ:\n- ...`,image:(t,p,a)=>`คุณเป็น Creative Director\n\nตรวจรูปภาพ/Thumbnail สำหรับ ${p||'Social Media'} กลุ่มเป้าหมาย: ${a}\n${t?`\nContext: ${t}`:''}}\n\n⭐ คะแนน: [X/100]\n✅ จุดเด่น:\n- ...\n⚠️ จุดที่ควรปรับ:\n- ...\n✨ แนะนำ:\n- ...`,hashtag:(t,p,a)=>`คุณเป็น Social Media Strategist\n\nตรวจ Hashtag สำหรับ ${p||'Social Media'} กลุ่มเป้าหมาย: ${a}\n\n---\n${t}\n---\n\n⭐ คะแนน: [X/100]\n✅ ดี:\n- ...\n❌ ไม่เหมาะ:\n- ...\n✨ แนะนำเพิ่ม:\n- ...`};
+function setAiTab(tab,el){aiTab=tab;document.querySelectorAll('.ai-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');const hints={script:'วางสคริปต์...',caption:'วางแคปชั่น...',clip:'วาง Brief คลิป...',hashtag:'วาง Hashtag...',image:'รูปภาพที่ต้องการตรวจ'};const ta=document.getElementById('ai-text-area'),ia=document.getElementById('ai-image-area'),hint=document.getElementById('ai-placeholder-hint');if(tab==='image'){ta.style.display='none';ia.style.display='block';}else{ta.style.display='block';ia.style.display='none';if(hint)hint.textContent=hints[tab]||'';}}
+function updateCharCount(){const ta=document.getElementById('ai-input-text'),cc=document.getElementById('ai-char-count');if(ta&&cc)cc.textContent=`${ta.value.length} ตัวอักษร`;}
+let uploadedImgBase64='';
+function handleImgUpload(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{uploadedImgBase64=ev.target.result;const prev=document.getElementById('ai-img-preview');if(prev){prev.src=uploadedImgBase64;prev.style.display='block';}document.getElementById('ai-img-caption-wrap').style.display='block';};reader.readAsDataURL(file);}
+async function runAiReview(){
+  const text=aiTab==='image'?document.getElementById('ai-img-caption')?.value||'':document.getElementById('ai-input-text')?.value||'';
+  const plat=document.getElementById('ai-platform')?.value||'',aud=document.getElementById('ai-audience')?.value||'ทั่วไป';
+  if(aiTab!=='image'&&!text.trim()){alert('กรุณาใส่ข้อความ');return;}
+  if(aiTab==='image'&&!uploadedImgBase64){alert('กรุณาอัปโหลดรูป');return;}
+  const loadEl=document.getElementById('ai-loading'),resultEl=document.getElementById('ai-result-box'),scoreRow=document.getElementById('ai-score-row'),copyBtn=document.getElementById('ai-copy-btn'),saveBtn=document.getElementById('ai-save-btn');
+  loadEl.classList.add('show');resultEl.innerHTML='<span style="color:var(--muted)">กำลังวิเคราะห์...</span>';scoreRow.style.display='none';if(copyBtn)copyBtn.style.display='none';if(saveBtn)saveBtn.style.display='none';
+  try{
+    let msgContent;
+    if(aiTab==='image'&&uploadedImgBase64){const b64=uploadedImgBase64.split(',')[1],mtype=uploadedImgBase64.split(';')[0].split(':')[1];msgContent=[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:`ตรวจรูปภาพสำหรับ ${plat||'Social Media'} กลุ่มเป้าหมาย: ${aud}${text?'\n\nContext: '+text:''}\n\n⭐ คะแนน: [X/100]\n✅ จุดเด่น:\n⚠️ จุดที่ควรปรับ:\n✨ แนะนำ:`}];}else{const fn=AI_PROMPTS[aiTab];msgContent=fn?fn(text,plat,aud):`ตรวจงานนี้: ${text}`;}
+    const apiKey=localStorage.getItem('anthropic_key')||'';
+    if(!apiKey){document.getElementById('ai-key-row').style.display='block';resultEl.innerHTML='<div style="color:#c62828">⚠️ กรุณาใส่ Anthropic API Key</div>';loadEl.classList.remove('show');return;}
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:msgContent}]})});
+    const data=await res.json();const result=data.content?.[0]?.text||'ดึงผลไม่ได้';lastAiResult=result;
+    const scoreMatch=result.match(/คะแนน[รวม]*[:：\s]*(\d+)/);const score=scoreMatch?Number(scoreMatch[1]):null;
+    if(score!==null&&scoreRow){let cls='score-ok',txt='พอใช้ได้';if(score>=80){cls='score-great';txt='ดีมาก! ✨';}else if(score<60){cls='score-fix';txt='ต้องปรับปรุง';}scoreRow.innerHTML=`<span class="ai-score-badge ${cls}">${score}/100 — ${txt}</span>`;scoreRow.style.display='flex';}
+    resultEl.textContent=result;if(copyBtn)copyBtn.style.display='inline-block';if(saveBtn)saveBtn.style.display='inline-block';
+  }catch(err){resultEl.innerHTML=`<div style="color:#c62828">❌ ${err.message}</div>`;document.getElementById('ai-key-row').style.display='block';}
+  finally{loadEl.classList.remove('show');}
+}
+function copyResult(){navigator.clipboard.writeText(lastAiResult).then(()=>toast('📋 คัดลอกแล้ว!'));}
+function saveApiKey(){const key=document.getElementById('ai-api-key').value.trim();if(!key||!key.startsWith('sk-')){toast('⚠️ API Key ไม่ถูกต้อง');return;}localStorage.setItem('anthropic_key',key);toast('✅ บันทึก API Key แล้ว!');document.getElementById('ai-key-row').style.display='none';}
+function saveToHistory(){if(!lastAiResult)return;const text=aiTab==='image'?'[รูปภาพ]':document.getElementById('ai-input-text')?.value?.slice(0,60)||'';const tl={script:'🎙️ สคริปต์',caption:'📝 แคปชั่น',clip:'🎬 คลิป',image:'🖼️ รูปภาพ',hashtag:'🏷️ Hashtag'};aiHistory.unshift({id:uid(),type:aiTab,typeLabel:tl[aiTab]||aiTab,preview:text,result:lastAiResult,date:new Date().toLocaleDateString('th-TH')});if(aiHistory.length>20)aiHistory=aiHistory.slice(0,20);localStorage.setItem('ai_review_history',JSON.stringify(aiHistory));renderAiHistory();toast('💾 บันทึกประวัติแล้ว!');}
+function clearHistory(){if(!confirm('ล้างประวัติทั้งหมด?'))return;aiHistory=[];localStorage.removeItem('ai_review_history');renderAiHistory();}
+function renderAiHistory(){const el=document.getElementById('ai-history-list');if(!el)return;if(aiHistory.length===0){el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">ยังไม่มีประวัติการตรวจ</div>';return;}el.innerHTML=aiHistory.map(item=>`<div class="ai-history-item" onclick="loadHistory('${item.id}')"><div class="ai-history-meta"><span class="badge b-inprog" style="font-size:10px">${item.typeLabel}</span><span style="font-size:11px;color:var(--muted)">${item.date}</span></div><div class="ai-history-preview">${item.preview}...</div></div>`).join('');}
+function loadHistory(id){const item=aiHistory.find(x=>x.id===id);if(!item)return;lastAiResult=item.result;document.getElementById('ai-result-box').textContent=item.result;document.getElementById('ai-copy-btn').style.display='inline-block';document.getElementById('ai-save-btn').style.display='none';toast('📂 โหลดผลการตรวจเรียบร้อย');}
+ 
+// ════ FLOATIES ════════════════════════════════════════════════
+function spawnFloaties(){const items=['🍬','🍭','🍫','🍡','🧁','🎀','👗','👘','🧣','🧤','🎁','💄','👠','👒','🪭','🎊','✨','💝','🌹','🎈','🍰','👛','🧸'];const c=document.getElementById('floaties');let n=0;function spawn(){if(n>55){c.innerHTML='';n=0;}const e=document.createElement('div');e.className='floaty';e.textContent=items[Math.floor(Math.random()*items.length)];e.style.left=Math.random()*100+'vw';e.style.fontSize=(16+Math.random()*18)+'px';e.style.animationDuration=(7+Math.random()*9)+'s';e.style.animationDelay=(Math.random()*2)+'s';e.style.opacity=0.08+Math.random()*0.14;c.appendChild(e);n++;e.addEventListener('animationend',()=>{e.remove();n--;});}for(let i=0;i<12;i++)setTimeout(spawn,i*280);setInterval(spawn,1100);}
+ 
+// ════ CONTENT PILLAR ══════════════════════════════════════════
+const PILLAR_CONF={edu:{label:'🎓 Educate',color:'#1565C0',bg:'#E3F2FD'},entertain:{label:'🎉 Entertain',color:'#6A1B9A',bg:'#F3E5F5'},inspire:{label:'✨ Inspire',color:'#E65100',bg:'#FFF3E0'},sell:{label:'💰 Sell/CTA',color:'#2E7D32',bg:'#E8F5E9'},ugc:{label:'📲 UGC',color:'#00695C',bg:'#E0F2F1'},behind:{label:'🎬 BTS',color:'#880E4F',bg:'#FCE4EC'},review:{label:'⭐ Review',color:'#D32F2F',bg:'#FFEBEE'},trend:{label:'🔥 Trend',color:'#BF360C',bg:'#FBE9E7'}};
+const PIPE_CONF={idea:{label:'💡 ไอเดีย',cls:'b-wait'},script:{label:'📝 สคริปต์',cls:'b-wait'},shoot:{label:'🎬 ถ่าย',cls:'b-inprog'},edit:{label:'✂️ ตัดต่อ',cls:'b-edit'},review:{label:'👁️ รอรีวิว',cls:'b-edit'},approve:{label:'✅ อนุมัติ',cls:'b-inprog'},scheduled:{label:'📅 กำหนด',cls:'b-inprog'},published:{label:'🚀 เผยแพร่',cls:'b-done'}};
+function renderPillars(){if(!db.pillars)db.pillars=[];document.getElementById('pillar-board').innerHTML=Object.keys(PILLAR_CONF).map(type=>{const conf=PILLAR_CONF[type],items=db.pillars.filter(p=>p.pillar===type);return`<div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:13px;box-shadow:0 2px 8px rgba(0,0,0,.05);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><div style="font-size:13px;font-weight:700;color:${conf.color}">${conf.label}</div><span style="background:${conf.bg};color:${conf.color};font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">${items.length}</span></div>${items.length===0?'<div style="color:#bbb;font-size:12px;text-align:center;padding:10px 0">ยังไม่มี</div>':''}${items.map(p=>`<div style="background:#fafafa;border:1px solid #f0f0f0;border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:12px;"><div style="font-weight:600;margin-bottom:3px">${p.title}</div><div style="display:flex;gap:5px;flex-wrap:wrap;">${PIPE_CONF[p.pipeline]?`<span class="badge ${PIPE_CONF[p.pipeline].cls}" style="font-size:10px">${PIPE_CONF[p.pipeline].label}</span>`:''} ${p.channel?`<span style="font-size:10px;color:#888">${p.channel}</span>`:''}</div>${p.note?`<div style="font-size:11px;color:#888;margin-top:4px">${p.note.slice(0,60)}${p.note.length>60?'...':''}</div>`:''}<button class="del-btn" style="margin-top:5px;font-size:11px" onclick="del('pillars','${p.id}',renderPillars)">🗑️ ลบ</button></div>`).join('')}</div>`;}).join('');const tbEl=document.getElementById('pillar-tb');if(!tbEl)return;if(db.pillars.length===0){tbEl.innerHTML=`<tr><td colspan="8"><div class="empty"><div class="empty-ico">🎯</div><p>ยังไม่มี Content Pillar</p></div></td></tr>`;return;}tbEl.innerHTML=db.pillars.map(p=>{const pc=PILLAR_CONF[p.pillar]||{label:p.pillar,color:'#888',bg:'#f5f5f5'},pipe=PIPE_CONF[p.pipeline]||{label:p.pipeline||'-',cls:'b-wait'};return`<tr><td><strong>${p.title}</strong></td><td><span class="badge" style="background:${pc.bg};color:${pc.color};font-size:10px">${pc.label}</span></td><td><span class="badge ${pipe.cls}" style="font-size:10px">${pipe.label}</span></td><td>${p.channel||'-'}</td><td>${p.assignee||'-'}</td><td>${p.utm?`<a href="${p.utm}" target="_blank" style="font-size:11px;color:var(--red)">🔗 UTM</a>`:'-'}</td><td style="font-size:12px;color:var(--muted);max-width:200px">${p.note||'-'}</td><td><button class="del-btn" onclick="del('pillars','${p.id}',renderPillars)">🗑️</button></td></tr>`;}).join('');}
+async function savePillarItem(){const title=document.getElementById('pl-title').value.trim();if(!title){alert('กรุณาใส่ชื่อ');return;}const id=document.getElementById('pl-id').value;const obj={id:id||uid(),title,pillar:document.getElementById('pl-pillar').value,pipeline:document.getElementById('pl-pipeline').value,channel:document.getElementById('pl-ch').value,assignee:document.getElementById('pl-who').value,utm:document.getElementById('pl-utm').value.trim(),note:document.getElementById('pl-note').value.trim()};if(!db.pillars)db.pillars=[];await upsert('pillars',obj);closeModal('m-pillar');document.getElementById('pl-id').value='';renderPillars();toast('✅ บันทึก Content Pillar แล้ว!');}
+ 
+// ════ INIT ════════════════════════════════════════════════════
+function init(){
+  ['fc-year','fe-year','fm-year','fr-year'].forEach(id=>fillYear(id));
+  ['fc-month','fm-month','fr-month'].forEach(id=>fillMonth(id,true));
+  const now=new Date();cY=now.getFullYear();cM=now.getMonth();
+  spawnFloaties();
+  const origRefs=refs;
+  refs=function(){origRefs();['pl-ch'].forEach(id=>fillCh(id,false));['pl-who'].forEach(fillMember);};
+  go('dashboard');
+  const storedKey=localStorage.getItem('anthropic_key')||'';
+  const keyInput=document.getElementById('ai-api-key'),keyRow=document.getElementById('ai-key-row');
+  if(keyInput)keyInput.value=storedKey;
+  if(keyRow)keyRow.style.display=storedKey?'none':'block';
+  // Firebase removed — localStorage only
+}
+init();
+</script>
+<div id="disclaimer-banner" style="position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#3E2723,#6D4C41);color:#fff;font-family:'Sarabun',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 20px;box-shadow:0 -2px 12px rgba(0,0,0,.18);">
+  <span style="font-size:16px">📌</span>
+  <span><strong>หมายเหตุ:</strong> นำมาให้ดูเป็นตัวอย่างผลงาน ไม่ได้เชื่อมกับข้อมูลของบริษัทเก่า</span>
+  <button onclick="document.getElementById('disclaimer-banner').style.display='none'" style="margin-left:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:600;">✕ ปิด</button>
+</div>
+</body>
+</html>
