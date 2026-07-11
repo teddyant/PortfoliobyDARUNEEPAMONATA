@@ -637,6 +637,7 @@ body{padding-top:40px !important;}
           <button class="login-btn" onclick="checkLogin()">เข้าสู่ระบบ</button>
         </div>
         <div class="login-error" id="loginError">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่</div>
+        <div style="margin-top:14px;font-size:11px;color:#999;text-align:center">MOCKUP / DEMO — รหัสตัวอย่าง: <b>demo2026</b><br>ข้อมูลทั้งหมดในเว็บนี้เป็นข้อมูลสมมติเพื่อพอร์ตโฟลิโอ ไม่ใช่ข้อมูลจริง</div>
       </div>
       <div id="dashboard" style="display:none;">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -697,51 +698,49 @@ body{padding-top:40px !important;}
 </div>
 
 <script>
-// รหัสผ่านเข้าระบบ Admin (SHA-256 hash — ไม่แสดงรหัสจริง)
-const ADMIN_HASH = '20bbc81f52f3de54ff08b6a11716f4d788e73cf74a14f0e17675fec8287bdd26';
-const SHEET_ID = '13cu8uD8eUf95KUndcDYhQQ_jJ_okqy_Vcoc5QZjRSik';
-// Sheet GID ที่ต้องการบันทึกใบสมัคร (แท็บแบบฟอร์มการตอบกลับ)
-// ใช้ Apps Script Web App URL สำหรับ write (ต้อง deploy แยก)
-// สำหรับ read ใช้ public CSV export
-const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1001552775`;
+// รหัสผ่านเข้าระบบ Admin (SHA-256 hash ของ demo2026 — MOCKUP/DEMO)
+const ADMIN_HASH = '43c27b4e263fa191a6a7ec198cd4d5b47d17413c49d77dc533a01720707e3202';
+// MOCKUP/DEMO — ปิดการเชื่อมต่อ Google Sheets จริงแล้ว ใช้ข้อมูลสมมติในไฟล์นี้แทน ไม่มีการดึง/ส่งข้อมูลออกไปที่ชีตหรือเว็บภายนอกใดๆ
 
 // ── CONFIRM DATA ──
 const CONFIRM_DATA = [
-  {no:1,name:'ภัสสร พลวิชัย',nick:'ฟิล์ม',bday:'31/01',tier:'TEIR 1',province:'กรุงเทพฯ',ig:'https://www.instagram.com/patt3i',tt:'https://www.tiktok.com/@patt3i',line:'ph@t',phone:'0613803179',period:'ธ.ค.68–มี.ค.69',status:'หมดสัญญา'},
-  {no:2,name:'ณภัทร เชียงทอง',nick:'ยูริน',bday:'7/03',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/ynyuxin_/',tt:'https://www.tiktok.com/@ynyuxin_',line:'Yurin.np',phone:'-',period:'ธ.ค.68–ธ.ค.69',status:'ต่อสัญญารายปี'},
-  {no:3,name:'วิริยา ปิงเมือง',nick:'พราว',bday:'1/3/2548',tier:'TEIR 1',province:'เชียงใหม่ (ตจว)',ig:'https://www.instagram.com/prwiiya/',tt:'https://www.tiktok.com/@prwjsuh',line:'พราว',phone:'0909791372',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
-  {no:4,name:'ณัฎฐณิชา บุษดี',nick:'เฟิร์ส',bday:'25/1/2547',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/f1rst_nz/',tt:'https://www.tiktok.com/@1_st04',line:'first',phone:'0823969545',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
-  {no:5,name:'นฤภร สิทธารถศักดิ์',nick:'เวียร์',bday:'3/12/2550',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://instagram.com/x.xaweirnpstt',tt:'https://www.tiktok.com/@xaweirblurr',line:'Xorwor',phone:'0926196154',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
-  {no:6,name:'สิริวรรณ โปธา',nick:'เนม',bday:'20/12/2546',tier:'TEIR 2',province:'เชียงใหม่ (ตจว)',ig:'https://instagram.com/whynqme',tt:'http://www.tiktok.com/@whynqme',line:'Name.',phone:'0839942956',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
-  {no:7,name:'ฐิติพร คำแสน',nick:'เอมมี่',bday:'19/08/2552',tier:'TEIR 2',province:'ปทุมธานี (เข้าสตูดิโอ)',ig:'https://www.instagram.com/emmyx_mi/',tt:'https://www.tiktok.com/@emmyx_mi',line:'emmy_px',phone:'0658137382',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
-  {no:8,name:'พัชชา อารีศรีวัฒนาวงษ์',nick:'อินดี้',bday:'12/02/2551',tier:'TEIR 1',province:'กรุงเทพฯ',ig:'https://www.instagram.com/inq1x_',tt:'https://www.tiktok.com/@cynthiana_q0',line:'Indy Eiei',phone:'0955305581',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
+  {no:1,name:'ตัวอย่าง อินฟลูเอนเซอร์ 1',nick:'ครีเอเตอร์เอ',bday:'31/01',tier:'TEIR 1',province:'กรุงเทพฯ',ig:'https://www.instagram.com/demo.creator1',tt:'https://www.tiktok.com/@demo.creator1',line:'demo.line1',phone:'08x-xxx-xxxx',period:'ธ.ค.68–มี.ค.69',status:'หมดสัญญา'},
+  {no:2,name:'ตัวอย่าง อินฟลูเอนเซอร์ 2',nick:'ครีเอเตอร์บี',bday:'7/03',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/demo.creator2',tt:'https://www.tiktok.com/@demo.creator2',line:'demo.line2',phone:'-',period:'ธ.ค.68–ธ.ค.69',status:'ต่อสัญญารายปี'},
+  {no:3,name:'ตัวอย่าง อินฟลูเอนเซอร์ 3',nick:'ครีเอเตอร์ซี',bday:'1/3/2548',tier:'TEIR 1',province:'เชียงใหม่ (ตจว)',ig:'https://www.instagram.com/demo.creator3',tt:'https://www.tiktok.com/@demo.creator3',line:'demo.line3',phone:'08x-xxx-xxxx',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
+  {no:4,name:'ตัวอย่าง อินฟลูเอนเซอร์ 4',nick:'ครีเอเตอร์ดี',bday:'25/1/2547',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/demo.creator4',tt:'https://www.tiktok.com/@demo.creator4',line:'demo.line4',phone:'08x-xxx-xxxx',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
+  {no:5,name:'ตัวอย่าง อินฟลูเอนเซอร์ 5',nick:'ครีเอเตอร์อี',bday:'3/12/2550',tier:'TEIR 2',province:'กรุงเทพฯ',ig:'https://www.instagram.com/demo.creator5',tt:'https://www.tiktok.com/@demo.creator5',line:'demo.line5',phone:'08x-xxx-xxxx',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
+  {no:6,name:'ตัวอย่าง อินฟลูเอนเซอร์ 6',nick:'ครีเอเตอร์เอฟ',bday:'20/12/2546',tier:'TEIR 2',province:'เชียงใหม่ (ตจว)',ig:'https://www.instagram.com/demo.creator6',tt:'https://www.tiktok.com/@demo.creator6',line:'demo.line6',phone:'08x-xxx-xxxx',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
+  {no:7,name:'ตัวอย่าง อินฟลูเอนเซอร์ 7',nick:'ครีเอเตอร์จี',bday:'19/08/2552',tier:'TEIR 2',province:'ปทุมธานี (เข้าสตูดิโอ)',ig:'https://www.instagram.com/demo.creator7',tt:'https://www.tiktok.com/@demo.creator7',line:'demo.line7',phone:'08x-xxx-xxxx',period:'เม.ย.69–พ.ค.69',status:'อยู่ระหว่างสัญญา'},
+  {no:8,name:'ตัวอย่าง อินฟลูเอนเซอร์ 8',nick:'ครีเอเตอร์เอช',bday:'12/02/2551',tier:'TEIR 1',province:'กรุงเทพฯ',ig:'https://www.instagram.com/demo.creator8',tt:'https://www.tiktok.com/@demo.creator8',line:'demo.line8',phone:'08x-xxx-xxxx',period:'เม.ย.69–พ.ค.69',status:'หมดสัญญา'},
 ];
 
 const CAND_DATA = [
-  {tt:'@finnaya_fin',ig:'finnaya_fin',follow:'130.6K/11.2K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'066-101-4622',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
-  {tt:'@babyonion_eiei',ig:'babyonionnn',follow:'366.3K/34.1K',tier:'TEIR 3',prov:'กรุงเทพฯ',contact:'noo_cy',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
-  {tt:'@prwjsuh',ig:'prwiiya',follow:'70K',tier:'TEIR 1',prov:'-',contact:'@993mshvp',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัด 9 มี.ค.69'},
-  {tt:'@praew_phit',ig:'_praew_phit_',follow:'167K/18K',tier:'TEIR 2',prov:'-',contact:'Praewphit',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
-  {tt:'@m0chamuk',ig:'m0chamuk',follow:'261K/48K',tier:'TEIR 2',prov:'-',contact:'lin.ee/h2fdzWy',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัด 9 มี.ค.69'},
-  {tt:'@itsme.aongfong',ig:'itsme.aongfong',follow:'54K',tier:'TEIR 1',prov:'-',contact:'pardiii',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
-  {tt:'@1_st04',ig:'f1rst_nz',follow:'120K/8K',tier:'TEIR 2',prov:'มจธ บางมด',contact:'IG link',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัด 9 มี.ค.69'},
-  {tt:'@ijustwannabeurgurl',ig:'urmormily',follow:'22K/73K',tier:'TEIR 1',prov:'เชียงราย',contact:'treesara',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
-  {tt:'@_.miuji._',ig:'_.miuji._',follow:'94K/171K',tier:'TEIR 2',prov:'-',contact:'IG link',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
-  {tt:'@m1ncchae',ig:'bmilin._',follow:'11K/214K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'@131gohvf',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
-  {tt:'@miewjeww',ig:'miewjew',follow:'11K/97K',tier:'TEIR 1',prov:'กรุงเทพฯ',contact:'IG link',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
-  {tt:'@minekuk',ig:'minekuk',follow:'142K/65K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'i_namfon',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
-  {tt:'@xxianng',ig:'xxianng',follow:'131K/50K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'IG link',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
-  {tt:'@nammonpks',ig:'nammonpks',follow:'133K/23K',tier:'TEIR 2',prov:'-',contact:'IG link',talked:'ทักแล้ว',replied:'ยังไม่อ่าน',pass:'',note:''},
-  {tt:'@chanidakrys',ig:'_krysnie_',follow:'103K/45K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'Krysnie',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
-  {tt:'@ramililyy',ig:'-',follow:'65K',tier:'TEIR 1',prov:'กรุงเทพฯ',contact:'-',talked:'ทักแล้ว',replied:'ไม่สนใจ',pass:'',note:''},
-  {tt:'@marminkmani',ig:'marminkmani',follow:'34K/111K',tier:'TEIR 2',prov:'-',contact:'@184ectkj',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
-  {tt:'-',ig:'oumttp',follow:'406K',tier:'TEIR 3',prov:'กรุงเทพฯ',contact:'@oumttp',talked:'ทักแล้ว',replied:'ไม่สนใจ',pass:'',note:''},
-  {tt:'@jxnnynattha',ig:'jxnnyaa_',follow:'351K/180K',tier:'TEIR 3',prov:'-',contact:'@jxnnyaa',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand1',ig:'demo.cand1',follow:'130.6K/11.2K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'demo.line1',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand2',ig:'demo.cand2',follow:'366.3K/34.1K',tier:'TEIR 3',prov:'กรุงเทพฯ',contact:'demo.line2',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand3',ig:'demo.cand3',follow:'70K',tier:'TEIR 1',prov:'-',contact:'demo.line3',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัดตัวอย่าง 9 มี.ค.69'},
+  {tt:'@demo.cand4',ig:'demo.cand4',follow:'167K/18K',tier:'TEIR 2',prov:'-',contact:'demo.line4',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
+  {tt:'@demo.cand5',ig:'demo.cand5',follow:'261K/48K',tier:'TEIR 2',prov:'-',contact:'demo.line5',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัดตัวอย่าง 9 มี.ค.69'},
+  {tt:'@demo.cand6',ig:'demo.cand6',follow:'54K',tier:'TEIR 1',prov:'-',contact:'demo.line6',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
+  {tt:'@demo.cand7',ig:'demo.cand7',follow:'120K/8K',tier:'TEIR 2',prov:'มจธ บางมด',contact:'IG link',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'ผ่าน',note:'นัดตัวอย่าง 9 มี.ค.69'},
+  {tt:'@demo.cand8',ig:'demo.cand8',follow:'22K/73K',tier:'TEIR 1',prov:'เชียงราย',contact:'demo.line8',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
+  {tt:'@demo.cand9',ig:'demo.cand9',follow:'94K/171K',tier:'TEIR 2',prov:'-',contact:'IG link',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
+  {tt:'@demo.cand10',ig:'demo.cand10',follow:'11K/214K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'demo.line10',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'รอตัดสินใจ'},
+  {tt:'@demo.cand11',ig:'demo.cand11',follow:'11K/97K',tier:'TEIR 1',prov:'กรุงเทพฯ',contact:'IG link',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand12',ig:'demo.cand12',follow:'142K/65K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'demo.line12',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand13',ig:'demo.cand13',follow:'131K/50K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'IG link',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand14',ig:'demo.cand14',follow:'133K/23K',tier:'TEIR 2',prov:'-',contact:'IG link',talked:'ทักแล้ว',replied:'ยังไม่อ่าน',pass:'',note:''},
+  {tt:'@demo.cand15',ig:'demo.cand15',follow:'103K/45K',tier:'TEIR 2',prov:'กรุงเทพฯ',contact:'demo.line15',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
+  {tt:'@demo.cand16',ig:'-',follow:'65K',tier:'TEIR 1',prov:'กรุงเทพฯ',contact:'-',talked:'ทักแล้ว',replied:'ไม่สนใจ',pass:'',note:''},
+  {tt:'@demo.cand17',ig:'demo.cand17',follow:'34K/111K',tier:'TEIR 2',prov:'-',contact:'demo.line17',talked:'ทักแล้ว',replied:'ตอบ/สนใจ',pass:'',note:'ไม่สะดวก'},
+  {tt:'-',ig:'demo.cand18',follow:'406K',tier:'TEIR 3',prov:'กรุงเทพฯ',contact:'demo.line18',talked:'ทักแล้ว',replied:'ไม่สนใจ',pass:'',note:''},
+  {tt:'@demo.cand19',ig:'demo.cand19',follow:'351K/180K',tier:'TEIR 3',prov:'-',contact:'demo.line19',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
 ];
 
-// ── LOCAL STORAGE FALLBACK ──
-let localApps = [];
-try { localApps = JSON.parse(localStorage.getItem('nd_apps')||'[]'); } catch(e){}
+// ── DEMO APPLICATIONS (MOCKUP — ไม่มีการดึงข้อมูลจากภายนอก) ──
+let localApps = [
+  {timestamp:'2569-06-01',name:'ตัวอย่าง ผู้สมัคร 1',nick:'ครีเอเตอร์วัน',bday:'-',phone:'08x-xxx-xxxx',line:'demo.line.app1',ig:'https://www.instagram.com/demo.applicant1',tt:'https://www.tiktok.com/@demo.applicant1',ig_follow:'25K',tt_follow:'40K',location:'กรุงเทพฯ',loc_type:'กรุงเทพฯ',age:'22 ปี',q1:'ตัวอย่างเหตุผลการสมัคร — ข้อความสมมติเพื่อพอร์ตโฟลิโอ',q2:'-',live:'-',q4:'-'},
+  {timestamp:'2569-06-03',name:'ตัวอย่าง ผู้สมัคร 2',nick:'ครีเอเตอร์สอง',bday:'-',phone:'08x-xxx-xxxx',line:'demo.line.app2',ig:'https://www.instagram.com/demo.applicant2',tt:'https://www.tiktok.com/@demo.applicant2',ig_follow:'60K',tt_follow:'15K',location:'เชียงใหม่',loc_type:'ต่างจังหวัด',age:'25 ปี',q1:'ตัวอย่างเหตุผลการสมัคร — ข้อความสมมติเพื่อพอร์ตโฟลิโอ',q2:'-',live:'-',q4:'-'},
+];
 
 // ── TIER TOGGLE ──
 function showTierLoc(loc, btn) {
@@ -924,95 +923,10 @@ function setCandView(v, btn) {
 }
 
 async function renderAll() {
-  document.getElementById('appCardWrap').innerHTML  = '<div class="empty-state">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>';
-  document.getElementById('appTableWrap').innerHTML = '<div class="empty-state">⏳ กำลังโหลดข้อมูล...</div>';
-
-  try {
-    const res = await fetch(SHEET_CSV_URL);
-    if (!res.ok) throw new Error('fetch failed');
-    const text = await res.text();
-    const rows = text.trim().split('\n').map(r => parseCSVRow(r));
-
-    if (rows.length > 1) {
-      // header row — ทำ lowercase trim ทั้งหมด เพื่อ match ง่าย
-      const raw = rows[0].map(h => h.toLowerCase().replace(/\s/g,''));
-
-      // helper: หา index จาก keyword หลายตัว
-      const col = (...keys) => {
-        for (const k of keys) {
-          const i = raw.findIndex(h => h.includes(k));
-          if (i !== -1) return i;
-        }
-        return -1;
-      };
-
-      const iTs   = col('timestamp','วันที่','เวลา');
-      const iName = col('name','ชื่อจริง','ชื่อ');
-      const iNick = col('nick','ชื่อเล่น');
-      const iBday = col('bday','วันเกิด');
-      const iPhone = col('phone','เบอร์','โทร');
-      const iLine  = col('line','ไลน์');
-      const iIg    = col('ig','instagram');
-      const iTt    = col('tt','tiktok');
-      const iIgF   = col('ig_follow','followers(ig)','followersig');
-      const iTtF   = col('tt_follow','followers(tt)','followerstt','followerstiktok');
-      const iLoc   = col('location','จังหวัด','ที่อยู่');
-      const iLocT  = col('loc_type','ประเภท');
-      const iAge   = col('age','อายุ');
-      const iQ1    = col('q1','ทำไม','เหตุผล');
-      const iQ2    = col('q2','สไตล์','content');
-      const iLive  = col('live','ไลฟ์');
-      const iQ4    = col('q4','audience','กลุ่มเป้า');
-
-      const get = (r, i) => (i !== -1 && r[i]) ? r[i].replace(/^"|"$/g,'').trim() : '-';
-
-      localApps = rows.slice(1)
-        .filter(r => r.length > 2 && get(r, iName) !== '-')
-        .map(r => ({
-          timestamp : get(r, iTs),
-          name      : get(r, iName),
-          nick      : get(r, iNick),
-          bday      : get(r, iBday),
-          phone     : get(r, iPhone),
-          line      : get(r, iLine),
-          ig        : get(r, iIg),
-          tt        : get(r, iTt),
-          ig_follow : get(r, iIgF),
-          tt_follow : get(r, iTtF),
-          location  : get(r, iLoc),
-          loc_type  : get(r, iLocT),
-          age       : get(r, iAge),
-          q1        : get(r, iQ1),
-          q2        : get(r, iQ2),
-          live      : get(r, iLive),
-          q4        : get(r, iQ4),
-        }));
-
-      console.log(`✅ โหลดจาก Sheets ได้ ${localApps.length} ใบสมัคร`);
-    }
-  } catch(e) {
-    console.warn('⚠️ ดึง Sheets ไม่ได้ ใช้ localApps แทน:', e);
-    document.getElementById('appCardWrap').innerHTML =
-      '<div class="empty-state">⚠️ ดึงข้อมูลไม่ได้ — กรุณาตรวจสอบว่า Google Sheets เปิดเป็น "ทุกคนที่มีลิงก์" แล้วกด 🔄 โหลดใหม่ค่ะ</div>';
-  }
-
+  // MOCKUP/DEMO — ไม่มีการเชื่อมต่อหรือดึงข้อมูลจากภายนอก ใช้ localApps (ข้อมูลสมมติ) เท่านั้น
   renderApplications();
   renderConfirm();
   renderCandidates();
-}
-
-// parse CSV row correctly (handles commas inside quotes)
-function parseCSVRow(row) {
-  const result = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < row.length; i++) {
-    const c = row[i];
-    if (c === '"') { inQ = !inQ; }
-    else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
-    else { cur += c; }
-  }
-  result.push(cur.trim());
-  return result;
 }
 
 // ── RENDER APPLICATIONS ──
