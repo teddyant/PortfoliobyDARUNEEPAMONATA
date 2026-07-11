@@ -754,10 +754,11 @@ async function load3dRtdb(){
   }catch(e){setDot('3d',false,'3D/Sign ✗');console.warn(e);}
 }
 async function loadSheets(){
+  if(!SHEETS_URL.carpet&&!SHEETS_URL.space)return;
   try{
     const [rc,rs]=await Promise.all([
-      fetch(SHEETS_URL.carpet,{method:'POST',body:JSON.stringify({action:'read'})}).then(r=>r.json()).catch(()=>null),
-      fetch(SHEETS_URL.space,{method:'POST',body:JSON.stringify({action:'read'})}).then(r=>r.json()).catch(()=>null)
+      SHEETS_URL.carpet?fetch(SHEETS_URL.carpet,{method:'POST',body:JSON.stringify({action:'read'})}).then(r=>r.json()).catch(()=>null):Promise.resolve(null),
+      SHEETS_URL.space?fetch(SHEETS_URL.space,{method:'POST',body:JSON.stringify({action:'read'})}).then(r=>r.json()).catch(()=>null):Promise.resolve(null)
     ]);
     if(rc&&rc.rows)sheetCarpet=rc.rows.slice(1);// skip header
     if(rs&&rs.rows)sheetSpace=rs.rows.slice(1);

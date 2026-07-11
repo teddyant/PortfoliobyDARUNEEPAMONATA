@@ -700,11 +700,7 @@ body{padding-top:40px !important;}
 <script>
 // รหัสผ่านเข้าระบบ Admin (SHA-256 hash ของ demo2026 — MOCKUP/DEMO)
 const ADMIN_HASH = '43c27b4e263fa191a6a7ec198cd4d5b47d17413c49d77dc533a01720707e3202';
-const SHEET_ID = '13cu8uD8eUf95KUndcDYhQQ_jJ_okqy_Vcoc5QZjRSik';
-// Sheet GID ที่ต้องการบันทึกใบสมัคร (แท็บแบบฟอร์มการตอบกลับ)
-// ใช้ Apps Script Web App URL สำหรับ write (ต้อง deploy แยก)
-// สำหรับ read ใช้ public CSV export
-const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1001552775`;
+// MOCKUP/DEMO — ปิดการเชื่อมต่อ Google Sheets จริงแล้ว ใช้ข้อมูลสมมติในไฟล์นี้แทน ไม่มีการดึง/ส่งข้อมูลออกไปที่ชีตหรือเว็บภายนอกใดๆ
 
 // ── CONFIRM DATA ──
 const CONFIRM_DATA = [
@@ -740,9 +736,11 @@ const CAND_DATA = [
   {tt:'@demo.cand19',ig:'demo.cand19',follow:'351K/180K',tier:'TEIR 3',prov:'-',contact:'demo.line19',talked:'ทักแล้ว',replied:'อ่านไม่ตอบ',pass:'',note:''},
 ];
 
-// ── LOCAL STORAGE FALLBACK ──
-let localApps = [];
-try { localApps = JSON.parse(localStorage.getItem('nd_apps')||'[]'); } catch(e){}
+// ── DEMO APPLICATIONS (MOCKUP — ไม่มีการดึงข้อมูลจากภายนอก) ──
+let localApps = [
+  {timestamp:'2569-06-01',name:'ตัวอย่าง ผู้สมัคร 1',nick:'ครีเอเตอร์วัน',bday:'-',phone:'08x-xxx-xxxx',line:'demo.line.app1',ig:'https://www.instagram.com/demo.applicant1',tt:'https://www.tiktok.com/@demo.applicant1',ig_follow:'25K',tt_follow:'40K',location:'กรุงเทพฯ',loc_type:'กรุงเทพฯ',age:'22 ปี',q1:'ตัวอย่างเหตุผลการสมัคร — ข้อความสมมติเพื่อพอร์ตโฟลิโอ',q2:'-',live:'-',q4:'-'},
+  {timestamp:'2569-06-03',name:'ตัวอย่าง ผู้สมัคร 2',nick:'ครีเอเตอร์สอง',bday:'-',phone:'08x-xxx-xxxx',line:'demo.line.app2',ig:'https://www.instagram.com/demo.applicant2',tt:'https://www.tiktok.com/@demo.applicant2',ig_follow:'60K',tt_follow:'15K',location:'เชียงใหม่',loc_type:'ต่างจังหวัด',age:'25 ปี',q1:'ตัวอย่างเหตุผลการสมัคร — ข้อความสมมติเพื่อพอร์ตโฟลิโอ',q2:'-',live:'-',q4:'-'},
+];
 
 // ── TIER TOGGLE ──
 function showTierLoc(loc, btn) {
@@ -925,95 +923,10 @@ function setCandView(v, btn) {
 }
 
 async function renderAll() {
-  document.getElementById('appCardWrap').innerHTML  = '<div class="empty-state">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>';
-  document.getElementById('appTableWrap').innerHTML = '<div class="empty-state">⏳ กำลังโหลดข้อมูล...</div>';
-
-  try {
-    const res = await fetch(SHEET_CSV_URL);
-    if (!res.ok) throw new Error('fetch failed');
-    const text = await res.text();
-    const rows = text.trim().split('\n').map(r => parseCSVRow(r));
-
-    if (rows.length > 1) {
-      // header row — ทำ lowercase trim ทั้งหมด เพื่อ match ง่าย
-      const raw = rows[0].map(h => h.toLowerCase().replace(/\s/g,''));
-
-      // helper: หา index จาก keyword หลายตัว
-      const col = (...keys) => {
-        for (const k of keys) {
-          const i = raw.findIndex(h => h.includes(k));
-          if (i !== -1) return i;
-        }
-        return -1;
-      };
-
-      const iTs   = col('timestamp','วันที่','เวลา');
-      const iName = col('name','ชื่อจริง','ชื่อ');
-      const iNick = col('nick','ชื่อเล่น');
-      const iBday = col('bday','วันเกิด');
-      const iPhone = col('phone','เบอร์','โทร');
-      const iLine  = col('line','ไลน์');
-      const iIg    = col('ig','instagram');
-      const iTt    = col('tt','tiktok');
-      const iIgF   = col('ig_follow','followers(ig)','followersig');
-      const iTtF   = col('tt_follow','followers(tt)','followerstt','followerstiktok');
-      const iLoc   = col('location','จังหวัด','ที่อยู่');
-      const iLocT  = col('loc_type','ประเภท');
-      const iAge   = col('age','อายุ');
-      const iQ1    = col('q1','ทำไม','เหตุผล');
-      const iQ2    = col('q2','สไตล์','content');
-      const iLive  = col('live','ไลฟ์');
-      const iQ4    = col('q4','audience','กลุ่มเป้า');
-
-      const get = (r, i) => (i !== -1 && r[i]) ? r[i].replace(/^"|"$/g,'').trim() : '-';
-
-      localApps = rows.slice(1)
-        .filter(r => r.length > 2 && get(r, iName) !== '-')
-        .map(r => ({
-          timestamp : get(r, iTs),
-          name      : get(r, iName),
-          nick      : get(r, iNick),
-          bday      : get(r, iBday),
-          phone     : get(r, iPhone),
-          line      : get(r, iLine),
-          ig        : get(r, iIg),
-          tt        : get(r, iTt),
-          ig_follow : get(r, iIgF),
-          tt_follow : get(r, iTtF),
-          location  : get(r, iLoc),
-          loc_type  : get(r, iLocT),
-          age       : get(r, iAge),
-          q1        : get(r, iQ1),
-          q2        : get(r, iQ2),
-          live      : get(r, iLive),
-          q4        : get(r, iQ4),
-        }));
-
-      console.log(`✅ โหลดจาก Sheets ได้ ${localApps.length} ใบสมัคร`);
-    }
-  } catch(e) {
-    console.warn('⚠️ ดึง Sheets ไม่ได้ ใช้ localApps แทน:', e);
-    document.getElementById('appCardWrap').innerHTML =
-      '<div class="empty-state">⚠️ ดึงข้อมูลไม่ได้ — กรุณาตรวจสอบว่า Google Sheets เปิดเป็น "ทุกคนที่มีลิงก์" แล้วกด 🔄 โหลดใหม่ค่ะ</div>';
-  }
-
+  // MOCKUP/DEMO — ไม่มีการเชื่อมต่อหรือดึงข้อมูลจากภายนอก ใช้ localApps (ข้อมูลสมมติ) เท่านั้น
   renderApplications();
   renderConfirm();
   renderCandidates();
-}
-
-// parse CSV row correctly (handles commas inside quotes)
-function parseCSVRow(row) {
-  const result = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < row.length; i++) {
-    const c = row[i];
-    if (c === '"') { inQ = !inQ; }
-    else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
-    else { cur += c; }
-  }
-  result.push(cur.trim());
-  return result;
 }
 
 // ── RENDER APPLICATIONS ──
