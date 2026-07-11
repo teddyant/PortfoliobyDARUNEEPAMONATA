@@ -385,10 +385,12 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <div class="nav-lbl">วิเคราะห์</div>
     <div class="ni" data-page="competitor"><span class="tii"><i class="ti ti-binoculars"></i></span>Competitor Analysis</div>
     <div class="ni" data-page="brandid"><span class="tii"><i class="ti ti-palette"></i></span>3 แบรนด์</div>
+    <div class="ni" data-page="crm"><span class="tii"><i class="ti ti-address-book"></i></span>ฐานข้อมูลลูกค้า (CRM)</div>
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">เครื่องมือ</div>
     <div class="ni" data-page="links"><span class="tii"><i class="ti ti-link"></i></span>ลิงก์งานที่ใช้</div>
+    <div class="ni" data-page="accounts"><span class="tii"><i class="ti ti-key"></i></span>บัญชี &amp; รหัสผ่าน</div>
   </div>
   <div class="sb-foot">
     <button class="logout-btn" id="refreshBtn" onclick="refreshData()" style="margin-bottom:8px"><i class="ti ti-refresh"></i> รีเฟรชข้อมูล</button>
@@ -755,8 +757,8 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <div class="acc-body">
       <div class="kg g3" id="dashEcommKpi"></div>
       <div class="card" style="margin-top:12px">
-        <div class="ch"><div class="ct"><i class="ti ti-bulb"></i>แผนกิจกรรม/โปรโมชันถัดไป (ไอเดีย)</div></div>
-        <textarea id="dashEcommNotes" placeholder="พิมพ์ไอเดียโปรโมชัน/กิจกรรมที่กำลังคิดไว้ที่นี่ เช่น แจกหมอนเดือนหน้า, โปรฯ วันแม่" style="width:100%;min-height:70px;border:0.5px solid var(--bdr);border-radius:8px;padding:10px;font-family:var(--fb);font-size:12px;background:var(--bg);color:var(--t1)"></textarea>
+        <div class="ch"><div class="ct"><i class="ti ti-bulb"></i>แผนกิจกรรม/โปรโมชันถัดไป (ไอเดีย)</div><button class="btn sm" onclick="openActivityIdeaModal()"><i class="ti ti-plus"></i> เพิ่มไอเดีย</button></div>
+        <div id="dashActivityIdeasList"></div>
       </div>
       <div class="link-card" style="cursor:pointer;margin-top:12px" onclick="document.querySelector('[data-page=mktretail]').click()">
         <div class="link-ic"><i class="ti ti-building-store"></i></div>
@@ -1046,7 +1048,6 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <div><div class="ph-title">Blog Website</div><div class="ph-sub">วางแผนบทความเต็มรูปแบบ — ผู้บริหารตรวจก่อนลงจริงทุกบทความ</div></div>
     <button class="btn primary" onclick="openBlogModal()"><i class="ti ti-plus"></i> เพิ่มบทความใหม่</button>
   </div>
-  <a class="link-card" style="margin-bottom:14px" href="#" onclick="return false;"><div class="link-ic"><i class="ti ti-external-link"></i></div><div><div class="link-txt-t">เครื่องมือเดิม (Google Apps Script)</div><div class="link-txt-s">เครื่องมือภายนอกที่เคยใช้ — เปิดดูอ้างอิงได้</div></div></a>
   <div class="fbar">
     <select class="fsel" id="blogStatusFilter"><option value="">ทุกสถานะ</option><option>รอตรวจ</option><option>แก้ไข</option><option>เสร็จแล้ว</option></select>
     <select class="fsel" id="blogMonthFilter"><option value="">ทุกเดือน</option></select>
@@ -1087,6 +1088,7 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
   <div class="tabs" id="seoTabs" style="margin-bottom:14px">
     <div class="tab active" data-s="meta">Traffic &amp; Meta Audit</div>
     <div class="tab" data-s="keywords">คำหลักที่ควรเล็ง</div>
+    <div class="tab" data-s="semcamp">SEM แคมเปญ</div>
     <div class="tab" data-s="competitors">คู่แข่งด้าน SEO</div>
     <div class="tab" data-s="mentions">พบแบรนด์แล้ว (GEO)</div>
     <div class="tab" data-s="checklist">GEO Checklist</div>
@@ -1106,6 +1108,11 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
       <div class="kg g3" id="trafficSemKpi" style="margin-top:12px"></div>
     </div>
     <div class="card">
+      <div class="ch"><div class="ct"><i class="ti ti-filter"></i>Funnel เว็บไซต์ (คนเข้าเว็บ → ซื้อสำเร็จ)</div></div>
+      <div class="ph-sub" style="margin-bottom:10px">ดูจากตัวเลขเดือนล่าสุดที่กรอกไว้ในการ์ด Website Traffic ด้านบน — อัปเดตพร้อมกันในฟอร์มเดียว</div>
+      <div id="trafficFunnelChart"></div>
+    </div>
+    <div class="card">
       <div class="ch"><div class="ct"><i class="ti ti-search"></i>สถานะเว็บไซต์ &amp; Meta Tags</div><button class="btn sm" onclick="openSeoModal()"><i class="ti ti-plus"></i> เพิ่มรายการ</button></div>
       <div class="tblwrap"><table><thead><tr><th>รายการ</th><th>ค่าปัจจุบัน</th><th>ประเมิน</th><th>ข้อเสนอแนะ</th><th></th></tr></thead><tbody id="seoTableBody"></tbody></table></div>
     </div>
@@ -1115,6 +1122,19 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <div class="card">
       <div class="ch"><div class="ct"><i class="ti ti-key"></i>กลุ่มคีย์เวิร์ดที่ควรเล็ง (SEO + SEM)</div><button class="btn sm" onclick="openSeoKwModal()"><i class="ti ti-plus"></i> เพิ่มกลุ่มคีย์เวิร์ด</button></div>
       <div class="tblwrap"><table><thead><tr><th>กลุ่มคีย์เวิร์ด</th><th>ตัวอย่างคำค้นหา</th><th>ความตั้งใจผู้ค้นหา</th><th>ใช้ทำอะไร</th><th>ความสำคัญ</th><th></th></tr></thead><tbody id="seoKwTableBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <div id="seoSecSemCamp" style="display:none">
+    <div class="fbar">
+      <select class="fsel" id="semBrandFilter"><option value="">ทุกแบรนด์</option><option>NORDLY</option><option>VELURE</option><option>CASSIA</option></select>
+      <select class="fsel" id="semMonthFilter"><option value="">ทุกเดือน</option></select>
+    </div>
+    <div class="kg g4" id="semKpi"></div>
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="ti ti-ad-2"></i>แคมเปญ SEM ระดับคีย์เวิร์ด (Google Ads)</div><button class="btn sm" onclick="openSemCampaignModal()"><i class="ti ti-plus"></i> เพิ่มแคมเปญ SEM</button></div>
+      <div class="ph-sub" style="margin-bottom:10px">รายละเอียดต่อคีย์เวิร์ด/แคมเปญ — ตัวเลขรวมรายเดือนดูได้ที่แท็บ "Traffic &amp; Meta Audit"</div>
+      <div class="tblwrap"><table><thead><tr><th>เดือน</th><th>แบรนด์</th><th>แคมเปญ</th><th>คีย์เวิร์ด</th><th>ประเภทคำค้นหา</th><th>งบที่ใช้</th><th>คลิก</th><th>CPC</th><th>Conversions</th><th></th></tr></thead><tbody id="semTableBody"></tbody></table></div>
     </div>
   </div>
 
@@ -1214,6 +1234,23 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
   <div id="brandidCards"></div>
 </div>
 
+<!-- ============ ฐานข้อมูลลูกค้า (CRM) ============ -->
+<div class="page" id="page-crm">
+  <div class="ph">
+    <div><div class="ph-title">ฐานข้อมูลลูกค้า (CRM)</div><div class="ph-sub">รายชื่อลูกค้าแบบรวมศูนย์ — ค้นหา/กรองได้ ต่างจากหน้า "เส้นทางลูกค้า" ที่เป็นบันทึกเคสรายครั้ง</div></div>
+    <button class="btn primary" onclick="openCrmModal()"><i class="ti ti-plus"></i> เพิ่มลูกค้า</button>
+  </div>
+  <div class="fbar">
+    <select class="fsel" id="crmBrandFilter"><option value="">ทุกแบรนด์</option><option>NORDLY</option><option>VELURE</option><option>CASSIA</option></select>
+    <select class="fsel" id="crmStageFilter"><option value="">ทุกสถานะ</option><option>ลูกค้าใหม่</option><option>ติดตามอยู่</option><option>ปิดการขายแล้ว</option><option>ลูกค้าประจำ</option></select>
+  </div>
+  <div class="kg g4" id="crmKpi"></div>
+  <div class="card">
+    <div class="ch"><div class="ct"><i class="ti ti-address-book"></i>รายชื่อลูกค้า</div></div>
+    <div class="tblwrap"><table><thead><tr><th>ชื่อ</th><th>ช่องทางติดต่อ</th><th>แบรนด์</th><th>มาจาก</th><th>สถานะ</th><th>ติดต่อล่าสุด</th><th>ผู้ดูแล</th><th>แท็ก</th><th></th></tr></thead><tbody id="crmTableBody"></tbody></table></div>
+  </div>
+</div>
+
 <!-- ============ E-COMMERCE + OFFLINE PROMOTION ============ -->
 <div class="page" id="page-mktretail">
   <div class="ph">
@@ -1231,8 +1268,8 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <div class="tblwrap"><table><thead><tr><th>วันที่</th><th>แพลตฟอร์ม</th><th>แบรนด์</th><th>แคมเปญ/โปรโมชัน</th><th>สถานะขั้นตอน</th><th>ออเดอร์</th><th>ยอดขาย</th><th>ค่าแอด</th><th>ROAS</th><th></th></tr></thead><tbody id="mktTableBody"></tbody></table></div>
   </div>
   <div class="card">
-    <div class="ch"><div class="ct"><i class="ti ti-bulb"></i>แผนกิจกรรม/โปรโมชันถัดไป (ไอเดีย)</div></div>
-    <textarea id="mktretailNotes" placeholder="พิมพ์ไอเดียโปรโมชัน/กิจกรรมที่กำลังคิดไว้ที่นี่ เช่น แจกหมอนเดือนหน้า, โปรฯ วันแม่" style="width:100%;min-height:70px;border:0.5px solid var(--bdr);border-radius:8px;padding:10px;font-family:var(--fb);font-size:12px;background:var(--bg);color:var(--t1)"></textarea>
+    <div class="ch"><div class="ct"><i class="ti ti-bulb"></i>แผนกิจกรรม/โปรโมชันถัดไป (ไอเดีย)</div><button class="btn sm" onclick="openActivityIdeaModal()"><i class="ti ti-plus"></i> เพิ่มไอเดีย</button></div>
+    <div id="mktActivityIdeasList"></div>
   </div>
 </div>
 
@@ -1243,6 +1280,22 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <button class="btn primary" onclick="openLinkModal()"><i class="ti ti-plus"></i> เพิ่มลิงก์</button>
   </div>
   <div id="linksCards" class="kg g3"></div>
+</div>
+
+<!-- ============ บัญชี & รหัสผ่าน (TEAM ACCOUNTS) ============ -->
+<div class="page" id="page-accounts">
+  <div class="ph">
+    <div><div class="ph-title">บัญชี &amp; รหัสผ่าน</div><div class="ph-sub">บัญชีที่ใช้ในตำแหน่งนี้ — กันลืมว่าแพลตฟอร์มไหนใช้อีเมลอะไร เผื่อส่งต่องานให้คนอื่น</div></div>
+    <button class="btn primary" onclick="openAccountModal()"><i class="ti ti-plus"></i> เพิ่มบัญชี</button>
+  </div>
+  <div class="xb">
+    <i class="ti ti-shield-lock" style="font-size:18px;color:var(--gold);flex-shrink:0"></i>
+    <div style="font-size:11.5px;line-height:1.6">ข้อมูลละเอียดอ่อน — เข้าถึงได้เฉพาะทีมที่มีรหัสเข้าเว็บนี้เท่านั้น ไม่ถูกส่งให้ AI ผู้ช่วยเห็นเด็ดขาด แนะนำใส่คำใบ้/ตัวช่วยจำแทนรหัสผ่านตรงๆ ถ้าเป็นไปได้</div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ct"><i class="ti ti-key"></i>รายการบัญชี</div></div>
+    <div class="tblwrap"><table><thead><tr><th>แพลตฟอร์ม</th><th>อีเมล/บัญชี</th><th>คำใบ้รหัสผ่าน</th><th>2FA</th><th>ใช้ทำอะไร</th><th>ผู้ดูแล</th><th>อัปเดตล่าสุด</th><th></th></tr></thead><tbody id="accountsTableBody"></tbody></table></div>
+  </div>
 </div>
 
 </main>
@@ -1577,6 +1630,21 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
   </form>
 </div></div>
 
+<div class="modal-backdrop" id="modal-activityidea"><div class="modal">
+  <div class="modal-h"><div class="modal-title">เพิ่มไอเดียกิจกรรม/โปรโมชัน</div><button class="modal-close" onclick="closeModal('modal-activityidea')">&times;</button></div>
+  <form id="activityIdeaForm">
+    <input type="hidden" id="actidea_id">
+    <div class="field"><label>ไอเดีย *</label><textarea id="actidea_idea" required placeholder="เช่น แจกหมอนเดือนหน้า, โปรฯ วันแม่ ลด 20%"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>ช่วงเวลาที่คาด</label><input id="actidea_target_period" placeholder="เช่น ส.ค. 2569, ไตรมาส 4"></div>
+      <div class="field"><label>แบรนด์</label><select id="actidea_brand"><option value="">-</option><option>NORDLY</option><option>VELURE</option><option>CASSIA</option></select></div>
+    </div>
+    <div class="field"><label>สถานะ</label><select id="actidea_status"><option>ไอเดีย</option><option>วางแผน</option><option>พร้อมทำ</option><option>ทำแล้ว</option></select></div>
+    <div class="field"><label>หมายเหตุ</label><textarea id="actidea_notes"></textarea></div>
+    <div class="modal-actions"><button type="button" class="btn" onclick="closeModal('modal-activityidea')">ยกเลิก</button><button type="submit" class="btn primary">บันทึก</button></div>
+  </form>
+</div></div>
+
 <div class="modal-backdrop" id="modal-content"><div class="modal">
   <div class="modal-h"><div class="modal-title">เพิ่มคอนเทนต์</div><button class="modal-close" onclick="closeModal('modal-content')">&times;</button></div>
   <form id="contentForm">
@@ -1710,7 +1778,60 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
     <div class="field" style="margin-top:4px;font-size:11px;color:var(--t3);font-weight:600">SEM (Google Ads)</div>
     <div class="grid2"><div class="field"><label>งบ SEM เดือนนี้</label><input type="number" id="traffic_sem_budget"></div><div class="field"><label>Cost per Click เฉลี่ย</label><input type="number" step="0.01" id="traffic_sem_cpc"></div></div>
     <div class="field"><label>Conversions จาก SEM</label><input type="number" id="traffic_sem_conversions"></div>
+    <div class="field" style="margin-top:4px;font-size:11px;color:var(--t3);font-weight:600">Funnel เว็บไซต์ (จำนวนคนต่อขั้น)</div>
+    <div class="grid2"><div class="field"><label>เข้าเว็บ (Visit)</label><input type="number" id="traffic_funnel_visit"></div><div class="field"><label>ดูหน้าสินค้า (Product View)</label><input type="number" id="traffic_funnel_product_view"></div></div>
+    <div class="grid2"><div class="field"><label>ใส่ตะกร้า (Add to Cart)</label><input type="number" id="traffic_funnel_add_cart"></div><div class="field"><label>เริ่มเช็กเอาต์ (Checkout)</label><input type="number" id="traffic_funnel_checkout"></div></div>
+    <div class="field"><label>ซื้อสำเร็จ (Purchase)</label><input type="number" id="traffic_funnel_purchase"></div>
     <div class="modal-actions"><button type="button" class="btn" onclick="closeModal('modal-traffic')">ยกเลิก</button><button type="submit" class="btn primary">บันทึก</button></div>
+  </form>
+</div></div>
+
+<div class="modal-backdrop" id="modal-crm"><div class="modal">
+  <div class="modal-h"><div class="modal-title" id="crmModalTitle">เพิ่มลูกค้า</div><button class="modal-close" onclick="closeModal('modal-crm')">&times;</button></div>
+  <form id="crmForm">
+    <input type="hidden" id="crm_id">
+    <div class="field"><label>ชื่อ *</label><input id="crm_name" required></div>
+    <div class="grid2"><div class="field"><label>เบอร์โทร</label><input id="crm_phone"></div><div class="field"><label>LINE ID</label><input id="crm_line_id"></div></div>
+    <div class="grid2"><div class="field"><label>อีเมล</label><input type="email" id="crm_email"></div><div class="field"><label>แบรนด์</label><select id="crm_brand"><option value="">-</option><option>NORDLY</option><option>VELURE</option><option>CASSIA</option></select></div></div>
+    <div class="grid2"><div class="field"><label>มาจากช่องทาง</label><input id="crm_source_channel" placeholder="เช่น Facebook Ads, LINE OA, หน้าร้าน"></div><div class="field"><label>สถานะ</label><select id="crm_stage"><option>ลูกค้าใหม่</option><option>ติดตามอยู่</option><option>ปิดการขายแล้ว</option><option>ลูกค้าประจำ</option></select></div></div>
+    <div class="grid2"><div class="field"><label>ติดต่อล่าสุด</label><input type="date" id="crm_last_contact_date"></div><div class="field"><label>ผู้ดูแล</label><input id="crm_assigned_to"></div></div>
+    <div class="field"><label>แท็ก</label><input id="crm_tags" placeholder="คั่นด้วยจุลภาค เช่น สนใจรุ่นพรีเมียม, งบสูง"></div>
+    <div class="field"><label>หมายเหตุ</label><textarea id="crm_notes"></textarea></div>
+    <div class="modal-actions"><button type="button" class="btn" onclick="closeModal('modal-crm')">ยกเลิก</button><button type="submit" class="btn primary">บันทึก</button></div>
+  </form>
+</div></div>
+
+<div class="modal-backdrop" id="modal-account"><div class="modal">
+  <div class="modal-h"><div class="modal-title" id="accountModalTitle">เพิ่มบัญชี</div><button class="modal-close" onclick="closeModal('modal-account')">&times;</button></div>
+  <form id="accountForm">
+    <input type="hidden" id="account_id">
+    <div class="field"><label>แพลตฟอร์ม *</label><select id="account_platform" required>
+      <option>Gmail</option><option>Outlook</option><option>Facebook</option><option>Instagram</option><option>TikTok</option>
+      <option>Website / CMS</option><option>LINE</option><option>LINE OA</option><option>AI Tool</option><option>อื่นๆ</option>
+    </select></div>
+    <div class="field"><label>อีเมล/บัญชีที่ใช้ *</label><input id="account_account_email" required></div>
+    <div class="field"><label>คำใบ้รหัสผ่าน</label><input id="account_password_hint" placeholder="แนะนำใส่คำใบ้/ตัวช่วยจำแทนรหัสผ่านตรงๆ ถ้าเป็นไปได้"></div>
+    <div class="field"><label>2FA / กู้คืนบัญชี</label><input id="account_two_factor_note" placeholder="เช่น ยืนยันผ่านเบอร์ 08x-xxx-xxxx"></div>
+    <div class="grid2"><div class="field"><label>ใช้ทำอะไร</label><input id="account_purpose"></div><div class="field"><label>ผู้ดูแล</label><input id="account_owner"></div></div>
+    <div class="field"><label>อัปเดตล่าสุด</label><input type="date" id="account_last_updated"></div>
+    <div class="field"><label>หมายเหตุ</label><textarea id="account_notes"></textarea></div>
+    <div class="modal-actions"><button type="button" class="btn" onclick="closeModal('modal-account')">ยกเลิก</button><button type="submit" class="btn primary">บันทึก</button></div>
+  </form>
+</div></div>
+
+<div class="modal-backdrop" id="modal-semcampaign"><div class="modal">
+  <div class="modal-h"><div class="modal-title" id="semCampaignModalTitle">เพิ่มแคมเปญ SEM</div><button class="modal-close" onclick="closeModal('modal-semcampaign')">&times;</button></div>
+  <form id="semCampaignForm">
+    <input type="hidden" id="sem_id">
+    <div class="grid2"><div class="field"><label>เดือน *</label><input type="month" id="sem_month" required></div><div class="field"><label>แบรนด์</label><select id="sem_brand"><option>NORDLY</option><option>VELURE</option><option>CASSIA</option></select></div></div>
+    <div class="field"><label>แคมเปญ *</label><input id="sem_campaign" required placeholder="เช่น Brand Search, Category - ที่นอนยางพารา"></div>
+    <div class="grid2"><div class="field"><label>คีย์เวิร์ด</label><input id="sem_keyword"></div><div class="field"><label>ประเภทคำค้นหา</label><select id="sem_match_type"><option>Exact</option><option>Phrase</option><option>Broad</option></select></div></div>
+    <div class="grid2"><div class="field"><label>งบที่ใช้ (บาท)</label><input type="number" step="any" id="sem_spend"></div><div class="field"><label>คลิก</label><input type="number" id="sem_clicks"></div></div>
+    <div class="grid2"><div class="field"><label>Impressions</label><input type="number" id="sem_impressions"></div><div class="field"><label>CPC เฉลี่ย</label><input type="number" step="0.01" id="sem_cpc"></div></div>
+    <div class="field"><label>Conversions</label><input type="number" id="sem_conversions"></div>
+    <div class="field"><label>Landing Page</label><input id="sem_landing_page"></div>
+    <div class="field"><label>หมายเหตุ</label><textarea id="sem_notes"></textarea></div>
+    <div class="modal-actions"><button type="button" class="btn" onclick="closeModal('modal-semcampaign')">ยกเลิก</button><button type="submit" class="btn primary">บันทึก</button></div>
   </form>
 </div></div>
 
@@ -1896,248 +2017,239 @@ body.gate-locked .shell,body.gate-locked .mobile-topbar,body.gate-locked .sb-bac
 
 <script>
 /* Portfolio mockup demo data — ANT Digital Marketing Hub.
-   Entirely fictional: brands (NORDLY / VELURE / CASSIA), people, competitors,
-   retail partners, and figures below are invented for demonstration only. */
+   Entirely fictional and intentionally generic: brands (NORDLY / VELURE /
+   CASSIA), people, competitors, and figures below are placeholder examples
+   for demonstrating the UI, not a specific real campaign or storyline. */
 const SEED = {
   adsroi: [
-    { id: 'seed1', campaign: 'NORDLY August Retail Push', adset: 'Riverside Mall Promo', creative: 'ลดสูงสุด 20% ที่ Riverside Mall 1', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', pillar: 'โปรโมชัน (Promotion)', ad_link: '#',
-      target_audience: 'หญิง 30-55 ปี สนใจสุขภาพ/การนอน อาศัยใกล้ Riverside Mall', target_reason: 'กลุ่มที่มักตัดสินใจซื้อเครื่องนอนให้ครอบครัว และอยู่ในรัศมีที่ไปหน้าร้านง่าย',
-      objective: 'Engagement (มีส่วนร่วม)', landing_page: '#', start_date: '2026-07-07', end_date: '2026-07-15', last_monitor_date: '2026-07-15',
-      d7_spend: 3200, d7_reach: 81500, d7_impressions: 102300, d7_clicks: 1120, d7_engagement: 3480, d7_conversions: 24, d7_revenue: 62400,
-      d14_spend: 3200, d14_reach: 0, d14_impressions: 0, d14_clicks: 0, d14_engagement: 0, d14_conversions: 0, d14_revenue: 0,
+    { id: 'seed1', campaign: 'แคมเปญตัวอย่าง A', adset: 'ชุดโฆษณาตัวอย่าง 1', creative: 'ครีเอทีฟตัวอย่าง 1', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', pillar: 'โปรโมชัน (Promotion)', ad_link: '#',
+      target_audience: 'กลุ่มเป้าหมายตัวอย่าง A', target_reason: 'เหตุผลตัวอย่างในการเลือกกลุ่มนี้',
+      objective: 'Engagement (มีส่วนร่วม)', landing_page: '#', start_date: '2026-07-01', end_date: '2026-07-15', last_monitor_date: '2026-07-15',
+      d7_spend: 3000, d7_reach: 78000, d7_impressions: 98000, d7_clicks: 1050, d7_engagement: 3200, d7_conversions: 20, d7_revenue: 54000,
+      d14_spend: 3000, d14_reach: 0, d14_impressions: 0, d14_clicks: 0, d14_engagement: 0, d14_conversions: 0, d14_revenue: 0,
       d30_spend: 0, d30_reach: 0, d30_impressions: 0, d30_clicks: 0, d30_engagement: 0, d30_conversions: 0, d30_revenue: 0,
-      status: 'Live', problem: 'CTR ต่ำกว่าเป้า (1.4% เทียบเป้า 2%)', solution: 'ปรับครีเอทีฟใหม่ เน้นภาพสินค้าจริงแทนภาพกราฟิก', next_plan: 'ทดสอบ A/B ครีเอทีฟใหม่สัปดาห์หน้า แล้วเพิ่มงบถ้า CTR ดีขึ้น', result: '', notes: '', month: '2026-07', planned_budget: 3200 },
-    { id: 'seed2', campaign: 'NORDLY August Retail Push', adset: 'Uptown Living Center', creative: 'Every Sunrise Starts (Uptown) 1', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', pillar: 'โปรโมชัน (Promotion)', ad_link: '#',
-      target_audience: 'หญิง/ชาย 25-45 ปี รายได้สูง ช้อปห้างพรีเมียม สนใจไลฟ์สไตล์หรูหรา', target_reason: 'ตรงกับกลุ่มลูกค้ารุ่นพรีเมียมของ NORDLY ที่มีกำลังซื้อสูง',
-      objective: 'Sales (ยอดขาย/Conversions)', landing_page: '#', start_date: '2026-07-07', end_date: '2026-07-15', last_monitor_date: '2026-07-15',
-      d7_spend: 2900, d7_reach: 71200, d7_impressions: 88900, d7_clicks: 690, d7_engagement: 1780, d7_conversions: 11, d7_revenue: 31200,
+      status: 'Live', problem: 'ตัวอย่างปัญหาที่พบ', solution: 'ตัวอย่างแนวทางแก้ไข', next_plan: 'ตัวอย่างแผนถัดไป', result: '', notes: '', month: '2026-07', planned_budget: 3000 },
+    { id: 'seed2', campaign: 'แคมเปญตัวอย่าง B', adset: 'ชุดโฆษณาตัวอย่าง 2', creative: 'ครีเอทีฟตัวอย่าง 2', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', pillar: 'โปรโมชัน (Promotion)', ad_link: '#',
+      target_audience: 'กลุ่มเป้าหมายตัวอย่าง B', target_reason: 'เหตุผลตัวอย่างในการเลือกกลุ่มนี้',
+      objective: 'Sales (ยอดขาย/Conversions)', landing_page: '#', start_date: '2026-07-01', end_date: '2026-07-15', last_monitor_date: '2026-07-15',
+      d7_spend: 2800, d7_reach: 69000, d7_impressions: 86000, d7_clicks: 650, d7_engagement: 1700, d7_conversions: 10, d7_revenue: 29000,
       d14_spend: 0, d14_reach: 0, d14_impressions: 0, d14_clicks: 0, d14_engagement: 0, d14_conversions: 0, d14_revenue: 0,
       d30_spend: 0, d30_reach: 0, d30_impressions: 0, d30_clicks: 0, d30_engagement: 0, d30_conversions: 0, d30_revenue: 0,
-      status: 'Live', problem: '', solution: '', next_plan: 'มอนิเตอร์ต่อจนครบรอบ แล้วตัดสินใจว่าจะต่องบเดือนหน้าหรือไม่', result: '', notes: '', month: '2026-07' },
-    { id: 'seed3', campaign: 'VELURE Brand Awareness', adset: 'TikTok Reach Boost', creative: 'เลือกที่นอนยังไงให้หายปวดหลัง Remix', channel: 'NORDLY (TikTok)', brand: 'VELURE', pillar: 'ให้ความรู้ (Knowledge)', ad_link: '#',
-      target_audience: 'หญิง/ชาย 22-38 ปี สนใจสุขภาพการนอน คนเมือง', target_reason: 'กลุ่มที่ยังไม่รู้จักแบรนด์ VELURE แต่มี pain point เรื่องปวดหลัง',
+      status: 'Live', problem: '', solution: '', next_plan: 'ติดตามผลต่อเนื่อง', result: '', notes: '', month: '2026-07' },
+    { id: 'seed3', campaign: 'แคมเปญตัวอย่าง C', adset: 'ชุดโฆษณาตัวอย่าง 3', creative: 'ครีเอทีฟตัวอย่าง 3', channel: 'NORDLY (TikTok)', brand: 'VELURE', pillar: 'ให้ความรู้ (Knowledge)', ad_link: '#',
+      target_audience: 'กลุ่มเป้าหมายตัวอย่าง C', target_reason: 'เหตุผลตัวอย่างในการเลือกกลุ่มนี้',
       objective: 'Awareness (การรับรู้)', landing_page: '#', start_date: '2026-07-01', end_date: '2026-07-20', last_monitor_date: '2026-07-10',
-      d7_spend: 1800, d7_reach: 152000, d7_impressions: 210500, d7_clicks: 3400, d7_engagement: 9200, d7_conversions: 6, d7_revenue: 9600,
-      d14_spend: 1600, d14_reach: 140200, d14_impressions: 198000, d14_clicks: 3100, d14_engagement: 8500, d14_conversions: 5, d14_revenue: 8200,
+      d7_spend: 1700, d7_reach: 140000, d7_impressions: 195000, d7_clicks: 3100, d7_engagement: 8600, d7_conversions: 5, d7_revenue: 8000,
+      d14_spend: 1500, d14_reach: 0, d14_impressions: 0, d14_clicks: 0, d14_engagement: 0, d14_conversions: 0, d14_revenue: 0,
       d30_spend: 0, d30_reach: 0, d30_impressions: 0, d30_clicks: 0, d30_engagement: 0, d30_conversions: 0, d30_revenue: 0,
-      status: 'Live', problem: '', solution: '', next_plan: 'ต่องบอีก 2 สัปดาห์เพราะ engagement สูงกว่าเป้า', result: '', notes: '', month: '2026-07' }
+      status: 'Live', problem: '', solution: '', next_plan: 'ตัวอย่างแผนถัดไป', result: '', notes: '', month: '2026-07' }
   ],
   budget: [
-    { id: 'seed1', channel: 'Meta Ads', approved: 180000, spent: 62300, month: '2026-07', brand: 'NORDLY', notes: '', set_by: 'ผู้บริหารตั้ง' },
-    { id: 'seed2', channel: 'TikTok Ads', approved: 70000, spent: 18400, month: '2026-07', brand: 'VELURE', notes: '', set_by: 'ทีมตั้งเอง' },
-    { id: 'seed3', channel: 'Google Ads', approved: 40000, spent: 9200, month: '2026-07', brand: 'NORDLY', notes: '' },
-    { id: 'seed4', channel: 'Shopee Ads', approved: 25000, spent: 6100, month: '2026-07', brand: 'CASSIA', notes: '' },
-    { id: 'seed5', channel: 'Content/Graphic', approved: 30000, spent: 12000, month: '2026-07', brand: 'NORDLY', notes: '' }
+    { id: 'seed1', channel: 'Meta Ads', approved: 170000, spent: 58000, month: '2026-07', brand: 'NORDLY', notes: '', set_by: 'ผู้บริหารตั้ง' },
+    { id: 'seed2', channel: 'TikTok Ads', approved: 65000, spent: 17000, month: '2026-07', brand: 'VELURE', notes: '', set_by: 'ทีมตั้งเอง' },
+    { id: 'seed3', channel: 'Google Ads', approved: 38000, spent: 8600, month: '2026-07', brand: 'NORDLY', notes: '' },
+    { id: 'seed4', channel: 'Shopee Ads', approved: 22000, spent: 5400, month: '2026-07', brand: 'CASSIA', notes: '' },
+    { id: 'seed5', channel: 'Content/Graphic', approved: 28000, spent: 11000, month: '2026-07', brand: 'NORDLY', notes: '' }
   ],
   adsbudget: [
-    { id: 'ab1', month: '2026-07', brand: 'NORDLY', channel: 'NORDLY Thailand (Facebook)', campaign_item: 'โปรโมชันห้างพันธมิตร Riverside Mall', objective: 'กระตุ้นยอดขายหน้าร้าน', planned_amount: 3200, actual_amount: 3200, status: 'ยิงแล้ว', notes: '' },
-    { id: 'ab2', month: '2026-07', brand: 'NORDLY', channel: 'NORDLY Thailand (Facebook)', campaign_item: 'โปรโมชันห้างพันธมิตร Uptown Living Center', objective: 'กระตุ้นยอดขายหน้าร้าน', planned_amount: 2900, actual_amount: 2900, status: 'ยิงแล้ว', notes: '' },
-    { id: 'ab3', month: '2026-07', brand: 'VELURE', channel: 'NORDLY (TikTok)', campaign_item: 'คลิป Knowledge Content รีมิกซ์', objective: 'สร้าง Awareness', planned_amount: 5000, actual_amount: 1800, status: 'กำลังทำ', notes: 'รอคลิปจากทีมคอนเทนต์' }
+    { id: 'ab1', month: '2026-07', brand: 'NORDLY', channel: 'NORDLY Thailand (Facebook)', campaign_item: 'รายการโฆษณาตัวอย่าง 1', objective: 'กระตุ้นยอดขาย', planned_amount: 3000, actual_amount: 3000, status: 'ยิงแล้ว', notes: '' },
+    { id: 'ab2', month: '2026-07', brand: 'NORDLY', channel: 'NORDLY Thailand (Facebook)', campaign_item: 'รายการโฆษณาตัวอย่าง 2', objective: 'กระตุ้นยอดขาย', planned_amount: 2800, actual_amount: 2800, status: 'ยิงแล้ว', notes: '' },
+    { id: 'ab3', month: '2026-07', brand: 'VELURE', channel: 'NORDLY (TikTok)', campaign_item: 'รายการโฆษณาตัวอย่าง 3', objective: 'สร้าง Awareness', planned_amount: 4500, actual_amount: 1700, status: 'กำลังทำ', notes: '' }
   ],
   adsdaily: [
-    { id: 'ad1', date: '2026-07-07', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', budget: 3200, reach: 81500, messages: 34, notes: '' },
-    { id: 'ad2', date: '2026-07-08', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', budget: 2900, reach: 76200, messages: 41, notes: '' }
+    { id: 'ad1', date: '2026-07-01', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', budget: 3000, reach: 78000, messages: 30, notes: '' },
+    { id: 'ad2', date: '2026-07-02', channel: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', budget: 2800, reach: 74000, messages: 36, notes: '' }
   ],
   social: [
-    { id: 's1', month: '2026-07', channel: 'NORDLY Thailand (Facebook)', platform: 'Facebook', url: '#', followers: 145000, brand: 'NORDLY' },
-    { id: 's2', month: '2026-07', channel: 'NORDLY Outlet (Facebook)', platform: 'Facebook', url: '#', followers: 22400, brand: 'NORDLY' },
-    { id: 's3', month: '2026-07', channel: 'VELURE (Facebook)', platform: 'Facebook', url: '#', followers: 31200, brand: 'VELURE' },
-    { id: 's4', month: '2026-07', channel: 'CASSIA (Facebook)', platform: 'Facebook', url: '#', followers: 18900, brand: 'CASSIA' },
-    { id: 's5', month: '2026-07', channel: 'NORDLY (Instagram)', platform: 'Instagram', url: '#', followers: 62000, brand: 'NORDLY' },
-    { id: 's6', month: '2026-07', channel: 'NORDLY (TikTok)', platform: 'TikTok', url: '#', followers: 38400, brand: 'NORDLY' },
-    { id: 's7', month: '2026-07', channel: 'NORDLY (YouTube)', platform: 'YouTube', url: '', followers: 5100, brand: 'NORDLY' },
-    { id: 's8', month: '2026-07', channel: 'NORDLY (LINE OA)', platform: 'LINE OA', url: '', followers: 48200, brand: 'NORDLY' }
+    { id: 's1', month: '2026-07', channel: 'NORDLY Thailand (Facebook)', platform: 'Facebook', url: '#', followers: 140000, brand: 'NORDLY' },
+    { id: 's2', month: '2026-07', channel: 'NORDLY Outlet (Facebook)', platform: 'Facebook', url: '#', followers: 21000, brand: 'NORDLY' },
+    { id: 's3', month: '2026-07', channel: 'VELURE (Facebook)', platform: 'Facebook', url: '#', followers: 30000, brand: 'VELURE' },
+    { id: 's4', month: '2026-07', channel: 'CASSIA (Facebook)', platform: 'Facebook', url: '#', followers: 18000, brand: 'CASSIA' },
+    { id: 's5', month: '2026-07', channel: 'NORDLY (Instagram)', platform: 'Instagram', url: '#', followers: 60000, brand: 'NORDLY' },
+    { id: 's6', month: '2026-07', channel: 'NORDLY (TikTok)', platform: 'TikTok', url: '#', followers: 37000, brand: 'NORDLY' },
+    { id: 's7', month: '2026-07', channel: 'NORDLY (YouTube)', platform: 'YouTube', url: '', followers: 4900, brand: 'NORDLY' },
+    { id: 's8', month: '2026-07', channel: 'NORDLY (LINE OA)', platform: 'LINE OA', url: '', followers: 46000, brand: 'NORDLY' }
   ],
   insights: [
-    { id: 'in1', platform: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', month: '2026-07', period_label: '28 วันที่ผ่านมา: 11 มิ.ย. - 8 ก.ค.',
-      total_views: 385200, views_delta_pct: 12, views_3s: 42100, views_1m: 68, avg_watch_time: '2 นาที 40 วินาที',
-      follower_pct: 4.1, nonfollower_pct: 95.9, type_breakdown: 'หลายรูป 78%, คลิป Reels 19%, รูปภาพ 3%',
-      reels_views: 61200, posts_views: 322000, story_views: 2000,
-      top1_title: 'ลด 20% ทุกรุ่น — โพสต์โปรโมชัน', top1_views: 58900, top1_link: '',
-      top2_title: 'NORDLY — Sleep Better Every Night', top2_views: 24500, top2_link: '',
-      top3_title: 'ผ่อน 0% นาน 10 เดือน', top3_views: 15800, top3_link: '', notes: '' },
-    { id: 'in2', platform: 'NORDLY (TikTok)', brand: 'NORDLY', month: '2026-07', period_label: '7 วันล่าสุด: 2 - 8 ก.ค.',
-      total_views: 210500, views_delta_pct: 34.2, avg_watch_time: '',
-      followers_total: '38.4K', followers_net: '+820 (+2.2%)',
-      gender_breakdown: 'หญิง 58%, ชาย 42%, อื่นๆ 0%', age_breakdown: '18-24: 12%, 25-34: 28%, 35-44: 24%',
-      viewers_total: 45200, viewers_new: 31800,
-      peak_usage_note: 'ผู้ติดตามส่วนใหญ่ใช้งานวันศุกร์-เสาร์ เวลาประมาณ 20:00-22:00',
-      related_creators: 'ครีเอเตอร์สายไลฟ์สไตล์/สุขภาพหลายราย',
-      profile_views: 3400, likes: 8900, comments: 410, shares: 1200, estimated_rewards: 0,
-      traffic_source_breakdown: 'สำหรับคุณ 68%, ค้นหา 18%, โปรไฟล์ส่วนตัว 10%, กำลังติดตาม 4%',
-      search_terms: 'ที่นอนยางพารา ควรเลือกซื้อกี่นิ้วดี, วิธีเลือกที่นอนไม่ปวดหลัง',
+    { id: 'in1', platform: 'NORDLY Thailand (Facebook)', brand: 'NORDLY', month: '2026-07', period_label: '28 วันที่ผ่านมา (ตัวอย่าง)',
+      total_views: 370000, views_delta_pct: 10, views_3s: 40000, views_1m: 65, avg_watch_time: '2 นาที 30 วินาที',
+      follower_pct: 4, nonfollower_pct: 96, type_breakdown: 'หลายรูป 78%, คลิป Reels 19%, รูปภาพ 3%',
+      reels_views: 58000, posts_views: 310000, story_views: 2000,
+      top1_title: 'โพสต์ตัวอย่างอันดับ 1', top1_views: 56000, top1_link: '',
+      top2_title: 'โพสต์ตัวอย่างอันดับ 2', top2_views: 23000, top2_link: '',
+      top3_title: 'โพสต์ตัวอย่างอันดับ 3', top3_views: 15000, top3_link: '', notes: '' },
+    { id: 'in2', platform: 'NORDLY (TikTok)', brand: 'NORDLY', month: '2026-07', period_label: '7 วันล่าสุด (ตัวอย่าง)',
+      total_views: 200000, views_delta_pct: 30, avg_watch_time: '',
+      followers_total: '37K', followers_net: '+780',
+      gender_breakdown: 'หญิง 57%, ชาย 43%', age_breakdown: '18-24: 12%, 25-34: 27%, 35-44: 23%',
+      viewers_total: 43000, viewers_new: 30000,
+      peak_usage_note: 'ตัวอย่างช่วงเวลาที่ผู้ติดตามใช้งานมากสุด',
+      related_creators: 'ครีเอเตอร์ตัวอย่างหลายราย',
+      profile_views: 3200, likes: 8500, comments: 400, shares: 1100, estimated_rewards: 0,
+      traffic_source_breakdown: 'สำหรับคุณ 66%, ค้นหา 19%, โปรไฟล์ 10%, กำลังติดตาม 5%',
+      search_terms: 'คำค้นหาตัวอย่าง 1, คำค้นหาตัวอย่าง 2',
       notes: '' }
   ],
   marketplace: [
-    { id: 'mk1', date: '2026-07-06', platform: 'Shopee', brand: 'CASSIA', campaign: 'Double Day 6.6', workflow_status: 'สรุปผลแล้ว', orders: 220, revenue: 486000, ad_spend: 24000, notes: '' },
-    { id: 'mk2', date: '2026-07-07', platform: 'Lazada', brand: 'CASSIA', campaign: 'Double Day 7.7', workflow_status: 'ยิงแอดแล้ว', orders: 95, revenue: 198500, ad_spend: 14200, notes: 'รอสรุปผลหลังจบแคมเปญ' }
+    { id: 'mk1', date: '2026-07-06', platform: 'Shopee', brand: 'CASSIA', campaign: 'แคมเปญตัวอย่าง (Shopee)', workflow_status: 'สรุปผลแล้ว', orders: 200, revenue: 450000, ad_spend: 22000, notes: '' },
+    { id: 'mk2', date: '2026-07-07', platform: 'Lazada', brand: 'CASSIA', campaign: 'แคมเปญตัวอย่าง (Lazada)', workflow_status: 'ยิงแอดแล้ว', orders: 90, revenue: 185000, ad_spend: 13000, notes: '' }
   ],
   proposals: [
-    { id: 'p1', topic: 'SEO/GEO: Local Search กับชื่อห้างพันธมิตร', description: 'ปรับแต่งเว็บไซต์ให้ Google จับคู่แบรนด์กับสถานที่/ห้างพันธมิตรหลัก เพื่อดึงลูกค้าที่ค้นหาใกล้ตัวและพร้อมซื้อ ให้ติดอันดับเหนือคู่แข่งในผลการค้นหาและแผนที่', link: '#', status: 'นำเสนอแล้ว', presented_to: 'NORDLY', date: '2026-07-08', result: '', notes: '' },
-    { id: 'p2', topic: 'เพิ่มหน้า FAQ (Q&A) บนเว็บไซต์', description: 'คู่แข่งหลายรายมีหน้า FAQ แล้ว ควรมีเพื่อสร้างความเชื่อมั่นและให้ Google AI ดึงไปตอบลูกค้าได้ง่ายขึ้น', link: '#', status: 'นำเสนอแล้ว', presented_to: 'NORDLY', date: '2026-07-08', result: '', notes: '' },
-    { id: 'p3', topic: 'กลยุทธ์คอนเทนต์บล็อกรายสัปดาห์ (GEO)', description: 'เสนอลงคอนเทนต์คุณภาพสูง 4 ครั้ง/เดือน เจาะ Pain Point เรื่องปวดหลัง/คุณภาพการนอน เพื่อครองพื้นที่ AI (GEO) แทนการแข่งแค่เรื่องส่วนลด', link: '#', status: 'นำเสนอแล้ว', presented_to: 'VELURE', date: '2026-07-08', result: '', notes: '' },
-    { id: 'p4', topic: 'Social Ads: โปรโมชันห้างพันธมิตรประจำเดือน', description: 'ยิงแอด 4 แคมเปญห้างพันธมิตร งบรวมตามแผน — ผลลัพธ์แบบละเอียดดูที่หน้า Ads & ROI Tracker', link: '', status: 'กำลังดำเนินการ', presented_to: 'NORDLY', date: '2026-07-08', result: '', notes: '' }
+    { id: 'p1', topic: 'ข้อเสนอตัวอย่าง 1 — SEO/GEO', description: 'คำอธิบายตัวอย่างของข้อเสนองานด้าน SEO/GEO', link: '#', status: 'นำเสนอแล้ว', presented_to: 'NORDLY', date: '2026-07-01', result: '', notes: '' },
+    { id: 'p2', topic: 'ข้อเสนอตัวอย่าง 2 — คอนเทนต์', description: 'คำอธิบายตัวอย่างของข้อเสนองานด้านคอนเทนต์', link: '#', status: 'นำเสนอแล้ว', presented_to: 'VELURE', date: '2026-07-01', result: '', notes: '' },
+    { id: 'p3', topic: 'ข้อเสนอตัวอย่าง 3 — โฆษณา', description: 'คำอธิบายตัวอย่างของข้อเสนองานด้านโฆษณา', link: '', status: 'กำลังดำเนินการ', presented_to: 'NORDLY', date: '2026-07-01', result: '', notes: '' }
   ],
   content: [
-    { id: 'c1', date: '2026-07-16', post_time: '18:00', channel: 'NORDLY Thailand (Facebook)', topic: 'Bloom While You Sleep — แคมเปญดอกไม้บำบัดใจ', pillar: 'กิจกรรม/Event', type: 'โพสต์ปกติ', link: '', status: 'พร้อมลง', ads: 'ใช่', ads_start: '2026-07-16', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'NORDLY', notes: '', views: '', likes: '', comments: '', shares: '' },
-    { id: 'c2', date: '2026-07-07', post_time: '09:00', channel: 'NORDLY Thailand (Facebook)', topic: 'โปรโมชันห้างพันธมิตรเดือนกรกฎาคม', pillar: 'โปรโมชัน (Promotion)', type: 'โพสต์ปกติ', link: '', status: 'ลงแล้ว', ads: 'ใช่', ads_start: '2026-07-07', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'NORDLY', notes: '',
-      views: 82500, likes: 3400, comments: 280, shares: 150, saves: 90, link_clicks: 620, avg_watch_time: '', follows_gained: 34 },
-    { id: 'c3', date: '2026-07-10', post_time: '20:00', channel: 'NORDLY (TikTok)', topic: 'เลือกที่นอนยังไงให้หายปวดหลัง (Remake)', pillar: 'ให้ความรู้ (Knowledge)', type: 'คลิปสั้น', link: '', status: 'วางแผน', ads: 'ยัง', ads_start: '', used_before: 'เคยแมสมาก่อน', brand: 'VELURE', notes: '', views: '', likes: '', comments: '', shares: '' },
-    { id: 'c4', date: '2026-06-20', post_time: '19:30', channel: 'NORDLY Thailand (Facebook)', topic: 'วิธีดูแลที่นอนให้ใช้งานได้นาน', pillar: 'ให้ความรู้ (Knowledge)', type: 'โพสต์ปกติ', link: '', status: 'ลงแล้ว', ads: 'ยัง', ads_start: '', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'NORDLY', notes: '',
-      views: 52000, likes: 950, comments: 60, shares: 40, saves: 20, link_clicks: 100, avg_watch_time: '', follows_gained: 8 },
-    { id: 'c5', date: '2026-06-24', post_time: '12:00', channel: 'CASSIA (Facebook)', topic: 'รีวิวลูกค้าจริง — นอนสบายขึ้นใน 1 สัปดาห์', pillar: 'รีวิว/Testimonial', type: 'โพสต์ปกติ', link: '', status: 'ลงแล้ว', ads: 'ยัง', ads_start: '', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'CASSIA', notes: '',
-      views: 31000, likes: 1400, comments: 180, shares: 95, saves: 60, link_clicks: 80, avg_watch_time: '', follows_gained: 15 }
+    { id: 'c1', date: '2026-07-16', post_time: '18:00', channel: 'NORDLY Thailand (Facebook)', topic: 'หัวข้อคอนเทนต์ตัวอย่าง 1', pillar: 'กิจกรรม/Event', type: 'โพสต์ปกติ', link: '', status: 'พร้อมลง', ads: 'ใช่', ads_start: '2026-07-16', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'NORDLY', notes: '', views: '', likes: '', comments: '', shares: '' },
+    { id: 'c2', date: '2026-07-01', post_time: '09:00', channel: 'NORDLY Thailand (Facebook)', topic: 'หัวข้อคอนเทนต์ตัวอย่าง 2', pillar: 'โปรโมชัน (Promotion)', type: 'โพสต์ปกติ', link: '', status: 'ลงแล้ว', ads: 'ใช่', ads_start: '2026-07-01', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'NORDLY', notes: '',
+      views: 78000, likes: 3200, comments: 260, shares: 140, saves: 85, link_clicks: 590, avg_watch_time: '', follows_gained: 30 },
+    { id: 'c3', date: '2026-07-08', post_time: '20:00', channel: 'NORDLY (TikTok)', topic: 'หัวข้อคอนเทนต์ตัวอย่าง 3', pillar: 'ให้ความรู้ (Knowledge)', type: 'คลิปสั้น', link: '', status: 'วางแผน', ads: 'ยัง', ads_start: '', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'VELURE', notes: '', views: '', likes: '', comments: '', shares: '' },
+    { id: 'c4', date: '2026-06-20', post_time: '19:30', channel: 'NORDLY Thailand (Facebook)', topic: 'หัวข้อคอนเทนต์ตัวอย่าง 4', pillar: 'ให้ความรู้ (Knowledge)', type: 'โพสต์ปกติ', link: '', status: 'ลงแล้ว', ads: 'ยัง', ads_start: '', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'NORDLY', notes: '',
+      views: 50000, likes: 900, comments: 55, shares: 38, saves: 18, link_clicks: 95, avg_watch_time: '', follows_gained: 7 },
+    { id: 'c5', date: '2026-06-24', post_time: '12:00', channel: 'CASSIA (Facebook)', topic: 'หัวข้อคอนเทนต์ตัวอย่าง 5', pillar: 'รีวิว/Testimonial', type: 'โพสต์ปกติ', link: '', status: 'ลงแล้ว', ads: 'ยัง', ads_start: '', used_before: 'ไม่เคย (คอนเทนต์ใหม่)', brand: 'CASSIA', notes: '',
+      views: 30000, likes: 1300, comments: 170, shares: 90, saves: 55, link_clicks: 75, avg_watch_time: '', follows_gained: 14 }
   ],
   competitor: [
-    { id: 'k1', brand: 'DREAMWEAVE', website: '#', fb: '#', fb_follower: '95K', ig: '#', ig_follower: '5.2K', yt: '', yt_follower: '', activity: 'เน้นภาพสินค้า+โปรโมชันหน้าร้าน', strategy: 'ขายผ่านห้างเป็นหลัก', strength: 'สัมผัส "แน่นแต่ผิวนุ่ม" เป็นมาตรฐานเทียบ', weakness: 'E-commerce อ่อนแอที่สุดในกลุ่ม', price: 'เริ่ม ~25,000 บาท', updated: '2026-07' },
-    { id: 'k2', brand: 'COZYCORE', website: '#', fb: '#', fb_follower: '560K', ig: '#', ig_follower: '9.1K', yt: '', yt_follower: '', activity: 'ชู Sleep Expert consultation', strategy: 'ทุ่มงบสร้าง Awareness กว้างที่สุด', strength: 'เทคโนโลยีระบายความร้อนได้ผลจริง', weakness: 'มีร้องเรียนเรื่องคุณภาพวัสดุไม่สม่ำเสมอ', price: 'เริ่ม ~8,500 บาท', updated: '2026-07' },
-    { id: 'k3', brand: 'SLEEPCRAFT', website: '#', fb: '#', fb_follower: '175K', ig: '', ig_follower: '', yt: '', yt_follower: '110', activity: 'ภาพหรูหราสไตล์โรงแรม/รีสอร์ท', strategy: 'ตั้งราคาสูงแล้วลดหนัก 60-70%', strength: 'สัมผัสนุ่มโอบกระชับดีที่สุดในกลุ่ม', weakness: 'ยุบตัวเป็นแอ่งเร็ว เคลมยาก', price: 'ปกติหลักแสน ลดเหลือ 3-8 หมื่น', updated: '2026-07' }
+    { id: 'k1', brand: 'DREAMWEAVE', website: '#', fb: '#', fb_follower: '90K', ig: '#', ig_follower: '5K', yt: '', yt_follower: '', activity: 'กิจกรรมตัวอย่างของคู่แข่ง A', strategy: 'กลยุทธ์ตัวอย่างของคู่แข่ง A', strength: 'จุดเด่นตัวอย่างของคู่แข่ง A', weakness: 'จุดที่ต้องระวังตัวอย่างของคู่แข่ง A', price: 'ราคาตัวอย่าง', updated: '2026-07' },
+    { id: 'k2', brand: 'COZYCORE', website: '#', fb: '#', fb_follower: '550K', ig: '#', ig_follower: '9K', yt: '', yt_follower: '', activity: 'กิจกรรมตัวอย่างของคู่แข่ง B', strategy: 'กลยุทธ์ตัวอย่างของคู่แข่ง B', strength: 'จุดเด่นตัวอย่างของคู่แข่ง B', weakness: 'จุดที่ต้องระวังตัวอย่างของคู่แข่ง B', price: 'ราคาตัวอย่าง', updated: '2026-07' },
+    { id: 'k3', brand: 'SLEEPCRAFT', website: '#', fb: '#', fb_follower: '170K', ig: '', ig_follower: '', yt: '', yt_follower: '', activity: 'กิจกรรมตัวอย่างของคู่แข่ง C', strategy: 'กลยุทธ์ตัวอย่างของคู่แข่ง C', strength: 'จุดเด่นตัวอย่างของคู่แข่ง C', weakness: 'จุดที่ต้องระวังตัวอย่างของคู่แข่ง C', price: 'ราคาตัวอย่าง', updated: '2026-07' }
   ],
   competitorads: [
-    { id: 'ca1', competitor_id: 'k1', brand: 'DREAMWEAVE', platform: 'Facebook', offer: 'ลด 20% ทุกรุ่น', angle: 'โปรโมชันกลางปี', link: '', observed_date: '2026-07-08', notes: 'เห็นจากฟีด Facebook' },
-    { id: 'ca2', competitor_id: 'k1', brand: 'DREAMWEAVE', platform: 'TikTok', offer: 'ผ่อน 0% นาน 10 เดือน', angle: 'ลดภาระการตัดสินใจซื้อ', link: '', observed_date: '2026-07-10', notes: '' },
-    { id: 'ca3', competitor_id: 'k2', brand: 'COZYCORE', platform: 'Instagram', offer: 'ซื้อ 1 แถม 1 หมอน', angle: 'เพิ่มมูลค่าการซื้อ', link: '', observed_date: '2026-07-09', notes: '' }
+    { id: 'ca1', competitor_id: 'k1', brand: 'DREAMWEAVE', platform: 'Facebook', offer: 'ข้อเสนอตัวอย่าง 1', angle: 'มุมโน้มน้าวตัวอย่าง', link: '', observed_date: '2026-07-05', notes: '' },
+    { id: 'ca2', competitor_id: 'k1', brand: 'DREAMWEAVE', platform: 'TikTok', offer: 'ข้อเสนอตัวอย่าง 2', angle: 'มุมโน้มน้าวตัวอย่าง', link: '', observed_date: '2026-07-08', notes: '' },
+    { id: 'ca3', competitor_id: 'k2', brand: 'COZYCORE', platform: 'Instagram', offer: 'ข้อเสนอตัวอย่าง 3', angle: 'มุมโน้มน้าวตัวอย่าง', link: '', observed_date: '2026-07-06', notes: '' }
   ],
   seo: [
-    { id: 'q1', item: 'Title (หน้าแรก TH)', current: 'NORDLY ที่นอนคุณภาพ มั่นใจไม่ปวดหลัง หมอนสุขภาพ ผ้าปูที่นอน', assessment: 'ดี — มีคีย์เวิร์ดหลักครบ', suggestion: 'คงไว้ได้ อาจเพิ่มจุดขาย เช่น รับประกัน 15 ปี เพื่อดันอัตราคลิก' },
-    { id: 'q2', item: 'Meta Description (TH)', current: 'NORDLY ผู้ผลิตที่นอนและเครื่องนอนเพื่อสุขภาพ... รับประกันสูงสุด 15 ปี', assessment: 'มีจุดขายชัดเจน (รับประกัน 15 ปี)', suggestion: 'ตรวจสอบว่า meta description แต่ละหน้าไม่ซ้ำกัน' },
-    { id: 'q3', item: 'Google Tag Manager', current: 'ติดตั้งแล้ว', assessment: 'ดี — พร้อมต่อยอดวัดผล', suggestion: 'ตรวจสอบว่าเชื่อม Google Analytics 4 และ Search Console แล้วหรือยัง' },
-    { id: 'q4', item: 'โครงสร้างหน้าเว็บหลัก', current: 'Home / สินค้า / สิทธิพิเศษ / Blog & News / ติดต่อเรา', assessment: 'เรียบง่าย ใช้งานได้ แต่ยังไม่มีหมวดความรู้เรื่องการนอนแยกชัดเจน', suggestion: "พิจารณาเพิ่มหมวด 'คลังความรู้' แยกจาก Blog & News ทั่วไป เพื่อรองรับ GEO" },
-    { id: 'q5', item: 'บทความ Blog ล่าสุดที่พบ', current: 'ส่วนใหญ่เป็นข่าวโปรโมชัน', assessment: 'ยังไม่เจอบทความให้ความรู้เชิงลึก', suggestion: "นี่คือช่องว่างที่ตรงกับงาน 'Knowledge Content' — เขียนบทความความรู้เพิ่ม" }
+    { id: 'q1', item: 'Title (หน้าแรก TH)', current: 'ตัวอย่างข้อความ Title ปัจจุบัน', assessment: 'ตัวอย่างการประเมิน', suggestion: 'ตัวอย่างข้อเสนอแนะ' },
+    { id: 'q2', item: 'Meta Description', current: 'ตัวอย่างข้อความ Meta Description', assessment: 'ตัวอย่างการประเมิน', suggestion: 'ตัวอย่างข้อเสนอแนะ' },
+    { id: 'q3', item: 'Google Tag Manager', current: 'ติดตั้งแล้ว', assessment: 'ตัวอย่างการประเมิน', suggestion: 'ตัวอย่างข้อเสนอแนะ' },
+    { id: 'q4', item: 'โครงสร้างหน้าเว็บหลัก', current: 'ตัวอย่างโครงสร้างเมนู', assessment: 'ตัวอย่างการประเมิน', suggestion: 'ตัวอย่างข้อเสนอแนะ' },
+    { id: 'q5', item: 'บทความ Blog ล่าสุดที่พบ', current: 'ตัวอย่างรายการบทความ', assessment: 'ตัวอย่างการประเมิน', suggestion: 'ตัวอย่างข้อเสนอแนะ' }
   ],
   seokw: [
-    { id: 'kw1', group_name: 'Brand Keyword', examples: 'nordly, ที่นอนนอร์ดลี่, nordly outlet', intent: 'รู้จักแบรนด์แล้ว กำลังหาข้อมูล/ช่องทางซื้อ', usage: 'SEO: ต้องติดอันดับ 1 เสมอ / SEM: ซื้อป้องกันคู่แข่งแย่งชื่อแบรนด์', priority: 'สูงมาก' },
-    { id: 'kw2', group_name: 'Category + คุณสมบัติ', examples: 'ที่นอนยางพารา, ที่นอนพ็อกเก็ตสปริง, ที่นอนป้องกันไรฝุ่น', intent: 'เปรียบเทียบประเภทสินค้า ยังไม่เจาะจงแบรนด์', usage: 'SEO: ทำหน้าหมวดสินค้าให้ครบ / SEM: ยิง Search ตรงกลุ่มนี้', priority: 'สูง' },
-    { id: 'kw3', group_name: 'Comparison / จัดอันดับ', examples: 'ที่นอนยี่ห้อไหนดี, ที่นอนไม่ปวดหลัง ยี่ห้อไหนดี', intent: 'กำลังตัดสินใจ เทียบหลายแบรนด์', usage: 'GEO หลัก: ต้องมีเนื้อหาของแบรนด์ที่ชัดเจนพอให้ AI/บทความเลือกพูดถึง', priority: 'สูงมาก (โอกาส GEO)' },
-    { id: 'kw4', group_name: 'Pain Point / อาการ', examples: 'ที่นอนแก้ปวดหลัง, นอนแล้วปวดหลังทำไง', intent: 'ยังไม่รู้จักแบรนด์ กำลังหาวิธีแก้ปัญหา', usage: 'GEO/Knowledge Content: เขียนบทความตอบคำถามตรงประเด็น', priority: 'สูง' }
+    { id: 'kw1', group_name: 'Brand Keyword (ตัวอย่าง)', examples: 'คำค้นหาตัวอย่าง 1, คำค้นหาตัวอย่าง 2', intent: 'ความตั้งใจตัวอย่าง', usage: 'ใช้งานตัวอย่าง', priority: 'สูงมาก' },
+    { id: 'kw2', group_name: 'Category Keyword (ตัวอย่าง)', examples: 'คำค้นหาตัวอย่าง 3, คำค้นหาตัวอย่าง 4', intent: 'ความตั้งใจตัวอย่าง', usage: 'ใช้งานตัวอย่าง', priority: 'สูง' },
+    { id: 'kw3', group_name: 'Comparison Keyword (ตัวอย่าง)', examples: 'คำค้นหาตัวอย่าง 5, คำค้นหาตัวอย่าง 6', intent: 'ความตั้งใจตัวอย่าง', usage: 'ใช้งานตัวอย่าง', priority: 'สูงมาก (โอกาส GEO)' },
+    { id: 'kw4', group_name: 'Pain Point Keyword (ตัวอย่าง)', examples: 'คำค้นหาตัวอย่าง 7, คำค้นหาตัวอย่าง 8', intent: 'ความตั้งใจตัวอย่าง', usage: 'ใช้งานตัวอย่าง', priority: 'สูง' }
   ],
   seocomp: [
-    { id: 'sc1', brand: 'COZYCORE', selling_point: 'แบรนด์ต่างประเทศ ผู้ผลิตที่นอนยางพารารายแรกๆ ของตลาด รับประกันโครงสร้างยาวนาน', seo_notes: 'เว็บไซต์มีหน้า FAQ แบบถาม-ตอบชัดเจนบนหน้าสินค้า ซึ่งเป็นรูปแบบที่ AI นำไปใช้ตอบง่าย', in_ranking: 'ใช่ — ติดแทบทุกบทความ "ที่นอนยี่ห้อไหนดี"', competition_level: 'สูง', aio_aeo_geo_status: 'ยังไม่พบว่าประกาศทำ GEO/AEO/AIO อย่างเป็นทางการ แต่หน้า FAQ ที่มีอยู่แล้วเป็นโครงสร้างที่ AI นำไปอ้างอิงง่าย', sem_status: 'ยังไม่ได้ตรวจสอบ' },
-    { id: 'sc2', brand: 'DREAMWEAVE', selling_point: 'แบรนด์ระดับสากล เน้นเทคโนโลยีในการนอนหลากหลายรุ่น', seo_notes: 'พบในบทความจัดอันดับปีนี้หลายบทความ', in_ranking: 'ใช่ — ติดอันดับต้นในบางบทความ', competition_level: 'สูง', aio_aeo_geo_status: 'ยังไม่พบหลักฐานว่าทำ GEO/AEO ในไทย', sem_status: 'ยังไม่ได้ตรวจสอบ' },
-    { id: 'sc3', brand: 'PUREFOAM', selling_point: 'เน้นที่นอนยางพารา รองรับสรีระ', seo_notes: 'ปรากฏในบทความจัดอันดับควบคู่กับแบรนด์หลัก', in_ranking: 'ใช่', competition_level: 'กลาง', aio_aeo_geo_status: 'ยังไม่พบข้อมูลว่าทำ GEO/AEO/AIO', sem_status: 'ยังไม่ได้ตรวจสอบ' }
+    { id: 'sc1', brand: 'COZYCORE', selling_point: 'จุดขายตัวอย่างของคู่แข่ง A', seo_notes: 'บันทึกตัวอย่างด้าน SEO', in_ranking: 'ใช่', competition_level: 'สูง', aio_aeo_geo_status: 'สถานะตัวอย่าง', sem_status: 'ยังไม่ได้ตรวจสอบ' },
+    { id: 'sc2', brand: 'DREAMWEAVE', selling_point: 'จุดขายตัวอย่างของคู่แข่ง B', seo_notes: 'บันทึกตัวอย่างด้าน SEO', in_ranking: 'ใช่', competition_level: 'สูง', aio_aeo_geo_status: 'สถานะตัวอย่าง', sem_status: 'ยังไม่ได้ตรวจสอบ' },
+    { id: 'sc3', brand: 'PUREFOAM', selling_point: 'จุดขายตัวอย่างของคู่แข่ง C', seo_notes: 'บันทึกตัวอย่างด้าน SEO', in_ranking: 'ใช่', competition_level: 'กลาง', aio_aeo_geo_status: 'สถานะตัวอย่าง', sem_status: 'ยังไม่ได้ตรวจสอบ' }
   ],
   geocases: [
-    { id: 'gc1', type: 'ตัวอย่างแบรนด์จริง', brand: 'กรณีศึกษา B2B (อุตสาหกรรมทั่วไป)', platform: 'GEO', result_metric: 'รายได้จาก AI referral +4,900%, ทราฟฟิกจาก AI +2,622% ภายใน 14 เดือน', timeframe: '14 เดือน', link: '#', notes: 'กลยุทธ์หลัก: สร้างงานวิจัย/ข้อมูลต้นฉบับให้ AI นำไปอ้างอิงเป็นแหล่งข้อมูลหลัก' },
-    { id: 'gc2', type: 'ตัวอย่างแบรนด์จริง', brand: 'กรณีศึกษา E-commerce', platform: 'GEO', result_metric: 'รายได้ +120%, ทราฟฟิกจาก AI +693%', timeframe: '2025-2026', link: '#', notes: 'ปรับคำอธิบายสินค้าให้ AI นำไปอ้างอิงในบริบทการช้อปปิ้ง' },
-    { id: 'gc3', type: 'ค่าเฉลี่ยอุตสาหกรรม', brand: 'ภาพรวม E-commerce ทั่วโลก', platform: 'AIO (Google AI Overviews)', result_metric: 'แบรนด์ที่ถูกอ้างอิงใน AI Overview ได้คลิก Organic เพิ่ม +35%', timeframe: '2026', link: '#', notes: 'AI Overview ขึ้นแล้วในสัดส่วนคำค้นหาสายช้อปปิ้งที่เพิ่มขึ้นต่อเนื่อง' }
+    { id: 'gc1', type: 'ตัวอย่างแบรนด์จริง', brand: 'กรณีศึกษาตัวอย่าง A', platform: 'GEO', result_metric: 'ตัวเลขผลลัพธ์ตัวอย่าง', timeframe: 'ตัวอย่างช่วงเวลา', link: '#', notes: 'บันทึกตัวอย่าง' },
+    { id: 'gc2', type: 'ตัวอย่างแบรนด์จริง', brand: 'กรณีศึกษาตัวอย่าง B', platform: 'GEO', result_metric: 'ตัวเลขผลลัพธ์ตัวอย่าง', timeframe: 'ตัวอย่างช่วงเวลา', link: '#', notes: 'บันทึกตัวอย่าง' },
+    { id: 'gc3', type: 'ค่าเฉลี่ยอุตสาหกรรม', brand: 'ภาพรวมตัวอย่างอุตสาหกรรม', platform: 'AIO', result_metric: 'ตัวเลขผลลัพธ์ตัวอย่าง', timeframe: 'ตัวอย่างช่วงเวลา', link: '#', notes: 'บันทึกตัวอย่าง' }
   ],
   geomentions: [
-    { id: 'gm1', source: 'เว็บรีวิวสินค้า — "9 อันดับ ที่นอน ยี่ห้อไหนดี ปี 2026"', context: 'NORDLY รุ่นพรีเมียมติดอันดับ 3 เด่นเรื่องการรับประกันสินค้ายาวนาน', link: '#', opportunity: 'ติดต่อขอรีวิวรุ่นใหม่เพิ่ม หรือส่งข้อมูลอัปเดตให้เว็บนี้ทุกครั้งที่มีรุ่นใหม่' },
-    { id: 'gm2', source: 'หน้าแบรนด์ NORDLY บนแพลตฟอร์มพันธมิตรออนไลน์', context: 'หน้าคอลเลกชันสินค้าอย่างเป็นทางการ', link: '#', opportunity: 'ตรวจสอบว่าข้อมูลสินค้า/ราคาที่แสดงตรงกับปัจจุบันหรือไม่' }
+    { id: 'gm1', source: 'แหล่งที่พบตัวอย่าง 1', context: 'บริบทตัวอย่าง', link: '#', opportunity: 'โอกาสต่อยอดตัวอย่าง' },
+    { id: 'gm2', source: 'แหล่งที่พบตัวอย่าง 2', context: 'บริบทตัวอย่าง', link: '#', opportunity: 'โอกาสต่อยอดตัวอย่าง' }
   ],
   geochecklist: [
-    { id: 'gc1', done: false, task: 'เขียนหน้า/บทความแบบคำถาม-คำตอบ (Q&A) ตรงประเด็น เช่น "ที่นอนใช้ได้กี่ปี"', why: 'AI Search มักดึงคำตอบสั้นกระชับที่ตรงคำถามไปแสดงในผลลัพธ์โดยตรง', reference: 'คู่แข่งบางรายมีหน้า FAQ แบบนี้อยู่แล้ว' },
-    { id: 'gc2', done: true, task: 'ใช้โครงสร้างหัวข้อ H1/H2/H3 ให้ชัดเจนในทุกบทความ', why: 'AI อ่านโครงสร้างหัวข้อเพื่อแยกประเด็นได้ง่ายกว่า', reference: '-' },
-    { id: 'gc3', done: false, task: 'เพิ่มหมวด "คลังความรู้เรื่องการนอน" แยกจาก Blog & News', why: 'AI ชอบข้อมูลที่มีโครงสร้างแยกจากข่าวประชาสัมพันธ์อย่างสิ้นเชิง', reference: 'ตรงกับงาน Knowledge Content ที่วางแผนไว้แล้ว' },
-    { id: 'gc4', done: false, task: 'ใส่ Schema Markup ประเภท FAQPage และ Product บนหน้าเว็บ', why: 'Schema ช่วยให้เครื่องมือค้นหาและ AI เข้าใจโครงสร้างข้อมูลได้แม่นยำ', reference: '-' }
+    { id: 'gc1', done: false, task: 'รายการตัวอย่าง 1 — เขียนหน้า Q&A', why: 'เหตุผลตัวอย่าง', reference: '-' },
+    { id: 'gc2', done: true, task: 'รายการตัวอย่าง 2 — จัดโครงสร้างหัวข้อ', why: 'เหตุผลตัวอย่าง', reference: '-' },
+    { id: 'gc3', done: false, task: 'รายการตัวอย่าง 3 — เพิ่มหมวดความรู้', why: 'เหตุผลตัวอย่าง', reference: '-' },
+    { id: 'gc4', done: false, task: 'รายการตัวอย่าง 4 — ใส่ Schema Markup', why: 'เหตุผลตัวอย่าง', reference: '-' }
   ],
   traffic: [
-    { id: 't1', month: '2026-07', brand: 'NORDLY', visitors: 68500, avg_session_sec: 152, bounce_rate: 0.39, conversions: 890, conversion_rate: 0.013, organic_pct: 0.41, paid_pct: 0.26, social_pct: 0.24, direct_pct: 0.09, sem_budget: 40000, sem_cpc: 4.6, sem_conversions: 145 }
+    { id: 't1', month: '2026-07', brand: 'NORDLY', visitors: 65000, avg_session_sec: 148, bounce_rate: 0.4, conversions: 820, conversion_rate: 0.0126, organic_pct: 0.4, paid_pct: 0.25, social_pct: 0.25, direct_pct: 0.1, sem_budget: 38000, sem_cpc: 4.5, sem_conversions: 130,
+      funnel_visit: 65000, funnel_product_view: 30000, funnel_add_cart: 7500, funnel_checkout: 3900, funnel_purchase: 820 }
+  ],
+  semcampaigns: [
+    { id: 'sem1', month: '2026-07', brand: 'NORDLY', campaign: 'แคมเปญ SEM ตัวอย่าง 1', keyword: 'คำค้นหาตัวอย่าง 1', match_type: 'Exact', spend: 4000, clicks: 300, impressions: 5000, cpc: 13.3, conversions: 17, landing_page: '', notes: '' },
+    { id: 'sem2', month: '2026-07', brand: 'NORDLY', campaign: 'แคมเปญ SEM ตัวอย่าง 2', keyword: 'คำค้นหาตัวอย่าง 2', match_type: 'Phrase', spend: 6500, clicks: 230, impressions: 9500, cpc: 28.3, conversions: 8, landing_page: '', notes: '' }
   ],
   brandid: [
     { id: 'b1', brand: 'NORDLY',
-      personality: '1. ฉลาด ละเอียดอ่อน เข้าใจคนอื่น ใส่ใจรายละเอียด\n2. ห่วงใยสุขภาพ\n3. เป็นมิตร\n4. รสนิยมดี\n5. ทันสมัย',
-      font: 'Headline: Modern Sans UltraLight/Light/Regular/Medium/Bold\nText: Thai Serif Regular/Bold',
-      audience: 'กลุ่มที่นอน: 1. มั่นใจไม่ปวดหลัง 2. มั่นใจไม่กลัวภูมิแพ้',
-      essence: 'ทำให้ทุกคนมีคุณภาพการนอนที่ดี ใส่ใจรูปลักษณ์และการออกแบบของสินค้า',
-      primary_colors: 'น้ำเงินเข้ม, น้ำเงินอ่อน, ฟ้า',
-      accent_colors: 'ส้ม, ชมพู, แดง, ม่วง, เหลือง (ใช้คู่กับ ขาว/ดำ/เทา)' },
+      personality: '1. ตัวอย่างบุคลิก 1\n2. ตัวอย่างบุคลิก 2\n3. ตัวอย่างบุคลิก 3',
+      font: 'Headline: ฟอนต์ตัวอย่าง\nText: ฟอนต์ตัวอย่าง',
+      audience: 'กลุ่มเป้าหมายตัวอย่าง',
+      essence: 'แก่นแท้ของแบรนด์ตัวอย่าง',
+      primary_colors: 'สีตัวอย่าง',
+      accent_colors: 'สีเสริมตัวอย่าง' },
     { id: 'b2', brand: 'VELURE',
-      personality: '1. ทันสมัย\n2. มั่นใจในตัวเอง\n3. รักสุขภาพ\n4. เป็นคนเมือง มีรสนิยม\n5. เชื่อถือได้',
-      font: 'Headline (EN): Modern Sans Light/Bold\nBody: Thai Sans Regular/Bold',
-      audience: 'ปรับตัวให้เข้ากับสรีระของผู้บริโภค',
-      essence: 'ทำให้ทุกคนนอนหลับสบายอย่างมีคุณภาพ ด้วยเทคโนโลยีที่ทันสมัย',
-      primary_colors: 'น้ำตาล, ฟ้า, ชมพู, ขาว, ดำ',
-      accent_colors: 'ดำ, ขาว' },
+      personality: '1. ตัวอย่างบุคลิก 1\n2. ตัวอย่างบุคลิก 2',
+      font: 'ฟอนต์ตัวอย่าง',
+      audience: 'กลุ่มเป้าหมายตัวอย่าง',
+      essence: 'แก่นแท้ของแบรนด์ตัวอย่าง',
+      primary_colors: 'สีตัวอย่าง',
+      accent_colors: 'สีเสริมตัวอย่าง' },
     { id: 'b3', brand: 'CASSIA',
-      personality: '1. มั่นใจในตัวเอง\n2. มุ่งมั่น ตั้งใจ\n3. ห่วงใยสุขภาพ\n4. คล่องแคล่ว กระตือรือร้น\n5. อัปเดตเทรนด์ใหม่อยู่ตลอด\n6. เป็นกันเอง',
-      font: 'Rounded Sans (headline+body)',
-      audience: 'กลุ่มที่นอน: 1. เพื่อสุขภาพ ไม่ปวดหลัง 2. เติมเต็มช่วงเวลาพักผ่อน',
-      essence: 'เข้าถึงผู้บริโภคทุกช่วงวัย รูปลักษณ์เข้าถึงง่าย สดใส โดดเด่น ราคาเหมาะสม',
-      primary_colors: 'ม่วง',
-      accent_colors: 'น้ำเงิน, เทา, ฟ้า, เขียว' }
+      personality: '1. ตัวอย่างบุคลิก 1\n2. ตัวอย่างบุคลิก 2',
+      font: 'ฟอนต์ตัวอย่าง',
+      audience: 'กลุ่มเป้าหมายตัวอย่าง',
+      essence: 'แก่นแท้ของแบรนด์ตัวอย่าง',
+      primary_colors: 'สีตัวอย่าง',
+      accent_colors: 'สีเสริมตัวอย่าง' }
   ],
   jobs: [
-    { id: 'j1', category: "🌐 เว็บไซต์ & GitHub", subtask: "เว็บไซต์ (CMS)", date_assigned: "2026-07-06", detail: "อัปโหลดแคตตาล็อกสินค้าทุกเดือน — ทีมดูแลเรื่อง SEO และ SEM", related_sheet: "SEO SEM GEO", schedule: "งานประจำทุกเดือน", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j2', category: "🌐 เว็บไซต์ & GitHub", subtask: "SEO & GEO", date_assigned: "2026-07-06", detail: "ศึกษาและนำแนวคิด GEO (Generative Engine Optimization) มาปรับใช้", related_sheet: "SEO SEM GEO", schedule: "ต่อเนื่อง", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j3', category: "📝 คอนเทนต์ & บล็อก", subtask: "อัปเดตบล็อก", date_assigned: "2026-07-08", detail: "สรุปคอนเทนต์จาก Social เป็นบล็อก แล้วติด SEO", related_sheet: "BLOG WEBSITE + ปฏิทินคอนเทนต์", schedule: "รอกำหนด", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j4', category: "📱 โซเชียล & Line OA", subtask: "Line OA — วางแผนบรอดแคสต์ + Tagging", date_assigned: "2026-07-06", detail: "วางแผนบรอดแคสต์ + ทำ Tagging แยกกลุ่มลูกค้า เพื่อบรอดแคสต์ตรงกลุ่มและประหยัดค่าใช้จ่าย", related_sheet: "ปฏิทินคอนเทนต์", schedule: "ต่อเนื่อง", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j5', category: "📣 โฆษณา (Ads)", subtask: "Facebook Ads (ภาพรวม)", date_assigned: "2026-07-06", detail: "ดูแลเพจหลักของทั้ง 3 แบรนด์", related_sheet: "Ads & ROI Tracker + ปฏิทินคอนเทนต์", schedule: "ต่อเนื่อง", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j6', category: "📣 โฆษณา (Ads)", subtask: "โปรโมชันห้างพันธมิตร", date_assigned: "2026-07-06", detail: "ยิงแอดโปรโมชันประจำเดือนของห้างพันธมิตร เพื่อดันคนไปซื้อกับพนักงานหน้างาน", related_sheet: "Ads & ROI Tracker + ปฏิทินคอนเทนต์", schedule: "รายเดือน", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j7', category: "💰 งบประมาณ (Budget)", subtask: "ควบคุมงบทุกช่องทาง", date_assigned: "2026-07-06", detail: "ควบคุมงบที่ได้รับอนุมัติ/ใช้ไปแล้ว/คงเหลือ ของทุกช่องทาง ทุกเดือน", related_sheet: "Budget", schedule: "รายเดือน", owner: "ทีมการตลาด", notes: "" },
-    { id: 'j8', category: "👥 บริหารทีม & วัฒนธรรม", subtask: "เวลาทำงาน", date_assigned: "2026-07-06", detail: "08:00 – 17:00 น.", related_sheet: "", schedule: "ประจำ", owner: "", notes: "" }
+    { id: 'j1', category: "🌐 เว็บไซต์ & GitHub", subtask: "งานตัวอย่าง 1", date_assigned: "2026-07-01", detail: "รายละเอียดงานตัวอย่าง", related_sheet: "", schedule: "งานประจำ", owner: "ทีมการตลาด", notes: "" },
+    { id: 'j2', category: "📝 คอนเทนต์ & บล็อก", subtask: "งานตัวอย่าง 2", date_assigned: "2026-07-01", detail: "รายละเอียดงานตัวอย่าง", related_sheet: "", schedule: "ต่อเนื่อง", owner: "ทีมการตลาด", notes: "" },
+    { id: 'j3', category: "📣 โฆษณา (Ads)", subtask: "งานตัวอย่าง 3", date_assigned: "2026-07-01", detail: "รายละเอียดงานตัวอย่าง", related_sheet: "", schedule: "รายเดือน", owner: "ทีมการตลาด", notes: "" },
+    { id: 'j4', category: "💰 งบประมาณ (Budget)", subtask: "งานตัวอย่าง 4", date_assigned: "2026-07-01", detail: "รายละเอียดงานตัวอย่าง", related_sheet: "", schedule: "รายเดือน", owner: "ทีมการตลาด", notes: "" }
   ],
   workorders: [],
   meetings: [
-    { id: 'mt1', date: '2026-07-08', topic: 'สรุปงบยิงแอด Facebook + TikTok เดือนกรกฎาคม', attendees: 'ผู้จัดการฝ่ายการตลาด, ทีมการตลาด', owner: 'ทีมการตลาด',
-      summary: 'สรุปงบก้อนใหญ่ที่จะให้ทีมยิงแอดเดือนนี้ แบ่งเป็น Facebook และ TikTok — ทีมรับผิดชอบวางแผนจัดสรรงบตามแคมเปญที่วางไว้',
-      decisions: 'วางแผนงบยิงแอดในหน้า "แผนงบยิงแอด" ก่อนเริ่มยิงจริงทุกครั้ง', action_items: 'กรอกแผนงบยิงแอดเดือนนี้ให้ครบก่อนเริ่มแคมเปญ',
+    { id: 'mt1', date: '2026-07-01', topic: 'หัวข้อประชุมตัวอย่าง', attendees: 'ทีมการตลาด', owner: 'ทีมการตลาด',
+      summary: 'สรุปเนื้อหาตัวอย่าง', decisions: 'มติตัวอย่าง', action_items: 'งานที่ต้องทำตัวอย่าง',
       next_meeting_date: '', notes: '' }
   ],
   actionitems: [
-    { id: 'ai1', meeting_id: 'mt1', meeting_topic: 'สรุปงบยิงแอด Facebook + TikTok เดือนกรกฎาคม', main_task: 'งบยิงแอด Facebook + TikTok', subtask: 'กรอกแผนงบยิงแอดเดือนกรกฎาคมในหน้าแผนงบยิงแอด', owner: 'ทีมการตลาด', deadline: '2026-07-10', status: 'เสร็จแล้ว', notes: '' },
-    { id: 'ai2', meeting_id: 'mt1', meeting_topic: 'สรุปงบยิงแอด Facebook + TikTok เดือนกรกฎาคม', main_task: 'งบยิงแอด Facebook + TikTok', subtask: 'ติดตามผลแคมเปญห้างพันธมิตรทุกสัปดาห์', owner: 'ทีมการตลาด', deadline: '2026-07-15', status: 'กำลังทำ', notes: '' }
+    { id: 'ai1', meeting_id: 'mt1', meeting_topic: 'หัวข้อประชุมตัวอย่าง', main_task: 'งานหลักตัวอย่าง', subtask: 'งานย่อยตัวอย่าง', owner: 'ทีมการตลาด', deadline: '2026-07-15', status: 'กำลังทำ', notes: '' }
   ],
   sourcing: [
-    { id: 'cs1', date_found: '2026-07-06', source_link: '#', platform: 'TikTok', pillar: 'ให้ความรู้ (Knowledge)', description: 'คลิป "เลือกที่นอนยังไงให้หายปวดหลัง" เคยยอดวิวสูงสุดของเพจ', performance_note: 'ยอดวิว 120K, แชร์เยอะกว่าคลิปอื่น 5 เท่า', assigned_to: 'ทีมคอนเทนต์', status: 'รอทำ', notes: 'ลองทำ Remake เป็นเวอร์ชันสั้นลง 15 วิ' }
+    { id: 'cs1', date_found: '2026-07-01', source_link: '#', platform: 'TikTok', pillar: 'ให้ความรู้ (Knowledge)', description: 'รายละเอียดตัวอย่าง', performance_note: 'ผลลัพธ์ตัวอย่าง', assigned_to: 'ทีมคอนเทนต์', status: 'รอทำ', notes: '' }
   ],
   dailylog: [
-    { id: 'dl1', date: '2026-07-06', owner: 'ทีมการตลาด', category: '📣 โฆษณา (Ads)', task: 'ตั้งแคมเปญโปรโมชันห้างพันธมิตร 4 แห่ง', workload: 'หนัก', status: 'เสร็จแล้ว', notes: '' },
-    { id: 'dl2', date: '2026-07-07', owner: 'ทีมการตลาด', category: '📣 โฆษณา (Ads)', task: 'เริ่มยิงแอดทั้ง 4 แคมเปญ + มอนิเตอร์ผล', workload: 'ปานกลาง', status: 'เสร็จแล้ว', notes: '' }
+    { id: 'dl1', date: '2026-07-01', owner: 'ทีมการตลาด', category: '📣 โฆษณา (Ads)', task: 'งานประจำวันตัวอย่าง', workload: 'ปานกลาง', status: 'เสร็จแล้ว', notes: '' }
   ],
   blog: [
-    { id: 'bl1', date_created: '2026-07-08', date_publish: '2026-07-16', title: 'Bloom While You Sleep — สัมผัสประสบการณ์สวนดอกไม้บำบัดใจกับ NORDLY', pillar: 'กิจกรรม/Event', geo_target: 'ห้างพันธมิตรสาขาหลัก', about: 'NEWS', task_type: 'Promotion & Event', event_date: '16/07/2569-29/07/2569', strategy: "ใช้กลยุทธ์ Floral Therapy ผสาน Keyword พื้นที่จัดงาน เพื่อดึง Traffic และกระตุ้นยอดขายรุ่นพรีเมียม", content: 'ดูเนื้อหาฉบับเต็มและตัวอย่างสคริปต์ในชีตนี้', keywords: 'SEO: NORDLY (brand keyword), Bloom While You Sleep (campaign keyword) · GEO: ห้างพันธมิตรสาขาหลัก (location keyword)', fb_ig_script: '', graphic_brief_social: '', graphic_brief_blog: '', status: 'รอตรวจ', notes: '' }
+    { id: 'bl1', date_created: '2026-07-01', date_publish: '2026-07-16', title: 'หัวข้อบทความตัวอย่าง', pillar: 'กิจกรรม/Event', geo_target: 'พื้นที่ตัวอย่าง', about: 'NEWS', task_type: 'Promotion', event_date: '', strategy: "กลยุทธ์ตัวอย่าง", content: 'เนื้อหาตัวอย่าง', keywords: 'คีย์เวิร์ดตัวอย่าง', fb_ig_script: '', graphic_brief_social: '', graphic_brief_blog: '', status: 'รอตรวจ', notes: '' }
   ],
   onboarding: [
-    { id: 'ob1', date: '2026-07-06', topic: 'วิธีตั้งแคมเปญ Facebook Ads และยิงแอดของโพสต์โปรโมชันห้าง', taught_by: 'หัวหน้าทีม',
-      workflow: '1) ทีมคอนเทนต์ส่งโพสต์ให้ยิงแอดต้นเดือน\n2) สร้างแคมเปญ + เลือกวัตถุประสงค์\n3) สร้างชุดโฆษณาห้างที่จะยิง\n4) สร้างกลุ่มลูกค้า (ถ้ามีแล้วไม่ต้องทำ)\n5) เริ่มยิงแอดแต่ละโพสต์\n6) คอยมอนิเตอร์ตลอด',
-      tools: 'Facebook Ads Manager',
-      tips: '- ต้องรออนุมัติงบก่อน\n- ตรวจโพสต์ให้ถูกต้อง\n- ถ้ายิงแอดแบบมีส่วนร่วม ไม่ต้องมีปุ่มข้อความได้',
-      understanding: 'เข้าใจแล้ว', notes: '' }
+    { id: 'ob1', date: '2026-07-01', topic: 'หัวข้อสอนงานตัวอย่าง', taught_by: 'หัวหน้าทีม',
+      workflow: '1) ขั้นตอนตัวอย่าง 1\n2) ขั้นตอนตัวอย่าง 2\n3) ขั้นตอนตัวอย่าง 3',
+      tools: 'เครื่องมือตัวอย่าง', tips: 'เคล็ดลับตัวอย่าง', understanding: 'เข้าใจแล้ว', notes: '' }
   ],
   lineoa: [
-    { id: 'lo1', date: '2026-07-05', segment: 'สนใจทั่วไป', topic: 'ส่งคอนเทนต์ให้ความรู้เรื่องการเลือกที่นอน', reach: 12400, opened: 7600, clicked: 980, brand: 'NORDLY', notes: '' },
-    { id: 'lo2', date: '2026-07-12', segment: 'ถามข้อมูล/สเปกสินค้า', topic: 'โปรโมชันเฉพาะรุ่นที่เคยถาม', reach: 3200, opened: 2400, clicked: 610, brand: 'NORDLY', notes: '' }
+    { id: 'lo1', date: '2026-07-01', segment: 'กลุ่มตัวอย่าง 1', topic: 'หัวข้อบรอดแคสต์ตัวอย่าง', reach: 12000, opened: 7000, clicked: 900, brand: 'NORDLY', notes: '' }
   ],
   lineoasegments: [
-    { id: 'ls1', segment_name: 'สนใจทั่วไป', criteria: 'เพิ่มเพื่อนใหม่ ยังไม่เคยทัก หรือทักแค่ทักทาย/ดูโปรไฟล์ ยังไม่มีคำถามเจาะจง', member_count: '',
-      broadcast_strategy: 'ส่งคอนเทนต์ให้ความรู้ (สาระการนอน วิธีเลือกที่นอน) ไม่ยัดขายตรงๆ ความถี่ 1-2 ครั้ง/เดือน',
-      notes: 'กลุ่มนี้ยังไม่พร้อมซื้อ — ต้องสร้างความไว้ใจก่อนถึงจะเปิดใจซื้อ' },
-    { id: 'ls2', segment_name: 'ถามข้อมูล/สเปกสินค้า', criteria: 'ทักถามสเปก ขนาด วัสดุ หรือราคาที่นอนรุ่นใดรุ่นหนึ่งโดยเฉพาะ', member_count: '',
-      broadcast_strategy: 'ส่งโปรโมชัน/ส่วนลดเฉพาะรุ่นที่ถาม พร้อมรีวิวลูกค้าจริงของรุ่นนั้น ภายใน 3-7 วันหลังทัก',
-      notes: 'มี intent ชัดเจนแล้วว่าสนใจรุ่นไหน ควรปิดการขายเร็วด้วยข้อมูลเจาะจง+รีวิวจริง' },
-    { id: 'ls3', segment_name: 'ปรึกษาปัญหาการนอน', criteria: 'ทักปรึกษาปัญหาสุขภาพที่เกี่ยวกับการนอน เช่น ปวดหลัง นอนไม่หลับ ภูมิแพ้ไรฝุ่น', member_count: '',
-      broadcast_strategy: 'ส่งคอนเทนต์/รุ่นที่ตรงปัญหา ชวนทดลองนอนที่โชว์รูมหรือปรึกษาเพิ่มเติม',
-      notes: 'กลุ่มนี้มี pain point ชัดเจนที่สุด การแก้ปัญหาตรงจุดปิดการขายได้สูงกว่าปกติมาก' },
-    { id: 'ls4', segment_name: 'ลูกค้าซื้อแล้ว', criteria: 'มีประวัติสั่งซื้อ หรือแจ้งเลขออเดอร์/ยืนยันการซื้อผ่าน LINE แล้ว', member_count: '',
-      broadcast_strategy: 'ส่งวิธีดูแลรักษาสินค้า ข้อมูลการรับประกัน — ไม่ส่งโปรขายซ้ำเร็วเกินไป เน้นขอรีวิว/แนะนำเพื่อนแทน',
-      notes: 'ที่นอนเป็นสินค้าอายุการใช้งานยาว เป้าหมายของกลุ่มนี้ควรเป็น "รักษาความพึงพอใจ + ขอ referral"' }
+    { id: 'ls1', segment_name: 'กลุ่มตัวอย่าง 1', criteria: 'เกณฑ์ตัวอย่าง', member_count: '',
+      broadcast_strategy: 'กลยุทธ์การส่งตัวอย่าง', notes: 'หมายเหตุตัวอย่าง' },
+    { id: 'ls2', segment_name: 'กลุ่มตัวอย่าง 2', criteria: 'เกณฑ์ตัวอย่าง', member_count: '',
+      broadcast_strategy: 'กลยุทธ์การส่งตัวอย่าง', notes: 'หมายเหตุตัวอย่าง' }
   ],
   marketingretail: [
-    { id: 'mr1', problem: 'ยิงแอดกระตุ้นคนเข้าร้าน แต่ยอดขายหน้าร้านไม่ขยับตาม',
-      possible_cause: 'พนักงานหน้าร้านอาจไม่ได้รับบรีฟโปรโมชัน/กิจกรรมที่กำลังยิงแอดอยู่',
-      department: 'หน้าร้าน/เซลล์', suggested_fix: 'Marketing ส่งสรุปโปรโมชัน/กิจกรรมที่กำลังยิงแอดให้ทีมหน้าร้านทุกครั้งก่อนเริ่มแคมเปญ',
-      status: 'รอตรวจ', brand: 'NORDLY', notes: '' },
-    { id: 'mr2', problem: 'ลูกค้าทักไลน์ OA สนใจโปรโมชัน แต่ปิดการขายไม่ได้เมื่อไปถึงหน้าร้าน',
-      possible_cause: 'พนักงานหน้าร้านอาจไม่มีสคริปต์พูดโน้มน้าวเกี่ยวกับโปรโมชัน/กิจกรรมที่ลูกค้าเห็นจากโฆษณา',
-      department: 'เซลล์/หน้าร้าน', suggested_fix: 'จัดทำสคริปต์แนะนำโปรโมชันให้พนักงานหน้าร้านใช้ตอนลูกค้าถามถึงสิ่งที่เห็นจากโฆษณา',
-      status: 'กำลังทำ', brand: 'NORDLY', notes: '' }
+    { id: 'mr1', problem: 'ปัญหาตัวอย่าง 1', possible_cause: 'สาเหตุที่เป็นไปได้ตัวอย่าง',
+      department: 'หน้าร้าน/เซลล์', suggested_fix: 'วิธีแก้ที่แนะนำตัวอย่าง',
+      status: 'รอตรวจ', brand: 'NORDLY', notes: '' }
   ],
   influencerkol: [
-    { id: 'inf1', date: '2026-07-05', brand: 'NORDLY', influencer_name: 'ครีเอเตอร์สายไลฟ์สไตล์ A', platform: 'TikTok', follower_count: 180000, content_type: 'รีวิวใช้งานจริง', campaign: 'แคมเปญเปิดตัวรุ่นใหม่', cost: 15000, reach: 210000, engagement: 18500, code_used: 'NORDLY10', conversions: 42, status: 'เผยแพร่แล้ว', link: '#', notes: '' },
-    { id: 'inf2', date: '2026-07-12', brand: 'VELURE', influencer_name: 'ครีเอเตอร์สายสุขภาพ B', platform: 'Instagram', follower_count: 62000, content_type: 'Story + รีวิว', campaign: 'สร้าง Awareness แบรนด์ VELURE', cost: 8000, reach: 74000, engagement: 6100, code_used: 'VELURE15', conversions: 19, status: 'กำลังดำเนินการ', link: '#', notes: '' }
+    { id: 'inf1', date: '2026-07-01', brand: 'NORDLY', influencer_name: 'ครีเอเตอร์ตัวอย่าง A', platform: 'TikTok', follower_count: 150000, content_type: 'รีวิวตัวอย่าง', campaign: 'แคมเปญตัวอย่าง', cost: 12000, reach: 180000, engagement: 15000, code_used: 'CODE01', conversions: 30, status: 'เผยแพร่แล้ว', link: '#', notes: '' }
   ],
   customerjourney: [
-    { id: 'cj1', date: '2026-07-06', brand: 'NORDLY', customer_ref: 'ลูกค้า #A102', source_channel: 'Facebook Ads', touchpoints: 'เห็นโฆษณา → ทักไลน์ OA → นัดทดลองนอนที่ห้างพันธมิตร → ปิดการขาย', outcome: 'ซื้อสำเร็จ', notes: 'ใช้เวลา 5 วันตั้งแต่เห็นโฆษณาถึงปิดการขาย' },
-    { id: 'cj2', date: '2026-07-09', brand: 'VELURE', customer_ref: 'ลูกค้า #B045', source_channel: 'TikTok', touchpoints: 'ดูคลิปครีเอเตอร์ → เข้าเว็บไซต์ → ยังไม่ตัดสินใจซื้อ', outcome: 'ยังไม่ปิดการขาย', notes: 'ติดตามผลต่อเนื่อง' }
+    { id: 'cj1', date: '2026-07-01', brand: 'NORDLY', customer_ref: 'ลูกค้าตัวอย่าง A', source_channel: 'Facebook Ads', touchpoints: 'เส้นทางตัวอย่าง', outcome: 'ซื้อสำเร็จ', notes: '' }
+  ],
+  activityideas: [
+    { id: 'act1', timestamp: '2026-07-01', brand: 'NORDLY', idea: 'ไอเดียกิจกรรมตัวอย่าง 1', target_period: 'เดือนตัวอย่าง', status: 'วางแผน', notes: '' },
+    { id: 'act2', timestamp: '2026-07-01', brand: 'VELURE', idea: 'ไอเดียกิจกรรมตัวอย่าง 2', target_period: 'เดือนตัวอย่าง', status: 'ไอเดีย', notes: '' }
+  ],
+  crm: [
+    { id: 'crm1', name: 'ลูกค้าตัวอย่าง A', phone: '08x-xxx-xxxx', line_id: 'lineid_ตัวอย่าง', email: '', brand: 'NORDLY', source_channel: 'Facebook Ads', stage: 'ติดตามอยู่', last_contact_date: '2026-07-01', assigned_to: 'ทีมการตลาด', tags: 'แท็กตัวอย่าง', notes: '' },
+    { id: 'crm2', name: 'ลูกค้าตัวอย่าง B', phone: '08x-xxx-xxxx', line_id: '', email: 'example@email.com', brand: 'VELURE', source_channel: 'LINE OA', stage: 'ปิดการขายแล้ว', last_contact_date: '2026-07-01', assigned_to: 'ทีมการตลาด', tags: '', notes: '' }
+  ],
+  accounts: [
+    { id: 'acc1', platform: 'Facebook', account_email: 'ads.example@gmail.com', password_hint: 'คำใบ้ตัวอย่าง', two_factor_note: 'ตัวอย่าง 2FA', owner: 'ทีมการตลาด', purpose: 'ใช้ทำอะไรตัวอย่าง', last_updated: '2026-07-01', notes: '' },
+    { id: 'acc2', platform: 'Gmail', account_email: 'team.example@gmail.com', password_hint: 'คำใบ้ตัวอย่าง', two_factor_note: '', owner: 'ทีมการตลาด', purpose: 'บัญชีกลางของทีม', last_updated: '2026-07-01', notes: '' }
   ],
   review: [
-    { id: 'r1', date: '2026-07-08', model: 'NORDLY Neck & Shoulder Massager Pro', source: 'ลูกค้าซื้อจริง', channel: 'Facebook Comment', name: 'ลูกค้า A', score: 4, area: 'คอ, บ่า', frequency: '3-4 ครั้ง/สัปดาห์', duration: '2 เดือน', pros: 'แรงนวดดี ปรับระดับได้เยอะ พกพาสะดวก', issue: 'เสียงมอเตอร์ดังกว่าที่คาดหวังตอนใช้งานช่วงกลางคืน', issue_type: 'เสียงดัง', severity: 'เล็กน้อย', claim_status: 'ไม่มี', suggestion: 'พิจารณาลดเสียงมอเตอร์ หรือเพิ่มโหมด "เงียบ"', forwarded: 'ยัง', link: '', recorder: 'ทีมการตลาด', notes: '' }
+    { id: 'r1', date: '2026-07-01', model: 'สินค้าตัวอย่าง', source: 'ลูกค้าซื้อจริง', channel: 'Facebook Comment', name: 'ลูกค้าตัวอย่าง', score: 4, area: 'พื้นที่ตัวอย่าง', frequency: 'ตัวอย่าง', duration: 'ตัวอย่าง', pros: 'ข้อดีตัวอย่าง', issue: 'ปัญหาตัวอย่าง', issue_type: 'ตัวอย่าง', severity: 'เล็กน้อย', claim_status: 'ไม่มี', suggestion: 'ข้อเสนอแนะตัวอย่าง', forwarded: 'ยัง', link: '', recorder: 'ทีมการตลาด', notes: '' }
   ],
   links: [
-    { id: 'lk1', label: 'สไลด์เสนองาน (ตัวอย่าง)', url: '#', category: 'เสนองาน', notes: '' },
-    { id: 'lk2', label: 'ชีตข้อมูลการตลาด (ตัวอย่าง)', url: '#', category: 'ชีตข้อมูล', notes: '' },
-    { id: 'lk3', label: 'ชีต Plan Content (ตัวอย่าง)', url: '#', category: 'ชีตข้อมูล', notes: '' }
+    { id: 'lk1', label: 'ลิงก์ตัวอย่าง 1', url: '#', category: 'เสนองาน', notes: '' },
+    { id: 'lk2', label: 'ลิงก์ตัวอย่าง 2', url: '#', category: 'ชีตข้อมูล', notes: '' }
   ]
 };
 
@@ -2293,7 +2405,10 @@ function toast(msg, type) {
 // conversion) — every page should read dates like "12 กรกฎาคม 2026".
 const TH_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 const fmt = {
-  currency(n) { n = Number(n) || 0; return '฿' + n.toLocaleString('th-TH', { maximumFractionDigits: 0 }); },
+  // Space between the ฿ glyph and the digits — without it, the Fraunces
+  // display font (used for big KPI numbers) renders them crowded together,
+  // almost overlapping.
+  currency(n) { n = Number(n) || 0; return '฿ ' + n.toLocaleString('th-TH', { maximumFractionDigits: 0 }); },
   number(n) { n = Number(n) || 0; return n.toLocaleString('th-TH', { maximumFractionDigits: 0 }); },
   percent(n) { n = Number(n) || 0; return (n * 100).toLocaleString('th-TH', { maximumFractionDigits: 1 }) + '%'; },
   roas(spend, revenue) { spend = Number(spend) || 0; revenue = Number(revenue) || 0; return spend > 0 ? (revenue / spend) : 0; },
@@ -2494,7 +2609,7 @@ function statusBadge(status) {
 <script>
 /* ANT Digital Marketing Hub — page rendering & CRUD wiring (portfolio mockup) */
 
-const state = { ads: [], budget: [], adsbudget: [], adsdaily: [], social: [], insights: [], meetings: [], actionitems: [], lineoasegments: [], links: [], exectargets: [], marketplace: [], proposals: [], content: [], blog: [], competitor: [], seo: [], seokw: [], seocomp: [], geomentions: [], geochecklist: [], geocases: [], traffic: [], brandid: [], jobs: [], workorders: [], dailylog: [], sourcing: [], onboarding: [], lineoa: [], mktretail: [], influencerkol: [], customerjourney: [], competitorads: [] };
+const state = { ads: [], budget: [], adsbudget: [], adsdaily: [], social: [], insights: [], meetings: [], actionitems: [], lineoasegments: [], links: [], exectargets: [], marketplace: [], proposals: [], content: [], blog: [], competitor: [], seo: [], seokw: [], seocomp: [], geomentions: [], geochecklist: [], geocases: [], traffic: [], brandid: [], jobs: [], workorders: [], dailylog: [], sourcing: [], onboarding: [], lineoa: [], mktretail: [], influencerkol: [], customerjourney: [], competitorads: [], activityideas: [], crm: [], accounts: [], semcampaigns: [] };
 const BRANDS = ['NORDLY', 'VELURE', 'CASSIA'];
 let adsWindow = 'd7';
 
@@ -2625,19 +2740,6 @@ document.addEventListener('DOMContentLoaded', () => {
   wireCalendarNav();
   try { document.getElementById('dashNotes').value = localStorage.getItem('sda_dash_notes') || ''; } catch (e) {}
   document.getElementById('dashNotes').addEventListener('input', e => { try { localStorage.setItem('sda_dash_notes', e.target.value); } catch (er) {} });
-  // The "แผนกิจกรรม/โปรโมชันถัดไป" idea box appears on both Dashboard's
-  // E-Commerce accordion section and the real E-Commerce page itself. Nav
-  // clicks don't re-run render functions (only filter changes do), so
-  // relying on render-time sync alone would show a stale value if you type
-  // on one page then just click over to the other - mirror keystrokes
-  // directly into the other textarea too, in addition to localStorage.
-  const ecommNoteIds = ['dashEcommNotes', 'mktretailNotes'];
-  ecommNoteIds.forEach(id => {
-    document.getElementById(id).addEventListener('input', e => {
-      try { localStorage.setItem('sda_dash_ecomm_notes', e.target.value); } catch (er) {}
-      ecommNoteIds.forEach(otherId => { if (otherId !== id) document.getElementById(otherId).value = e.target.value; });
-    });
-  });
   wireAiChat();
   loadAll();
 });
@@ -2748,7 +2850,7 @@ async function sendAiMessage() {
 }
 
 function wireSeoTabs() {
-  const sections = { meta: 'seoSecMeta', keywords: 'seoSecKeywords', competitors: 'seoSecCompetitors', mentions: 'seoSecMentions', checklist: 'seoSecChecklist', aioaeo: 'seoSecAioAeo' };
+  const sections = { meta: 'seoSecMeta', keywords: 'seoSecKeywords', semcamp: 'seoSecSemCamp', competitors: 'seoSecCompetitors', mentions: 'seoSecMentions', checklist: 'seoSecChecklist', aioaeo: 'seoSecAioAeo' };
   document.querySelectorAll('#seoTabs .tab').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('#seoTabs .tab').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
@@ -2855,6 +2957,8 @@ function wireFilters() {
   ['mktBrandFilter', 'mktPlatformFilter', 'mktMonthFilter'].forEach(id => document.getElementById(id).addEventListener('change', renderMarketplacePage));
   ['influencerBrandFilter', 'influencerPlatformFilter', 'influencerMonthFilter'].forEach(id => document.getElementById(id).addEventListener('change', renderInfluencerPage));
   ['journeyBrandFilter', 'journeySourceFilter'].forEach(id => document.getElementById(id).addEventListener('change', renderJourneyPage));
+  ['crmBrandFilter', 'crmStageFilter'].forEach(id => document.getElementById(id).addEventListener('change', renderCrmPage));
+  ['semBrandFilter', 'semMonthFilter'].forEach(id => document.getElementById(id).addEventListener('change', renderSemCampaignsPage));
   // Event delegation (not per-tab listeners) since the tabs are rebuilt from
   // CHANNELS by populateInsightTabs() whenever the brand filter changes.
   document.getElementById('insightPlatformTabs').addEventListener('click', e => {
@@ -2868,7 +2972,7 @@ function wireFilters() {
 }
 
 async function loadAll() {
-  const keyMap = { adsroi: 'ads', budget: 'budget', adsbudget: 'adsbudget', adsdaily: 'adsdaily', social: 'social', insights: 'insights', meetings: 'meetings', actionitems: 'actionitems', lineoasegments: 'lineoasegments', links: 'links', exectargets: 'exectargets', marketplace: 'marketplace', proposals: 'proposals', content: 'content', blog: 'blog', competitor: 'competitor', seo: 'seo', seokw: 'seokw', seocomp: 'seocomp', geomentions: 'geomentions', geochecklist: 'geochecklist', geocases: 'geocases', traffic: 'traffic', brandid: 'brandid', jobs: 'jobs', workorders: 'workorders', dailylog: 'dailylog', sourcing: 'sourcing', onboarding: 'onboarding', lineoa: 'lineoa', marketingretail: 'mktretail', influencerkol: 'influencerkol', customerjourney: 'customerjourney', competitorads: 'competitorads' };
+  const keyMap = { adsroi: 'ads', budget: 'budget', adsbudget: 'adsbudget', adsdaily: 'adsdaily', social: 'social', insights: 'insights', meetings: 'meetings', actionitems: 'actionitems', lineoasegments: 'lineoasegments', links: 'links', exectargets: 'exectargets', marketplace: 'marketplace', proposals: 'proposals', content: 'content', blog: 'blog', competitor: 'competitor', seo: 'seo', seokw: 'seokw', seocomp: 'seocomp', geomentions: 'geomentions', geochecklist: 'geochecklist', geocases: 'geocases', traffic: 'traffic', brandid: 'brandid', jobs: 'jobs', workorders: 'workorders', dailylog: 'dailylog', sourcing: 'sourcing', onboarding: 'onboarding', lineoa: 'lineoa', marketingretail: 'mktretail', influencerkol: 'influencerkol', customerjourney: 'customerjourney', competitorads: 'competitorads', activityideas: 'activityideas', crm: 'crm', accounts: 'accounts', semcampaigns: 'semcampaigns' };
   const keys = Object.keys(keyMap);
   const applyResult = (k, r) => { if (r && r.ok && Array.isArray(r.data)) { state[keyMap[k]] = r.data; return true; } return false; };
   const res = await api.getBatch(keys);
@@ -2889,14 +2993,14 @@ async function loadAll() {
   if (failed.length) toast(`โหลดข้อมูลไม่สำเร็จบางส่วน (${failed.length} รายการ) — ข้อมูลเดิมยังอยู่ ลองรีเฟรชอีกครั้ง`, 'err');
 
   if (!BACKEND_READY) {
-    const banner = `<div class="banner-warn"><i class="ti ti-info-circle"></i>โหมดตัวอย่าง (Demo Mode) — ข้อมูลทั้งหมดในหน้านี้เป็นข้อมูลสมมติเพื่อการนำเสนอผลงาน การเพิ่ม/แก้ไขจะไม่ถูกบันทึกจริง</div>`;
+    const banner = `<div class="banner-warn"><i class="ti ti-alert-triangle"></i>โหมดตัวอย่าง (Demo Mode) — ข้อมูลทั้งหมดในหน้านี้เป็นข้อมูลสมมติเพื่อการนำเสนอผลงาน การเพิ่ม/แก้ไขจะไม่ถูกบันทึกจริง</div>`;
     document.getElementById('ads-banner').innerHTML = banner;
   }
 
   populateMonthFilters(); populateJobCategoryFilter(); populateOwnerFilter();
   renderAdsPage(); renderExecView(); renderDashboardPage(); renderBudgetPage(); renderAdsBudgetPage(); renderAdsDailyPage(); renderSocialPage(); renderInsightsSection();
   renderMarketplacePage(); renderProposalsPage(); renderContentPage(); renderBlogPage(); renderSeoPage(); renderCompetitorPage(); renderBrandidPage();
-  renderJobsPage(); renderWorkOrdersPage(); renderDailyLogPage(); renderMeetingsPage(); renderSourcingPage(); renderOnboardingPage(); renderLineOASegments(); renderLineOAPage(); renderLinksPage(); renderMktRetailPage(); renderInfluencerPage(); renderJourneyPage();
+  renderJobsPage(); renderWorkOrdersPage(); renderDailyLogPage(); renderMeetingsPage(); renderSourcingPage(); renderOnboardingPage(); renderLineOASegments(); renderLineOAPage(); renderLinksPage(); renderMktRetailPage(); renderInfluencerPage(); renderJourneyPage(); renderCrmPage(); renderAccountsPage();
 }
 
 // Every date-bearing sheet uses either an explicit 'month' field (YYYY-MM) or
@@ -2928,6 +3032,7 @@ function populateMonthFilters() {
   fill('socialMonthFilter', distinct(state.social, s => s.month));
   fill('insightMonthFilter', distinct(state.insights, i => i.month));
   fill('influencerMonthFilter', distinct(state.influencerkol, i => monthOf(i.date)));
+  fill('semMonthFilter', distinct(state.semcampaigns, s => s.month));
 }
 function populateJobCategoryFilter() {
   const sel = document.getElementById('jobCategoryFilter');
@@ -3294,7 +3399,7 @@ function renderDashFreshness() {
 // ══════════════════════ DASHBOARD ══════════════════════
 function renderDashboardPage() {
   renderDashFreshness();
-  try { document.getElementById('dashEcommNotes').value = localStorage.getItem('sda_dash_ecomm_notes') || ''; } catch (e) {}
+  renderActivityIdeasList('dashActivityIdeasList');
   const brand = val('dashBrandFilter');
   const ads = brand ? state.ads.filter(a => a.brand === brand) : state.ads;
   const budget = brand ? state.budget.filter(b => b.brand === brand) : state.budget;
@@ -3894,7 +3999,7 @@ function filteredMarketplace() {
   );
 }
 function renderMarketplacePage() {
-  try { document.getElementById('mktretailNotes').value = localStorage.getItem('sda_dash_ecomm_notes') || ''; } catch (e) {}
+  renderActivityIdeasList('mktActivityIdeasList');
   const rows = filteredMarketplace().slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   const orders = rows.reduce((s, m) => s + (Number(m.orders) || 0), 0);
   const revenue = rows.reduce((s, m) => s + (Number(m.revenue) || 0), 0);
@@ -4329,6 +4434,27 @@ function renderSeoPage() {
     kpiCard('Cost per Click เฉลี่ย', fmt.currency(t.sem_cpc), 'ti-click') +
     kpiCard('Conversions จาก SEM', fmt.number(t.sem_conversions), 'ti-target-arrow');
 
+  const funnelSteps = [
+    { label: 'เข้าเว็บ (Visit)', value: Number(t.funnel_visit) || 0 },
+    { label: 'ดูหน้าสินค้า', value: Number(t.funnel_product_view) || 0 },
+    { label: 'ใส่ตะกร้า', value: Number(t.funnel_add_cart) || 0 },
+    { label: 'เริ่มเช็กเอาต์', value: Number(t.funnel_checkout) || 0 },
+    { label: 'ซื้อสำเร็จ', value: Number(t.funnel_purchase) || 0 }
+  ];
+  const funnelEl = document.getElementById('trafficFunnelChart');
+  if (funnelEl) {
+    if (funnelSteps[0].value > 0) {
+      renderBarList(funnelEl, funnelSteps.map((s, i) => ({
+        label: s.label, value: s.value, color: SERIES_COLORS[i % 8],
+        delta: i === 0 ? null : (funnelSteps[i - 1].value > 0 ? (s.value / funnelSteps[i - 1].value - 1) : null)
+      })), { fmt: fmt.number, max: funnelSteps[0].value });
+    } else {
+      funnelEl.innerHTML = '<div class="empty">ยังไม่มีข้อมูล Funnel — กด "อัปเดตตัวเลข" ด้านบนแล้วกรอกช่อง Funnel เว็บไซต์</div>';
+    }
+  }
+
+  renderSemCampaignsPage();
+
   document.getElementById('seoTableBody').innerHTML = state.seo.map(s => `
     <tr><td><a href="javascript:void(0)" class="detail-link" onclick="openSeoDetail('${s.id}')"><strong>${fmt.escape(s.item)}</strong></a></td><td>${fmt.escape(s.current)}</td><td>${fmt.escape(s.assessment)}</td><td>${fmt.escape(s.suggestion)}</td>
     <td><button type="button" class="btn sm edit" title="แก้ไข" onclick="openSeoModal('${s.id}')"><i class="ti ti-pencil"></i></button></td></tr>`
@@ -4594,6 +4720,143 @@ function openCompetitorAdModal(competitorId, brand, adId) {
     document.getElementById('competitorAdModalTitle').textContent = 'แก้ไขโฆษณาที่พบ';
   } else document.getElementById('competitorAdModalTitle').textContent = 'เพิ่มโฆษณาที่พบ';
   openModal('modal-competitorad');
+}
+
+// ══════════════════════ แผนกิจกรรม/โปรโมชันถัดไป (ACTIVITY IDEAS) ══════════════════════
+// Shared list, rendered into both Dashboard's E-Commerce accordion and the
+// real E-Commerce page — same underlying state.activityideas, no separate
+// copies to keep in sync.
+const ACTIVITY_IDEA_KEYS = ['brand', 'idea', 'target_period', 'status', 'notes'];
+const ACTIVITY_IDEA_STATUS_COLOR = { 'ไอเดีย': 'b-muted', 'วางแผน': 'b-warn', 'พร้อมทำ': 'b-good', 'ทำแล้ว': 'b-good' };
+function renderActivityIdeasList(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const rows = state.activityideas.slice().sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+  el.innerHTML = rows.length ? rows.map(a => `
+    <div style="font-size:11.5px;color:var(--t2);padding:8px 0;border-bottom:0.5px solid var(--bdr);cursor:pointer" onclick="openActivityIdeaModal('${a.id}')">
+      <span class="badge ${ACTIVITY_IDEA_STATUS_COLOR[a.status] || 'b-muted'}">${fmt.escape(a.status || 'ไอเดีย')}</span>
+      <strong>${fmt.escape(a.idea)}</strong>
+      ${a.brand ? `<span style="color:var(--t3)"> · ${fmt.escape(a.brand)}</span>` : ''}
+      ${a.target_period ? `<span style="color:var(--t3)"> · ${fmt.escape(a.target_period)}</span>` : ''}
+    </div>`).join('') : '<div class="empty">ยังไม่มีไอเดีย — กด "เพิ่มไอเดีย" เพื่อเริ่มบันทึก</div>';
+}
+function openActivityIdeaModal(id) {
+  resetForm('activityIdeaForm'); document.getElementById('actidea_id').value = '';
+  document.getElementById('activityIdeaForm').querySelector('#actidea_status').value = 'ไอเดีย';
+  if (id) {
+    const a = state.activityideas.find(x => x.id === id);
+    if (a) { fillForm('actidea', a); document.getElementById('actidea_id').value = id; }
+  }
+  openModal('modal-activityidea');
+}
+
+// ══════════════════════ ฐานข้อมูลลูกค้า (CRM) ══════════════════════
+const CRM_KEYS = ['name', 'phone', 'line_id', 'email', 'brand', 'source_channel', 'stage', 'last_contact_date', 'assigned_to', 'tags', 'notes'];
+const CRM_STAGE_COLOR = { 'ลูกค้าใหม่': 'b-warn', 'ติดตามอยู่': 'b-muted', 'ปิดการขายแล้ว': 'b-good', 'ลูกค้าประจำ': 'b-good' };
+function filteredCrm() {
+  const brand = val('crmBrandFilter'), stage = val('crmStageFilter');
+  return state.crm.filter(c => (!brand || c.brand === brand) && (!stage || c.stage === stage));
+}
+function renderCrmPage() {
+  const el = document.getElementById('crmTableBody');
+  if (!el) return;
+  const rows = filteredCrm().slice().sort((a, b) => (b.last_contact_date || '').localeCompare(a.last_contact_date || ''));
+  const stageCounts = { 'ลูกค้าใหม่': 0, 'ติดตามอยู่': 0, 'ปิดการขายแล้ว': 0, 'ลูกค้าประจำ': 0 };
+  state.crm.forEach(c => { if (stageCounts[c.stage] !== undefined) stageCounts[c.stage]++; });
+  document.getElementById('crmKpi').innerHTML = [
+    kpiCard('ลูกค้าทั้งหมด', state.crm.length, 'ti-users'),
+    kpiCard('ลูกค้าใหม่', stageCounts['ลูกค้าใหม่'], 'ti-user-plus', stageCounts['ลูกค้าใหม่'] ? 'k-gold' : ''),
+    kpiCard('กำลังติดตาม', stageCounts['ติดตามอยู่'], 'ti-phone'),
+    kpiCard('ปิดการขาย/ลูกค้าประจำ', stageCounts['ปิดการขายแล้ว'] + stageCounts['ลูกค้าประจำ'], 'ti-circle-check', 'k-good')
+  ].join('');
+  el.innerHTML = rows.map(c => `
+    <tr><td><a href="javascript:void(0)" class="detail-link" onclick="openCrmDetail('${c.id}')"><strong>${fmt.escape(c.name)}</strong></a></td>
+    <td>${fmt.escape(c.phone) || fmt.escape(c.line_id) || fmt.escape(c.email) || '-'}</td>
+    <td>${fmt.escape(c.brand) || '-'}</td><td>${fmt.escape(c.source_channel) || '-'}</td>
+    <td><span class="badge ${CRM_STAGE_COLOR[c.stage] || 'b-muted'}">${fmt.escape(c.stage) || 'ลูกค้าใหม่'}</span></td><td>${fmt.date(c.last_contact_date)}</td>
+    <td>${fmt.escape(c.assigned_to) || '-'}</td><td>${fmt.escape(c.tags) || '-'}</td>
+    <td><button type="button" class="btn sm edit" title="แก้ไข" onclick="openCrmModal('${c.id}')"><i class="ti ti-pencil"></i></button></td></tr>`
+  ).join('') || '<tr><td colspan="9" class="empty">ยังไม่มีข้อมูลลูกค้า — กด "เพิ่มลูกค้า" เพื่อเริ่มบันทึก</td></tr>';
+}
+function openCrmDetail(id) {
+  const c = state.crm.find(x => x.id === id);
+  if (!c) return;
+  openDetailModal(c.name || '(ไม่มีชื่อ)', [
+    ['เบอร์โทร', fmt.escape(c.phone)], ['LINE ID', fmt.escape(c.line_id)], ['อีเมล', fmt.escape(c.email)],
+    ['แบรนด์', fmt.escape(c.brand)], ['มาจากช่องทาง', fmt.escape(c.source_channel)], ['สถานะ', fmt.escape(c.stage)],
+    ['ติดต่อล่าสุด', fmt.date(c.last_contact_date)], ['ผู้ดูแล', fmt.escape(c.assigned_to)], ['แท็ก', fmt.escape(c.tags)],
+    ['หมายเหตุ', fmt.escape(c.notes)]
+  ], () => openCrmModal(id));
+}
+function openCrmModal(id) {
+  resetForm('crmForm'); document.getElementById('crm_id').value = '';
+  document.getElementById('crmForm').querySelector('#crm_stage').value = 'ลูกค้าใหม่';
+  document.getElementById('crmModalTitle').textContent = 'เพิ่มลูกค้า';
+  if (id) {
+    const c = state.crm.find(x => x.id === id);
+    if (c) { fillForm('crm', c); document.getElementById('crm_id').value = id; document.getElementById('crmModalTitle').textContent = 'แก้ไขข้อมูลลูกค้า'; }
+  }
+  openModal('modal-crm');
+}
+
+// ══════════════════════ บัญชี & รหัสผ่าน (TEAM ACCOUNTS) ══════════════════════
+const ACCOUNT_KEYS = ['platform', 'account_email', 'password_hint', 'two_factor_note', 'owner', 'purpose', 'last_updated', 'notes'];
+function renderAccountsPage() {
+  const el = document.getElementById('accountsTableBody');
+  if (!el) return;
+  const rows = state.accounts.slice().sort((a, b) => (a.platform || '').localeCompare(b.platform || ''));
+  el.innerHTML = rows.map(a => `
+    <tr><td><strong>${fmt.escape(a.platform)}</strong></td><td>${fmt.escape(a.account_email)}</td>
+    <td>${fmt.escape(a.password_hint) || '-'}</td><td>${fmt.escape(a.two_factor_note) || '-'}</td>
+    <td>${fmt.escape(a.purpose) || '-'}</td><td>${fmt.escape(a.owner) || '-'}</td><td>${fmt.date(a.last_updated)}</td>
+    <td><button type="button" class="btn sm edit" title="แก้ไข" onclick="openAccountModal('${a.id}')"><i class="ti ti-pencil"></i></button></td></tr>`
+  ).join('') || '<tr><td colspan="8" class="empty">ยังไม่มีข้อมูลบัญชี — กด "เพิ่มบัญชี" เพื่อเริ่มบันทึก</td></tr>';
+}
+function openAccountModal(id) {
+  resetForm('accountForm'); document.getElementById('account_id').value = '';
+  document.getElementById('accountModalTitle').textContent = 'เพิ่มบัญชี';
+  if (id) {
+    const a = state.accounts.find(x => x.id === id);
+    if (a) { fillForm('account', a); document.getElementById('account_id').value = id; document.getElementById('accountModalTitle').textContent = 'แก้ไขบัญชี'; }
+  }
+  openModal('modal-account');
+}
+
+// ══════════════════════ SEM ระดับแคมเปญ ══════════════════════
+const SEM_CAMPAIGN_KEYS = ['month', 'brand', 'campaign', 'keyword', 'match_type', 'spend', 'clicks', 'impressions', 'cpc', 'conversions', 'landing_page', 'notes'];
+function filteredSemCampaigns() {
+  const brand = val('semBrandFilter'), month = val('semMonthFilter');
+  return state.semcampaigns.filter(s => (!brand || s.brand === brand) && (!month || s.month === month));
+}
+function renderSemCampaignsPage() {
+  const el = document.getElementById('semTableBody');
+  if (!el) return;
+  const rows = filteredSemCampaigns().slice().sort((a, b) => (b.month || '').localeCompare(a.month || ''));
+  const totalSpend = rows.reduce((s, r) => s + (Number(r.spend) || 0), 0);
+  const totalClicks = rows.reduce((s, r) => s + (Number(r.clicks) || 0), 0);
+  const totalConversions = rows.reduce((s, r) => s + (Number(r.conversions) || 0), 0);
+  document.getElementById('semKpi').innerHTML = [
+    kpiCard('แคมเปญ SEM', rows.length, 'ti-ad-2'),
+    kpiCard('งบที่ใช้รวม', fmt.currency(totalSpend), 'ti-cash'),
+    kpiCard('คลิกรวม', fmt.number(totalClicks), 'ti-click'),
+    kpiCard('Conversions รวม', fmt.number(totalConversions), 'ti-target-arrow', 'k-good')
+  ].join('');
+  el.innerHTML = rows.map(s => `
+    <tr><td>${fmt.monthLabel(s.month)}</td><td>${fmt.escape(s.brand)}</td>
+    <td><a href="javascript:void(0)" class="detail-link" onclick="openSemCampaignModal('${s.id}')"><strong>${fmt.escape(s.campaign)}</strong></a></td>
+    <td>${fmt.escape(s.keyword) || '-'}</td><td>${fmt.escape(s.match_type) || '-'}</td>
+    <td>${fmt.currency(s.spend)}</td><td>${fmt.number(s.clicks)}</td><td>${fmt.currency(s.cpc)}</td><td>${fmt.number(s.conversions)}</td>
+    <td><button type="button" class="btn sm edit" title="แก้ไข" onclick="openSemCampaignModal('${s.id}')"><i class="ti ti-pencil"></i></button></td></tr>`
+  ).join('') || '<tr><td colspan="10" class="empty">ยังไม่มีข้อมูลแคมเปญ SEM — กด "เพิ่มแคมเปญ SEM" เพื่อเริ่มบันทึก</td></tr>';
+}
+function openSemCampaignModal(id) {
+  resetForm('semCampaignForm'); document.getElementById('sem_id').value = '';
+  document.getElementById('semCampaignModalTitle').textContent = 'เพิ่มแคมเปญ SEM';
+  if (id) {
+    const s = state.semcampaigns.find(x => x.id === id);
+    if (s) { fillForm('sem', s); document.getElementById('sem_id').value = id; document.getElementById('semCampaignModalTitle').textContent = 'แก้ไขแคมเปญ SEM'; }
+  }
+  openModal('modal-semcampaign');
 }
 
 // ══════════════════════ 3 แบรนด์ (BRAND IDENTITY) ══════════════════════
@@ -5229,7 +5492,7 @@ function wireForms() {
   bindForm('proposalForm', 'proposal_id', 'proposal', 'proposals', 'proposals', ['topic', 'description', 'link', 'status', 'presented_to', 'date', 'result', 'notes'], 'modal-proposal', renderProposalsPage);
   bindForm('contentForm', 'content_id', 'content', 'content', 'content', ['date', 'post_time', 'channel', 'topic', 'pillar', 'type', 'link', 'status', 'ads', 'ads_start', 'used_before', 'brand', 'notes', 'views', 'likes', 'comments', 'shares', 'saves', 'link_clicks', 'avg_watch_time', 'follows_gained'], 'modal-content', () => { renderContentPage(); populateMonthFilters(); });
   bindForm('seoForm', 'seo_id', 'seo', 'seo', 'seo', ['item', 'current', 'assessment', 'suggestion'], 'modal-seo', renderSeoPage);
-  bindForm('trafficForm', 'traffic_id', 'traffic', 'traffic', 'traffic', ['month', 'brand', 'visitors', 'avg_session_sec', 'bounce_rate', 'conversions', 'conversion_rate', 'organic_pct', 'paid_pct', 'social_pct', 'direct_pct', 'sem_budget', 'sem_cpc', 'sem_conversions'], 'modal-traffic', () => { renderSeoPage(); renderDashboardPage(); populateMonthFilters(); });
+  bindForm('trafficForm', 'traffic_id', 'traffic', 'traffic', 'traffic', ['month', 'brand', 'visitors', 'avg_session_sec', 'bounce_rate', 'conversions', 'conversion_rate', 'organic_pct', 'paid_pct', 'social_pct', 'direct_pct', 'sem_budget', 'sem_cpc', 'sem_conversions', 'funnel_visit', 'funnel_product_view', 'funnel_add_cart', 'funnel_checkout', 'funnel_purchase'], 'modal-traffic', () => { renderSeoPage(); renderDashboardPage(); populateMonthFilters(); });
   bindForm('seoKwForm', 'seokw_id', 'seokw', 'seokw', 'seokw', ['group_name', 'examples', 'intent', 'usage', 'priority'], 'modal-seokw', renderSeoPage);
   bindForm('seoCompForm', 'seocomp_id', 'seocomp', 'seocomp', 'seocomp', ['brand', 'selling_point', 'seo_notes', 'in_ranking', 'competition_level', 'aio_aeo_geo_status', 'sem_status'], 'modal-seocomp', renderSeoPage);
   bindForm('geoCaseForm', 'geocase_id', 'geocase', 'geocases', 'geocases', GEOCASE_KEYS, 'modal-geocase', renderSeoPage);
@@ -5237,6 +5500,10 @@ function wireForms() {
   bindForm('geoChecklistForm', 'geochecklist_id', 'geochecklist', 'geochecklist', 'geochecklist', ['task', 'why', 'reference'], 'modal-geochecklist', renderSeoPage);
   bindForm('competitorForm', 'comp_id', 'comp', 'competitor', 'competitor', ['brand', 'website', 'fb', 'fb_follower', 'ig', 'ig_follower', 'yt', 'yt_follower', 'activity', 'strategy', 'strength', 'weakness', 'price'], 'modal-competitor', renderCompetitorPage);
   bindForm('competitorAdForm', 'compad_id', 'compad', 'competitorads', 'competitorads', COMPETITOR_AD_KEYS, 'modal-competitorad', renderCompetitorPage);
+  bindForm('activityIdeaForm', 'actidea_id', 'actidea', 'activityideas', 'activityideas', ACTIVITY_IDEA_KEYS, 'modal-activityidea', () => { renderActivityIdeasList('dashActivityIdeasList'); renderActivityIdeasList('mktActivityIdeasList'); });
+  bindForm('crmForm', 'crm_id', 'crm', 'crm', 'crm', CRM_KEYS, 'modal-crm', renderCrmPage);
+  bindForm('accountForm', 'account_id', 'account', 'accounts', 'accounts', ACCOUNT_KEYS, 'modal-account', renderAccountsPage);
+  bindForm('semCampaignForm', 'sem_id', 'sem', 'semcampaigns', 'semcampaigns', SEM_CAMPAIGN_KEYS, 'modal-semcampaign', () => { renderSemCampaignsPage(); populateMonthFilters(); });
   bindForm('brandidForm', 'brandid_id', 'brandid', 'brandid', 'brandid', ['brand', 'personality', 'font', 'audience', 'essence', 'primary_colors', 'accent_colors'], 'modal-brandid', renderBrandidPage);
   bindForm('jobForm', 'job_id', 'job', 'jobs', 'jobs', JOB_KEYS, 'modal-job', () => { populateJobCategoryFilter(); renderJobsPage(); });
   bindForm('workorderForm', 'wo_id', 'wo', 'workorders', 'workorders', WORKORDER_KEYS, 'modal-workorder', () => { renderWorkOrdersPage(); populateMonthFilters(); });
