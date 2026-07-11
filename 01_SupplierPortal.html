@@ -296,6 +296,7 @@ body{padding-top:40px !important;}
       </div>
       <button class="l-btn" onclick="doLogin()">เข้าสู่ระบบ Admin →</button>
       <div class="l-err" id="l-err"></div>
+      <div style="margin-top:14px;font-size:11px;color:#999;text-align:center">MOCKUP / DEMO — รหัสตัวอย่าง: <b>demo2026</b></div>
       <button class="l-back" onclick="go('home')">← กลับหน้าหลัก</button>
     </div>
   </div>
@@ -353,7 +354,7 @@ body{padding-top:40px !important;}
 const FB_URL='';
 const FB_LS='asp-fb-url';
 const FB_PATH='applications';
-const PASS='demo1234';
+const PASS='demo2026';
 let db=null,ref=null,allData={},connected=false;
 // ข้อมูลจาก source อื่น (รวมไว้ใน mergedData ทั้งหมด)
 let fsDataRen=[],fsDataCon=[],rtdb3dData=[],rtdbSignData=[],sheetCarpet=[],sheetSpace=[];
@@ -787,20 +788,18 @@ function setDot(id,live,txt){
 function togglePw(){const i=document.getElementById('pass-inp');i.type=i.type==='password'?'text':'password';}
 const ADM_LS='asp-admin-auth';
 function doLogin(){
-  go('admin'); rStats(); rTable(); return;
   const val=document.getElementById('pass-inp').value;
   const err=document.getElementById('l-err');
   if(val===PASS){
     err.textContent='';document.getElementById('pass-inp').value='';
     localStorage.setItem(ADM_LS,'1');
-    go('admin');
+    go('admin');rStats();rTable();
   }else{err.textContent='รหัสผ่านไม่ถูกต้อง';document.getElementById('pass-inp').select();}
 }
 // ถ้าเคยล็อกอินแล้วและกดปุ่ม admin อีกครั้ง → ข้าม login ไปเลย
 function goAdmin(){
-  go('admin'); return;
   if(localStorage.getItem(ADM_LS)==='1'){
-    go('admin');
+    go('admin');rStats();rTable();
   } else {
     go('login');
   }
