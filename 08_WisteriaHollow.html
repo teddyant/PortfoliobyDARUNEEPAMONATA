@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Wisteria Hollow — ตัวอย่างผลงาน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{ margin:0; padding:0; background:#05070f; height:100%; overflow:hidden; }
+  body{ font-family:'Cormorant Garamond', serif; color:#f2f5ff; }
+  a{ color:#9fc3ff; }
+  a:hover{ color:#cfe0ff; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  @keyframes kenburns-a{ 0%{ transform:scale(1.05) translate(0,0);} 100%{ transform:scale(1.55) translate(-5%,-3%);} }
+  @keyframes kenburns-b{ 0%{ transform:scale(1.08) translate(-3%,1%);} 100%{ transform:scale(1.58) translate(4%,-4%);} }
+  @keyframes kenburns-c{ 0%{ transform:scale(1.06) translate(2%,2%);} 100%{ transform:scale(1.56) translate(-4%,-5%);} }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+  @keyframes doorpulse{ 0%,100%{ opacity:0.65;} 50%{ opacity:1;} }
+  @keyframes flicker-a{ 0%,100%{ opacity:0.35;} 40%{ opacity:0.75;} 55%{ opacity:0.3;} 80%{ opacity:0.6;} }
+  @keyframes flicker-b{ 0%,100%{ opacity:0.5;} 30%{ opacity:0.2;} 60%{ opacity:0.7;} 85%{ opacity:0.4;} }
+  @keyframes glint-sweep{ 0%{ transform:translate(-40%,-30%) rotate(18deg);} 50%{ transform:translate(40%,20%) rotate(18deg);} 100%{ transform:translate(-40%,-30%) rotate(18deg);} }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:0.001s !important; } }
+
+  #stage{ position:fixed; inset:0; overflow:hidden; background:#05070f; user-select:none; -webkit-user-select:none; }
+
+  #door{ position:absolute; inset:0; z-index:10; cursor:pointer; }
+  #door .bg{ position:absolute; inset:-8% -4%; overflow:hidden; transition:transform 0.4s ease-out; will-change:transform; }
+  #door .kb{ position:absolute; inset:0; background-size:cover; background-position:center 38%; filter:brightness(0.72) saturate(1.15); background-image:url('uploads/house-v2.jpeg'); animation:kenburns-a 13s ease-in-out infinite alternate; }
+  #door .glow1{ position:absolute; left:38%; top:36%; width:26%; height:16%; border-radius:50%; background:radial-gradient(circle, rgba(255,196,120,0.85), rgba(255,196,120,0.25) 55%, transparent 75%); mix-blend-mode:screen; filter:blur(4px); animation:flicker-a 3.4s ease-in-out infinite; }
+  #door .glow2{ position:absolute; left:34%; top:64%; width:14%; height:10%; border-radius:50%; background:radial-gradient(circle, rgba(255,196,120,0.8), rgba(255,196,120,0.2) 55%, transparent 75%); mix-blend-mode:screen; filter:blur(3px); animation:flicker-b 2.6s ease-in-out infinite 0.4s; }
+  #door .scrim{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,7,15,0.35) 0%, rgba(5,7,15,0.5) 45%, rgba(5,7,15,0.95) 100%); }
+  #door .titleblock{ position:absolute; left:0; right:0; top:0; padding:56px 24px 0; text-align:center; }
+  #door .eyebrow{ font-family:'Space Grotesk', sans-serif; font-size:10px; letter-spacing:0.34em; text-transform:uppercase; color:#9fc3ff; margin:0 0 14px; }
+  #door h1{ font-family:'Cinzel', serif; font-weight:600; font-size:clamp(30px,8.5vw,46px); line-height:1.15; margin:0 0 10px; background:linear-gradient(180deg, #fff, #8fb4ff 78%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 4px 22px rgba(143,180,255,0.28)); }
+  #door .tag{ font-size:14px; font-style:italic; color:rgba(210,220,244,0.6); margin:0; }
+
+  #credit{ position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:16; font-family:'Space Grotesk', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(207,224,255,0.85); background:rgba(10,14,26,0.4); padding:7px 16px; border-radius:20px; border:1px solid rgba(159,195,255,0.28); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); pointer-events:none; white-space:nowrap; }
+  #credit b{ color:#cfe0ff; font-weight:500; }
+
+  #backLink{ position:fixed; top:16px; left:16px; z-index:17; font-family:'Space Grotesk', sans-serif; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(207,224,255,0.9); background:rgba(10,14,26,0.45); padding:8px 14px; border-radius:20px; border:1px solid rgba(159,195,255,0.3); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); text-decoration:none; white-space:nowrap; }
+  #backLink:hover{ color:#fff; border-color:rgba(159,195,255,0.55); }
+
+  #magicFlash{ position:fixed; inset:0; z-index:13; pointer-events:none; opacity:0; mix-blend-mode:screen; background:radial-gradient(circle at 50% 45%, rgba(150,195,255,0.6), rgba(100,155,255,0.2) 45%, transparent 75%); }
+  #magicFlash.flash{ animation:magicflash 0.8s ease-out; }
+  @keyframes magicflash{ 0%{ opacity:0; } 20%{ opacity:1; } 100%{ opacity:0; } }
+  #door .footblock{ position:absolute; left:0; right:0; bottom:0; display:flex; flex-direction:column; align-items:center; }
+  #door .avatar{ width:min(52vw,230px); height:auto; display:block; filter:drop-shadow(0 14px 26px rgba(0,0,0,0.55)) drop-shadow(0 0 30px rgba(159,195,255,0.22)); animation:bob 3.6s ease-in-out infinite; }
+  #door .tap{ font-family:'Space Grotesk', sans-serif; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:rgba(159,195,255,0.9); animation:doorpulse 2.2s ease-in-out infinite; margin:6px 0 30px; }
+  #door.opened{ opacity:0; transform:scale(1.14); pointer-events:none; }
+  #door{ opacity:1; transform:scale(1); transition:opacity 0.6s ease, transform 0.6s ease; }
+
+  #carousel{ position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity 0.6s ease; }
+  #carousel.opened{ opacity:1; pointer-events:auto; transition:opacity 0.6s ease 0.15s; }
+
+  .room{ position:absolute; inset:0; transition:transform 0.55s cubic-bezier(.4,0,.2,1), opacity 0.55s ease; }
+  .room .bg{ position:absolute; inset:-8% -4%; overflow:hidden; transition:transform 0.4s ease-out; will-change:transform; }
+  .room .kb{ position:absolute; inset:0; background-size:cover; background-position:center; filter:brightness(0.66) saturate(1.1); }
+  .room .glow{ position:absolute; border-radius:50%; mix-blend-mode:screen; filter:blur(4px); }
+  .room .sweep{ position:absolute; left:0; top:0; width:60%; height:180%; background:linear-gradient(100deg, transparent 40%, rgba(210,225,255,0.28) 50%, transparent 60%); mix-blend-mode:screen; animation:glint-sweep 7s ease-in-out infinite; }
+  .room .scrim{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,7,15,0.3) 0%, rgba(5,7,15,0.46) 55%, rgba(5,7,15,0.92) 100%); }
+
+  .room .caption{ position:absolute; left:0; right:0; bottom:96px; text-align:center; padding:0 24px; }
+  .room .caption .eyebrow{ font-family:'Space Grotesk', sans-serif; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#9fc3ff; margin:0 0 8px; }
+  .room .caption h2{ font-family:'Cinzel', serif; font-weight:600; font-size:clamp(24px,6.5vw,36px); margin:0 0 10px; background:linear-gradient(180deg, #fff, #8fb4ff 78%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 4px 18px rgba(143,180,255,0.24)); }
+  .room .caption p{ font-size:14px; font-style:italic; color:rgba(210,220,244,0.6); margin:0; max-width:300px; margin-left:auto; margin-right:auto; }
+  .room .caption .personal{ font-family:'Space Grotesk', sans-serif; font-style:normal; font-size:11.5px; letter-spacing:0.05em; color:rgba(159,195,255,0.8); margin:12px auto 0; max-width:300px; }
+
+  .social{ position:absolute; inset:0; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
+  .social:not(.revealed){ overflow:hidden; }
+
+  .social-gate{ position:absolute; inset:0; z-index:4; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 32px; cursor:pointer; transition:opacity 0.5s ease, visibility 0.5s; }
+  .social-gate .eyebrow{ font-family:'Space Grotesk', sans-serif; font-size:11px; letter-spacing:0.34em; text-transform:uppercase; color:#9fc3ff; margin:0 0 14px; }
+  .social-gate h2{ font-family:'Cinzel', serif; font-weight:600; font-size:clamp(30px,8.5vw,44px); line-height:1.15; margin:0 0 14px; background:linear-gradient(180deg, #fff, #8fb4ff 78%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 4px 22px rgba(143,180,255,0.28)); }
+  .social-gate p{ font-size:14px; font-style:italic; color:rgba(210,220,244,0.6); max-width:300px; margin:0; line-height:1.6; }
+  .social-gate .tap{ font-family:'Space Grotesk', sans-serif; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:rgba(159,195,255,0.9); animation:doorpulse 2.2s ease-in-out infinite; margin-top:26px; }
+  .social.revealed .social-gate{ opacity:0; visibility:hidden; pointer-events:none; }
+
+  .social-content{ padding:60px 24px 130px; opacity:0; transition:opacity 0.5s ease 0.1s; }
+  .social.revealed .social-content{ opacity:1; }
+
+  .social .head{ text-align:center; margin-bottom:32px; }
+  .social .head .eyebrow{ font-family:'Space Grotesk', sans-serif; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#9fc3ff; margin:0 0 8px; }
+  .social .head h2{ font-family:'Cinzel', serif; font-weight:600; font-size:clamp(24px,6.5vw,36px); margin:0 0 12px; background:linear-gradient(180deg, #fff, #8fb4ff 78%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .social .head p{ font-size:14px; font-style:italic; color:rgba(210,220,244,0.6); margin:0 auto; max-width:320px; line-height:1.6; }
+
+  .projects{ display:flex; flex-direction:column; gap:14px; max-width:400px; margin:0 auto 36px; }
+  .project-card{ display:block; padding:18px 20px; border-radius:16px; background:rgba(12,16,28,0.55); border:1px solid rgba(159,195,255,0.28); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); text-decoration:none; color:#f2f5ff; }
+  .project-card .row{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .project-card .num{ font-family:'Cinzel', serif; font-size:11px; color:#9fc3ff; border:1px solid rgba(159,195,255,0.4); border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .project-card h3{ font-family:'Cinzel', serif; font-weight:600; font-size:16.5px; margin:0; color:#f2f5ff; }
+  .project-card .desc{ font-size:14px; font-style:italic; color:rgba(210,220,244,0.62); line-height:1.6; margin:0 0 12px; }
+  .project-card .tags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .project-card .tag{ font-family:'Space Grotesk', sans-serif; font-size:10px; letter-spacing:0.04em; padding:4px 10px; border-radius:20px; background:rgba(159,195,255,0.1); border:1px solid rgba(159,195,255,0.25); color:#9fc3ff; }
+  .project-card .open{ font-family:'Space Grotesk', sans-serif; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#cfe0ff; }
+
+  .follow{ text-align:center; border-top:1px solid rgba(159,195,255,0.2); padding-top:30px; max-width:400px; margin:0 auto; }
+  .follow .eyebrow{ font-family:'Space Grotesk', sans-serif; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#9fc3ff; margin:0 0 8px; }
+  .follow-links{ display:flex; flex-direction:column; gap:10px; }
+  .follow-link{ display:flex; align-items:center; gap:14px; padding:13px 18px; border-radius:14px; background:rgba(12,16,28,0.5); border:1px solid rgba(159,195,255,0.3); text-decoration:none; color:#f2f5ff; }
+  .follow-link .mark{ font-size:17px; color:#9fc3ff; width:22px; flex-shrink:0; }
+  .follow-link .meta{ flex:1; text-align:left; font-family:'Space Grotesk', sans-serif; }
+  .follow-link .meta b{ display:block; font-size:13px; font-weight:500; }
+  .follow-link .meta span{ font-size:11px; color:rgba(210,220,244,0.62); }
+
+  .arrow{ position:absolute; top:50%; transform:translateY(-50%); z-index:12; width:42px; height:42px; border-radius:50%; background:rgba(10,14,26,0.45); border:1px solid rgba(159,195,255,0.3); display:flex; align-items:center; justify-content:center; font-size:20px; color:#cfe0ff; cursor:pointer; transition:opacity 0.2s ease; }
+  #prevArrow{ left:14px; }
+  #nextArrow{ right:14px; }
+  .arrow.disabled{ opacity:0.2; pointer-events:none; }
+  .arrow:not(.disabled){ opacity:0.9; }
+
+  #dots{ position:absolute; bottom:44px; left:0; right:0; display:flex; justify-content:center; gap:8px; z-index:12; }
+  #dots .dot{ border-radius:50%; cursor:pointer; transition:all 0.3s ease; width:7px; height:7px; background:rgba(159,195,255,0.35); }
+  #dots .dot.active{ width:9px; height:9px; background:#cfe0ff; }
+
+  #closeToDoor{ position:fixed; right:16px; bottom:16px; width:52px; height:52px; border-radius:50%; overflow:hidden; border:2px solid rgba(159,195,255,0.5); box-shadow:0 4px 18px rgba(0,0,0,0.5), 0 0 18px rgba(159,195,255,0.22); cursor:pointer; z-index:15; background:#0a0f1c; }
+  #closeToDoor img{ width:100%; height:100%; object-fit:cover; object-position:center 12%; }
+
+  #soundToggle{ position:fixed; left:16px; bottom:16px; width:42px; height:42px; border-radius:50%; background:rgba(10,14,26,0.55); border:1px solid rgba(159,195,255,0.35); display:flex; align-items:center; justify-content:center; font-size:17px; color:#cfe0ff; cursor:pointer; z-index:15; }
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+  <a id="backLink" href="index.html">‹ Portfolio</a>
+  <div id="credit">made by <b>Teddyant</b></div>
+  <div id="magicFlash"></div>
+
+  <div id="door">
+    <div class="bg">
+      <div class="kb"></div>
+      <div class="glow1"></div>
+      <div class="glow2"></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="titleblock">
+      <p class="eyebrow">Welcome to</p>
+      <h1>Wisteria Hollow</h1>
+      <p class="tag">a house that only shows itself to those it likes</p>
+    </div>
+    <div class="footblock">
+      <img class="avatar" src="uploads/IMG_3078.png" alt="Teddyant">
+      <div class="tap">Tap to Enter</div>
+    </div>
+  </div>
+
+  <div id="carousel">
+    <div id="rooms"></div>
+
+    <div id="prevArrow" class="arrow disabled">‹</div>
+    <div id="nextArrow" class="arrow">›</div>
+
+    <div id="dots"></div>
+  </div>
+
+  <div id="closeToDoor">
+    <img src="uploads/IMG_3078.png" alt="Teddyant">
+  </div>
+
+  <div id="soundToggle">♪</div>
+
+</div>
+
+<script>
+const ROOMS = [
+  {
+    id:'parlour', img:'uploads/parlour-v2.jpeg', anim:'kenburns-b', number:'01',
+    title:'The Ember Parlour', desc:'velvet, wire chandeliers, and candles that never quite go out',
+    personal:'this is the kind of quiet I like most', isSocial:false,
+    glows:[
+      { top:'58%', left:'44%', w:'18%', h:'12%', color:'255,196,120', anim:'flicker-a 2.6s ease-in-out infinite' },
+      { top:'52%', left:'8%', w:'16%', h:'14%', color:'150,190,255', anim:'flicker-b 3.4s ease-in-out infinite 0.5s' },
+      { top:'40%', left:'62%', w:'12%', h:'10%', color:'255,196,120', anim:'flicker-a 3.1s ease-in-out infinite 1s' }
+    ]
+  },
+  {
+    id:'wall', img:'uploads/wall-v2.jpeg', anim:'kenburns-c', number:'02',
+    title:'The Watching Wall', desc:'old dolls and shards of mirror, hung where the light still finds them',
+    personal:'the strange little things I keep, just because I like them', isSocial:false,
+    glows:[
+      { top:'8%', left:'58%', w:'34%', h:'26%', color:'190,215,255', anim:'flicker-b 2.2s ease-in-out infinite' },
+      { top:'46%', left:'30%', w:'20%', h:'18%', color:'210,225,255', anim:'flicker-a 2.8s ease-in-out infinite 0.6s' }
+    ],
+    sweep: true
+  },
+  {
+    id:'shelf', img:'uploads/shelf-v2.jpeg', anim:'kenburns-a', number:'03',
+    title:'The Spellbound Shelf', desc:'fairy lights strung between spines, pumpkins tucked among the pages',
+    personal:'a library, mostly — my favorite kind of calm', isSocial:false,
+    glows:[
+      { top:'18%', left:'20%', w:'14%', h:'10%', color:'255,210,140', anim:'flicker-a 1.9s ease-in-out infinite' },
+      { top:'34%', left:'62%', w:'12%', h:'10%', color:'255,150,120', anim:'flicker-b 2.4s ease-in-out infinite 0.3s' },
+      { top:'62%', left:'40%', w:'16%', h:'12%', color:'255,196,120', anim:'flicker-a 2.7s ease-in-out infinite 0.9s' },
+      { top:'50%', left:'12%', w:'10%', h:'10%', color:'160,210,255', anim:'flicker-b 3.2s ease-in-out infinite 1.3s' }
+    ]
+  },
+  { id:'social', img:'uploads/waterfall.jpeg', anim:'kenburns-c', number:'04', title:'', desc:'', isSocial:true, glows:[] }
+];
+
+const PROJECTS = [
+  { num:'I', title:'Supplier Portal', href:'01_SupplierPortal.html', desc:"A ledger that writes itself — suppliers enter their own details through an open form, kept behind a password-guarded admin dashboard.", tags:['Admin Board','Form','Database'] },
+  { num:'II', title:'Sales Dashboard', href:'02_SalesDashboard.html', desc:'Each dawn it draws fresh numbers from ZORT — sales, stock, bestsellers, and the hour each branch sells best — into one living dashboard.', tags:['Daily Sync','Data Viz','Multi-branch'] },
+  { num:'III', title:'Content Manager', href:'03_ContentManager.html', desc:'A shared cauldron for Marketing and E-Commerce — planning, tracking, and steering content from a single place.', tags:['Marketing','E-Commerce','Team Collab'] },
+  { num:'IV', title:'Influencer Profile Form', href:'04_InfluencerProfileForm.html', desc:"Reads a creator's MBTI and content leanings, so the team understands their craft before charting where they grow next.", tags:['MBTI','Creator','Growth Plan'] },
+  { num:'V', title:'Creator Dashboard', href:'05_CreatorDashboard.html', desc:'Engagement, views, OKRs and SKUs bound into one glass — a clear view for leadership to watch every creator grow.', tags:['OKR','Engagement','SKU Link'] },
+  { num:'VI', title:'Influencer Application', href:'06_InfluencerApplicationForm.html', desc:'Open applications gathered and guarded, with a password-locked dashboard so the team reviews new hopefuls with ease.', tags:['Recruitment','Admin Board','KOL'] },
+  { num:'VII', title:'Digital Marketing Hub', href:"07_Digital marketing.html", desc:'Facebook, Google Ads, SEO, Marketplace and TikTok — every signal drawn into one page, so decisions come quicker.', tags:['Dashboard','Performance','Multi-channel'] }
+];
+
+const state = { opened:false, roomIndex:0, soundOn:true };
+
+const doorEl = document.getElementById('door');
+const carouselEl = document.getElementById('carousel');
+const roomsEl = document.getElementById('rooms');
+const prevArrow = document.getElementById('prevArrow');
+const nextArrow = document.getElementById('nextArrow');
+const dotsEl = document.getElementById('dots');
+const closeToDoorEl = document.getElementById('closeToDoor');
+const soundToggleEl = document.getElementById('soundToggle');
+const magicFlashEl = document.getElementById('magicFlash');
+
+function el(tag, className, html){
+  const e = document.createElement(tag);
+  if(className) e.className = className;
+  if(html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function buildProjectCard(p){
+  const a = el('a', 'project-card');
+  a.href = p.href; a.target = '_blank'; a.rel = 'noopener';
+  a.innerHTML = `
+    <div class="row">
+      <span class="num">${p.num}</span>
+      <h3>${p.title}</h3>
+    </div>
+    <p class="desc">${p.desc}</p>
+    <div class="tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    <span class="open">Open the Working →</span>
+  `;
+  return a;
+}
+
+function buildSocialPanel(){
+  const wrap = el('div', 'social');
+
+  const gate = el('div', 'social-gate', `
+    <p class="eyebrow">The Grimoire</p>
+    <h2>AI Use Cases</h2>
+    <p>seven spells, cast with AI, for problems that actually needed solving</p>
+    <div class="tap">Tap to Open</div>
+  `);
+  gate.addEventListener('click', () => wrap.classList.add('revealed'));
+  wrap.appendChild(gate);
+
+  const content = el('div', 'social-content');
+
+  const head = el('div', 'head', `
+    <p class="eyebrow">The Grimoire</p>
+    <h2>Spells Cast for Hire</h2>
+    <p>I like witches, quiet libraries, and calm places — so instead of a plain linktree, I built this. Real systems, made with AI, for problems that actually needed solving.</p>
+  `);
+  content.appendChild(head);
+
+  const projects = el('div', 'projects');
+  PROJECTS.forEach(p => projects.appendChild(buildProjectCard(p)));
+  content.appendChild(projects);
+
+  const follow = el('div', 'follow');
+  follow.innerHTML = `<p class="eyebrow">Follow Along</p>`;
+  const links = el('div', 'follow-links');
+  links.innerHTML = `
+    <a class="follow-link" href="https://tookwingenuineleathershoes.vercel.app" target="_blank" rel="noopener">
+      <span class="mark">☙</span>
+      <span class="meta"><b>Family Business</b><span>Tookwin Genuine Leather Shoes</span></span>
+    </a>
+  `;
+  follow.appendChild(links);
+  content.appendChild(follow);
+
+  wrap.appendChild(content);
+
+  return wrap;
+}
+
+function buildRoom(room){
+  const roomEl = el('div', 'room');
+  roomEl.dataset.id = room.id;
+
+  const bg = el('div', 'bg');
+  const kb = el('div', 'kb');
+  kb.style.backgroundImage = `url(${room.img})`;
+  kb.style.animation = `${room.anim} 13s ease-in-out infinite alternate`;
+  bg.appendChild(kb);
+
+  room.glows.forEach(g => {
+    const glow = el('div', 'glow');
+    glow.style.top = g.top; glow.style.left = g.left;
+    glow.style.width = g.w; glow.style.height = g.h;
+    glow.style.background = `radial-gradient(circle, rgba(${g.color},0.85), rgba(${g.color},0.25) 55%, transparent 75%)`;
+    glow.style.animation = g.anim;
+    bg.appendChild(glow);
+  });
+
+  if(room.sweep){
+    bg.appendChild(el('div', 'sweep'));
+  }
+
+  roomEl.appendChild(bg);
+  roomEl.appendChild(el('div', 'scrim'));
+
+  if(!room.isSocial){
+    const caption = el('div', 'caption', `
+      <p class="eyebrow">Room ${room.number}</p>
+      <h2>${room.title}</h2>
+      <p>${room.desc}</p>
+      <p class="personal">${room.personal}</p>
+    `);
+    roomEl.appendChild(caption);
+  } else {
+    roomEl.appendChild(buildSocialPanel());
+  }
+
+  return roomEl;
+}
+
+const roomEls = ROOMS.map(buildRoom);
+roomEls.forEach(r => roomsEl.appendChild(r));
+
+const dotEls = ROOMS.map((room, i) => {
+  const dot = el('div', 'dot');
+  dot.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(dot);
+  return dot;
+});
+
+function render(){
+  doorEl.classList.toggle('opened', state.opened);
+  carouselEl.classList.toggle('opened', state.opened);
+
+  roomEls.forEach((roomEl, i) => {
+    const offset = i - state.roomIndex;
+    const active = offset === 0;
+    roomEl.style.transform = `translateX(${offset * 100}%)`;
+    roomEl.style.opacity = active ? '1' : '0';
+    roomEl.style.pointerEvents = active ? 'auto' : 'none';
+    roomEl.style.zIndex = active ? '2' : '1';
+  });
+
+  dotEls.forEach((dot, i) => dot.classList.toggle('active', i === state.roomIndex));
+
+  prevArrow.classList.toggle('disabled', state.roomIndex === 0);
+  nextArrow.classList.toggle('disabled', state.roomIndex === ROOMS.length - 1);
+
+  soundToggleEl.textContent = state.soundOn ? '♪' : '✕';
+}
+
+function triggerMagicFlash(){
+  magicFlashEl.classList.remove('flash');
+  void magicFlashEl.offsetWidth;
+  magicFlashEl.classList.add('flash');
+}
+
+function transitionTo(i, opts){
+  opts = opts || {};
+  if(i === state.roomIndex || i < 0 || i > ROOMS.length - 1) return;
+  state.roomIndex = i;
+  render();
+  triggerMagicFlash();
+  playTransitionChime();
+  if(!opts.auto) startAutoplay();
+}
+
+function openDoor(){
+  startSound();
+  state.opened = true;
+  render();
+  startAutoplay();
+}
+function closeToDoor(){
+  state.opened = false;
+  state.roomIndex = 0;
+  stopAutoplay();
+  document.querySelectorAll('.social.revealed').forEach(s => s.classList.remove('revealed'));
+  render();
+}
+function goNext(){ transitionTo(Math.min(state.roomIndex + 1, ROOMS.length - 1)); }
+function goPrev(){ transitionTo(Math.max(state.roomIndex - 1, 0)); }
+function goTo(i){ transitionTo(i); }
+
+let autoplayTimer = null;
+const AUTOPLAY_MS = 6000;
+function startAutoplay(){
+  stopAutoplay();
+  autoplayTimer = setInterval(() => {
+    const activeRoom = ROOMS[state.roomIndex];
+    const activeEl = roomEls[state.roomIndex];
+    const socialPanel = activeEl.querySelector('.social');
+    if(activeRoom.isSocial && socialPanel && socialPanel.classList.contains('revealed')) return;
+    transitionTo((state.roomIndex + 1) % ROOMS.length, { auto:true });
+  }, AUTOPLAY_MS);
+}
+function stopAutoplay(){
+  if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; }
+}
+
+doorEl.addEventListener('click', openDoor);
+closeToDoorEl.addEventListener('click', closeToDoor);
+prevArrow.addEventListener('click', goPrev);
+nextArrow.addEventListener('click', goNext);
+
+window.addEventListener('keydown', (e) => {
+  if(!state.opened) return;
+  if(e.key === 'ArrowRight') goNext();
+  if(e.key === 'ArrowLeft') goPrev();
+});
+
+const stageEl = document.getElementById('stage');
+
+// subtle 3D parallax tilt on whichever background is currently showing — visual only, never blocks scrolling/navigation
+function applyParallax(clientX, clientY){
+  const targetEl = state.opened ? roomEls[state.roomIndex] : doorEl;
+  const bg = targetEl && targetEl.querySelector('.bg');
+  if(!bg) return;
+  const dx = (clientX / window.innerWidth - 0.5) * 2;
+  const dy = (clientY / window.innerHeight - 0.5) * 2;
+  bg.style.transform = `perspective(800px) translate3d(${-dx * 16}px, ${-dy * 12}px, 0) rotateX(${dy * 2.4}deg) rotateY(${-dx * 2.4}deg) scale(1.06)`;
+}
+stageEl.addEventListener('pointermove', (e) => applyParallax(e.clientX, e.clientY));
+
+// ---- ambient sound ----
+let audioStarted = false;
+let ctx = null;
+let master = null;
+let chimeTimeout = null;
+
+function startSound(){
+  if(audioStarted) return;
+  audioStarted = true;
+  try{
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    ctx = new Ctx();
+    if(ctx.state === 'suspended') ctx.resume();
+    master = ctx.createGain();
+    master.gain.value = state.soundOn ? 0.55 : 0;
+    master.connect(ctx.destination);
+
+    // soft, slow-moving minor pad — the whole ambience, on purpose kept simple
+    const padFilter = ctx.createBiquadFilter();
+    padFilter.type = 'lowpass'; padFilter.frequency.value = 850; padFilter.Q.value = 0.2;
+    padFilter.connect(master);
+
+    const filterLfo = ctx.createOscillator();
+    filterLfo.type = 'sine'; filterLfo.frequency.value = 0.045;
+    const filterLfoGain = ctx.createGain(); filterLfoGain.gain.value = 180;
+    filterLfo.connect(filterLfoGain); filterLfoGain.connect(padFilter.frequency);
+    filterLfo.start();
+
+    // A minor: A2, C3, E3, A3 — moody, unresolved
+    const chord = [110, 130.81, 164.81, 220];
+    chord.forEach((f, i) => {
+      const g = ctx.createGain(); g.gain.value = 0;
+      const osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = f; osc1.detune.value = -5;
+      const osc2 = ctx.createOscillator(); osc2.type = 'triangle'; osc2.frequency.value = f; osc2.detune.value = 5;
+      osc1.connect(g); osc2.connect(g); g.connect(padFilter);
+      osc1.start(); osc2.start();
+      const target = 0.1 - i * 0.016;
+      g.gain.linearRampToValueAtTime(target, ctx.currentTime + 4 + i * 0.7);
+    });
+
+    // sparse, soft bell in the same key — slow, not fussy
+    const scheduleChime = () => {
+      if(!ctx) return;
+      const now = ctx.currentTime;
+      const notes = [440, 523.25, 659.25]; // A4, C5, E5 — same Am chord, up an octave
+      const f = notes[Math.floor(Math.random() * notes.length)];
+      const osc = ctx.createOscillator();
+      osc.type = 'sine'; osc.frequency.value = f;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(0.1, now + 0.5);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+      osc.connect(g); g.connect(master);
+      osc.start(now); osc.stop(now + 3.4);
+      chimeTimeout = setTimeout(scheduleChime, 6000 + Math.random() * 6000);
+    };
+    chimeTimeout = setTimeout(scheduleChime, 3000);
+  }catch(e){ /* audio unsupported, ignore */ }
+}
+function playTransitionChime(){
+  if(!ctx || !master) return;
+  const now = ctx.currentTime;
+  const notes = [329.63, 440, 523.25]; // E4, A4, C5 — same Am family, gentle two-step
+  notes.slice(0, 2).forEach((f, i) => {
+    const t = now + i * 0.1;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine'; osc.frequency.value = f;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.11, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t + 1);
+  });
+}
+function stopSound(){
+  if(chimeTimeout) clearTimeout(chimeTimeout);
+  if(ctx){ try{ ctx.close(); }catch(e){} }
+  ctx = null;
+  audioStarted = false;
+}
+soundToggleEl.addEventListener('click', () => {
+  state.soundOn = !state.soundOn;
+  if(ctx && ctx.state === 'suspended') ctx.resume();
+  if(master) master.gain.value = state.soundOn ? 0.55 : 0;
+  render();
+});
+window.addEventListener('beforeunload', stopSound);
+
+render();
+</script>
+</body>
+</html>
