@@ -69,21 +69,23 @@ h1 .ln:nth-child(2) span{animation-delay:.08s}
 .stat span{font-size:.74rem;color:var(--t3);letter-spacing:.04em}
 
 /* 3D ring */
-.stage{position:relative;height:540px;perspective:1500px;perspective-origin:50% 40%;--rx:-14deg;--ry:0deg}
-.tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .6s var(--ease)}
-.ring{position:absolute;left:50%;top:44%;width:0;height:0;transform-style:preserve-3d;animation:spin 46s linear infinite}
-.stage:hover .ring{animation-play-state:paused}
+.stage{position:relative;height:540px;perspective:1500px;perspective-origin:50% 40%;--rx:-22deg;--ry:0deg}
+.tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateZ(-12deg) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .6s var(--ease)}
+.ring{position:absolute;left:50%;top:44%;width:0;height:0;transform-style:preserve-3d;animation:spin 32s linear infinite}
 @keyframes spin{to{transform:rotateY(-360deg)}}
-.panel{position:absolute;width:var(--pw,250px);left:calc(var(--pw,250px)/-2);top:-90px;border-radius:12px;overflow:hidden;background:#1d2a42;
-  transform:rotateY(calc(var(--i)*40deg)) translateZ(var(--r,345px));box-shadow:0 22px 50px -10px rgba(63,84,140,.35),0 0 0 1px rgba(255,255,255,.9);transition:filter .3s}
-.panel::before{content:'';display:block;height:16px;background:#fff;background-image:radial-gradient(circle at 10px 8px,#F29BB9 2.5px,transparent 3px),radial-gradient(circle at 20px 8px,#A6D4F5 2.5px,transparent 3px),radial-gradient(circle at 30px 8px,#B8E2CF 2.5px,transparent 3px)}
+.panel{position:absolute;width:var(--pw,150px);left:calc(var(--pw,150px)/-2);top:var(--pt,-52px);border-radius:12px;overflow:hidden;background:#1d2a42;
+  transform:rotateY(calc(var(--i)*40deg)) translateZ(var(--r,330px));backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 22px 50px -10px rgba(63,84,140,.35),0 0 0 1px rgba(255,255,255,.9);transition:filter .3s}
+.panel::before{content:'';display:block;height:10px;background:#fff;background-image:radial-gradient(circle at 10px 8px,#F29BB9 2.5px,transparent 3px),radial-gradient(circle at 20px 8px,#A6D4F5 2.5px,transparent 3px),radial-gradient(circle at 30px 8px,#B8E2CF 2.5px,transparent 3px)}
 .panel img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
-.panel span{position:absolute;bottom:8px;left:8px;font-family:var(--ff-h);font-style:italic;font-size:.8rem;color:var(--ink);background:rgba(255,255,255,.85);padding:3px 9px;border-radius:99px;backdrop-filter:blur(4px)}
-.floor{position:absolute;left:50%;top:78%;width:620px;height:620px;margin:-310px 0 0 -310px;border-radius:50%;transform:rotateX(90deg);
-  background:radial-gradient(circle,rgba(246,182,205,.7),rgba(166,212,245,.45) 42%,transparent 68%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
-.floor::after{content:'';position:absolute;inset:18%;border-radius:50%;border:1.5px dashed rgba(255,255,255,.9);animation:spin2 30s linear infinite}
-@keyframes spin2{to{transform:rotate(360deg)}}
+.panel span{position:absolute;bottom:5px;left:5px;font-family:var(--ff-h);font-style:italic;font-size:.62rem;color:var(--ink);background:rgba(255,255,255,.85);padding:3px 9px;border-radius:99px;backdrop-filter:blur(4px)}
+.planet{position:absolute;left:50%;top:44%;width:var(--ps,260px);height:var(--ps,260px);margin:calc(var(--ps,260px)/-2) 0 0 calc(var(--ps,260px)/-2);border-radius:50%;
+  background:repeating-linear-gradient(-14deg,rgba(255,255,255,0) 0 18px,rgba(255,255,255,.18) 18px 30px),
+  radial-gradient(circle at 34% 28%,#fff 0,#FDE1EC 14%,#F2A9C8 42%,#B7A8EE 70%,#7F9BE0 100%);
+  box-shadow:inset -26px -30px 60px rgba(70,80,160,.35),inset 14px 12px 30px rgba(255,255,255,.6),0 0 80px rgba(246,182,205,.65),0 0 160px rgba(166,212,245,.5)}
+.disc{position:absolute;left:50%;top:44%;width:var(--ds,820px);height:var(--ds,820px);margin:calc(var(--ds,820px)/-2) 0 0 calc(var(--ds,820px)/-2);border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,transparent 0 27%,rgba(255,255,255,.85) 27.6%,rgba(246,182,205,.6) 30%,transparent 30.6%,rgba(166,212,245,.55) 32%,rgba(207,196,245,.5) 38%,rgba(255,255,255,.7) 38.6%,transparent 39.4%,rgba(246,182,205,.38) 41.5%,rgba(166,212,245,.25) 47%,transparent 50%);
+  animation:discspin 60s linear infinite}
+@keyframes discspin{from{transform:rotateX(90deg) rotateZ(0)}to{transform:rotateX(90deg) rotateZ(360deg)}}
 .orb{position:absolute;border-radius:50%;transform-style:preserve-3d;pointer-events:none}
 .o1{width:70px;height:70px;left:8%;top:12%;background:radial-gradient(circle at 30% 30%,#fff,#F6B6CD 45%,#D9689A);box-shadow:0 20px 40px rgba(217,104,154,.35);animation:bob 7s ease-in-out infinite;transform:translateZ(160px)}
 .o2{width:38px;height:38px;right:6%;top:62%;background:radial-gradient(circle at 30% 30%,#fff,#A6D4F5 50%,#4F97D6);animation:bob 9s ease-in-out infinite reverse;transform:translateZ(220px)}
@@ -220,7 +222,7 @@ footer em{font-family:var(--ff-h);color:var(--rose)}
   nav{padding-left:16px}.nav-links a:not(.nav-cta){display:none}
   .hero{padding:120px 16px 70px}
   .wrap{padding:76px 16px}
-  .stage{height:330px}.panel{--pw:170px;--r:235px;top:-60px}.floor{width:420px;height:420px;margin:-210px 0 0 -210px}.hint{display:none}
+  .stage{height:330px}.stage{--pw:96px;--r:205px;--pt:-34px;--ps:160px;--ds:520px}.hint{display:none}
   .sticker{display:none}
   .stats{gap:22px}
   .grid{grid-template-columns:1fr;gap:18px}
@@ -268,7 +270,8 @@ footer em{font-family:var(--ff-h);color:var(--rose)}
     </div>
     <div class="stage" id="stage" aria-hidden="true">
       <div class="tilt" id="tilt">
-        <div class="floor"></div>
+        <div class="disc"></div>
+        <div class="planet"></div>
         <div class="ring">
           <div class="panel" style="--i:0"><img src="previews/07_Digital_marketing.jpg" alt=""><span>Marketing Hub</span></div>
           <div class="panel" style="--i:1"><img src="previews/09_ProductHub.jpg" alt=""><span>Product Hub</span></div>
@@ -283,7 +286,6 @@ footer em{font-family:var(--ff-h);color:var(--rose)}
         <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
         <div class="sticker"><b>New ✦</b>Marketing Hub<br>&amp; Product Hub</div>
       </div>
-      <div class="hint">เลื่อนเมาส์เพื่อหมุนมุมมอง</div>
     </div>
   </div>
 </header>
@@ -515,8 +517,8 @@ if(fine){
   const stage=document.getElementById('stage'),hero=document.getElementById('top');
   hero.addEventListener('pointermove',e=>{const r=stage.getBoundingClientRect();
     const x=(e.clientX-(r.left+r.width/2))/r.width,y=(e.clientY-(r.top+r.height/2))/r.height;
-    stage.style.setProperty('--ry',(x*28)+'deg');stage.style.setProperty('--rx',(-14-y*16)+'deg');});
-  hero.addEventListener('pointerleave',()=>{stage.style.setProperty('--ry','0deg');stage.style.setProperty("--rx","-14deg")});
+    stage.style.setProperty('--ry',(x*12)+'deg');stage.style.setProperty('--rx',(-22-y*8)+'deg');});
+  hero.addEventListener('pointerleave',()=>{stage.style.setProperty('--ry','0deg');stage.style.setProperty("--rx","-22deg")});
   document.querySelectorAll('.card').forEach(c=>{
     c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
       const k=c.classList.contains('full')?4:9;
