@@ -11,8 +11,8 @@
 <style>
 :root{
   --ink:#27304F; --ink2:#323C5E; --ink3:#46507A;
-  --cream:#F7F5FC; --paper:#FFFFFF; --sand:#E7E2F1;
-  --gold:#F6B6CD; --gold2:#CF5A86; --sky:#A6D4F5; --sky2:#3F84BF; --rose:#F6B6CD; --sage:#B8E2CF;
+  --cream:#F8F9FD; --paper:#FFFFFF; --sand:#E6EAF3;
+  --gold:#F8C9DA; --gold2:#CF5A86; --sky:#CFE7FA; --sky2:#3F84BF; --rose:#F8C9DA; --sage:#B8E2CF;
   --t1:#27304F; --t2:#5A6182; --t3:#9096AE;
   --ff-h:'Fraunces',Georgia,serif;
   --ff-b:'Noto Sans Thai',system-ui,sans-serif;
@@ -35,11 +35,11 @@ nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;disp
 .nav-cta:hover{background:var(--gold2)!important}
 
 /* ───── HERO ───── */
-.hero{position:relative;background:linear-gradient(135deg,#D9EEFD 0%,#ECEBFB 48%,#FDE4EE 100%);color:var(--ink);overflow:hidden;padding:150px 52px 110px}
+.hero{position:relative;background:linear-gradient(135deg,#E4F2FD 0%,#F4F1F8 50%,#FDEAF1 100%);color:var(--ink);overflow:hidden;padding:150px 52px 110px}
 .hero::before{content:'';position:absolute;inset:0;background:
   radial-gradient(600px 420px at 85% 25%,rgba(255,255,255,.75),transparent 70%),
-  radial-gradient(520px 380px at 8% 95%,rgba(246,182,205,.55),transparent 70%),
-  radial-gradient(480px 340px at 5% 5%,rgba(166,212,245,.6),transparent 70%);pointer-events:none}
+  radial-gradient(520px 380px at 8% 95%,rgba(251,217,230,.6),transparent 70%),
+  radial-gradient(480px 340px at 5% 5%,rgba(207,231,250,.7),transparent 70%);pointer-events:none}
 .hero::after{content:'';position:absolute;inset:0;opacity:.35;pointer-events:none;
   background-image:linear-gradient(rgba(255,255,255,.9) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.9) 1px,transparent 1px);
   background-size:64px 64px;mask-image:radial-gradient(ellipse at 70% 40%,#000 10%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000 10%,transparent 70%)}
@@ -48,7 +48,7 @@ nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;disp
 .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 4px rgba(157,195,168,.2);animation:pulse 2.4s infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 8px rgba(157,195,168,0)}}
 h1{font-family:var(--ff-h);font-weight:800;font-size:clamp(3rem,7vw,6.2rem);line-height:.92;letter-spacing:-.02em}
-h1 em{font-style:italic;font-weight:400;background:linear-gradient(90deg,#4F97D6,#D9689A);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+h1 em{font-style:italic;font-weight:400;background:linear-gradient(90deg,#5DA4DE,#E07CA6);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
 h1 .ln{display:block;overflow:hidden}
 h1 .ln span{display:block;animation:rise 1s var(--ease) both}
 h1 .ln:nth-child(2) span{animation-delay:.08s}
@@ -69,28 +69,19 @@ h1 .ln:nth-child(2) span{animation-delay:.08s}
 .stat span{font-size:.74rem;color:var(--t3);letter-spacing:.04em}
 
 /* 3D ring */
-.stage{position:relative;height:540px;perspective:1500px;perspective-origin:50% 40%;--rx:-22deg;--ry:0deg}
+.stage{position:relative;height:540px;perspective:1500px;perspective-origin:50% 40%;--rx:-20deg;--ry:0deg}
 .tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateZ(-12deg) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .6s var(--ease)}
 .ring{position:absolute;left:50%;top:44%;width:0;height:0;transform-style:preserve-3d;animation:spin 32s linear infinite}
 @keyframes spin{to{transform:rotateY(-360deg)}}
-.panel{position:absolute;width:var(--pw,150px);left:calc(var(--pw,150px)/-2);top:var(--pt,-52px);border-radius:12px;overflow:hidden;background:#1d2a42;
-  transform:rotateY(calc(var(--i)*40deg)) translateZ(var(--r,330px));backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 22px 50px -10px rgba(63,84,140,.35),0 0 0 1px rgba(255,255,255,.9);transition:filter .3s}
-.panel::before{content:'';display:block;height:10px;background:#fff;background-image:radial-gradient(circle at 10px 8px,#F29BB9 2.5px,transparent 3px),radial-gradient(circle at 20px 8px,#A6D4F5 2.5px,transparent 3px),radial-gradient(circle at 30px 8px,#B8E2CF 2.5px,transparent 3px)}
-.panel img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
-.panel span{position:absolute;bottom:5px;left:5px;font-family:var(--ff-h);font-style:italic;font-size:.62rem;color:var(--ink);background:rgba(255,255,255,.85);padding:3px 9px;border-radius:99px;backdrop-filter:blur(4px)}
-.planet{position:absolute;left:50%;top:44%;width:var(--ps,260px);height:var(--ps,260px);margin:calc(var(--ps,260px)/-2) 0 0 calc(var(--ps,260px)/-2);border-radius:50%;
-  background:repeating-linear-gradient(-14deg,rgba(255,255,255,0) 0 18px,rgba(255,255,255,.18) 18px 30px),
-  radial-gradient(circle at 34% 28%,#fff 0,#FDE1EC 14%,#F2A9C8 42%,#B7A8EE 70%,#7F9BE0 100%);
-  box-shadow:inset -26px -30px 60px rgba(70,80,160,.35),inset 14px 12px 30px rgba(255,255,255,.6),0 0 80px rgba(246,182,205,.65),0 0 160px rgba(166,212,245,.5)}
-.disc{position:absolute;left:50%;top:44%;width:var(--ds,820px);height:var(--ds,820px);margin:calc(var(--ds,820px)/-2) 0 0 calc(var(--ds,820px)/-2);border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,transparent 0 27%,rgba(255,255,255,.85) 27.6%,rgba(246,182,205,.6) 30%,transparent 30.6%,rgba(166,212,245,.55) 32%,rgba(207,196,245,.5) 38%,rgba(255,255,255,.7) 38.6%,transparent 39.4%,rgba(246,182,205,.38) 41.5%,rgba(166,212,245,.25) 47%,transparent 50%);
-  animation:discspin 60s linear infinite}
-@keyframes discspin{from{transform:rotateX(90deg) rotateZ(0)}to{transform:rotateX(90deg) rotateZ(360deg)}}
-.orb{position:absolute;border-radius:50%;transform-style:preserve-3d;pointer-events:none}
-.o1{width:70px;height:70px;left:8%;top:12%;background:radial-gradient(circle at 30% 30%,#fff,#F6B6CD 45%,#D9689A);box-shadow:0 20px 40px rgba(217,104,154,.35);animation:bob 7s ease-in-out infinite;transform:translateZ(160px)}
-.o2{width:38px;height:38px;right:6%;top:62%;background:radial-gradient(circle at 30% 30%,#fff,#A6D4F5 50%,#4F97D6);animation:bob 9s ease-in-out infinite reverse;transform:translateZ(220px)}
-.o3{width:22px;height:22px;right:22%;top:6%;background:radial-gradient(circle at 30% 30%,#fff,#CFC4F5 50%,#8B7AD6);animation:bob 6s ease-in-out infinite}
-@keyframes bob{50%{translate:0 -18px}}
+.panel{position:absolute;width:var(--pw,175px);left:calc(var(--pw,175px)/-2);top:var(--pt,-60px);transform-style:preserve-3d;
+  transform:rotateY(calc(var(--i)*40deg)) translateZ(var(--r,265px))}
+.face{border-radius:12px;overflow:hidden;background:#fff;position:relative;
+  box-shadow:0 22px 50px -12px rgba(63,84,140,.32),0 0 0 1px rgba(255,255,255,.95);
+  animation:face 32s linear infinite}
+@keyframes face{from{transform:rotateY(calc(var(--i)*-40deg)) rotateX(20deg)}to{transform:rotateY(calc(var(--i)*-40deg + 360deg)) rotateX(20deg)}}
+.face::before{content:'';display:block;height:12px;background:#fff;background-image:radial-gradient(circle at 9px 6px,#F8C9DA 2.5px,transparent 3px),radial-gradient(circle at 18px 6px,#CFE7FA 2.5px,transparent 3px),radial-gradient(circle at 27px 6px,#D6EEE2 2.5px,transparent 3px)}
+.face img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.face span{position:absolute;bottom:6px;left:6px;font-family:var(--ff-h);font-style:italic;font-size:.7rem;color:var(--ink);background:rgba(255,255,255,.88);padding:2px 9px;border-radius:99px}
 .sticker{position:absolute;z-index:5;bottom:10px;right:4%;background:var(--paper);color:var(--ink);padding:14px 18px;border-radius:14px;box-shadow:0 18px 40px rgba(63,84,140,.25);transform:rotate(4deg) translateZ(260px);font-size:.78rem;line-height:1.4}
 .sticker b{display:block;font-family:var(--ff-h);font-style:italic;font-size:1.1rem;color:var(--gold2)}
 .hint{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--t3)}
@@ -104,7 +95,7 @@ h1 .ln:nth-child(2) span{animation-delay:.08s}
 .card:hover .glare{opacity:1}
 
 /* ───── MARQUEE ───── */
-.marquee{background:linear-gradient(90deg,#A6D4F5,#F6B6CD,#A6D4F5);color:var(--ink);overflow:hidden;white-space:nowrap;padding:16px 0;border-block:1px solid rgba(0,0,0,.08)}
+.marquee{background:linear-gradient(90deg,#CFE7FA,#FBD9E6,#CFE7FA);color:var(--ink);overflow:hidden;white-space:nowrap;padding:16px 0;border-block:1px solid rgba(0,0,0,.08)}
 .marquee-track{display:inline-flex;animation:marq 38s linear infinite}
 .marquee span{font-family:var(--ff-h);font-size:1.25rem;font-weight:600;padding:0 26px;display:inline-flex;align-items:center;gap:26px}
 .marquee span::after{content:'✦';font-size:.8rem;opacity:.6}
@@ -123,7 +114,7 @@ h2 em{font-style:italic;font-weight:400;color:var(--gold2)}
 .filters{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:1px solid var(--sand);background:var(--paper);color:var(--t2);font:inherit;font-size:.8rem;font-weight:500;padding:9px 16px;border-radius:99px;cursor:pointer;transition:.25s}
 .chip:hover{border-color:var(--ink);color:var(--ink)}
-.chip.on{background:linear-gradient(90deg,#A6D4F5,#F6B6CD);border-color:transparent;color:var(--ink);font-weight:600}
+.chip.on{background:linear-gradient(90deg,#CFE7FA,#FBD9E6);border-color:transparent;color:var(--ink);font-weight:600}
 .chip sup{font-size:.62rem;opacity:.6;margin-left:3px}
 
 /* project grid */
@@ -131,7 +122,7 @@ h2 em{font-style:italic;font-weight:400;color:var(--gold2)}
 .card{grid-column:span 2;background:var(--paper);border-radius:22px;overflow:hidden;border:1px solid var(--sand);display:flex;flex-direction:column;text-decoration:none;color:inherit;position:relative;transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .3s}
 .card:hover{box-shadow:0 28px 60px -20px rgba(63,84,140,.3);border-color:transparent}
 .card.wide{grid-column:span 3}
-.card.full{grid-column:span 6;flex-direction:row;background:linear-gradient(135deg,#27304F,#3D3463);color:#fff;border-color:transparent}
+.card.full{grid-column:span 6;flex-direction:row;background:linear-gradient(135deg,#27304F,#344466);color:#fff;border-color:transparent}
 .grid.filtered .card{grid-column:span 2}
 .grid.filtered .card.full{flex-direction:column}
 .card.hide{display:none}
@@ -185,20 +176,20 @@ h2 em{font-style:italic;font-weight:400;color:var(--gold2)}
 .skill .ic{font-size:1.3rem;margin-bottom:8px}
 .skill b{display:block;font-size:.9rem;margin-bottom:4px}
 .skill span{font-size:.78rem;color:var(--t3);line-height:1.6}
-.quote{font-family:var(--ff-h);font-size:1.5rem;font-style:italic;line-height:1.4;color:var(--t1);padding-left:22px;border-left:3px solid;border-image:linear-gradient(#A6D4F5,#F6B6CD) 1;margin:28px 0}
+.quote{font-family:var(--ff-h);font-size:1.5rem;font-style:italic;line-height:1.4;color:var(--t1);padding-left:22px;border-left:3px solid;border-image:linear-gradient(#BFDFF8,#F8C9DA) 1;margin:28px 0}
 
 /* ───── CONTACT ───── */
-.contact{background:linear-gradient(160deg,#FDE4EE 0%,#ECEBFB 50%,#D9EEFD 100%);color:var(--ink);position:relative;overflow:hidden}
+.contact{background:linear-gradient(160deg,#FDEAF1 0%,#F4F1F8 50%,#E4F2FD 100%);color:var(--ink);position:relative;overflow:hidden}
 .contact::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.8),transparent 65%);left:50%;top:-40%;transform:translateX(-50%)}
 .contact .wrap{position:relative;text-align:center}
 .contact h2{color:var(--ink);margin:0 auto 46px;font-size:clamp(1.5rem,3.6vw,3.2rem)}
 .contact h2 em{display:block;white-space:nowrap}
-.contact h2 em{background:linear-gradient(90deg,#4F97D6,#D9689A);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .1em .08em}
+.contact h2 em{background:linear-gradient(90deg,#5DA4DE,#E07CA6);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .1em .08em}
 .contact .kicker{justify-content:center;color:var(--sky2)}
 .crow{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
 .cc{display:flex;align-items:center;gap:14px;text-align:left;text-decoration:none;padding:16px 22px 16px 16px;border-radius:18px;background:rgba(255,255,255,.65);border:1px solid #fff;box-shadow:0 10px 30px -12px rgba(63,84,140,.25);transition:.3s var(--ease)}
 .cc:hover{background:#fff;transform:translateY(-3px)}
-.cc .ci{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#A6D4F5,#F6B6CD);color:var(--ink);font-size:1.15rem}
+.cc .ci{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#CFE7FA,#FBD9E6);color:var(--ink);font-size:1.15rem}
 .cc small{display:block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--t3)}
 .cc b{font-size:.92rem;font-weight:600}
 footer{background:var(--ink);color:rgba(255,255,255,.6);font-size:.74rem;padding:24px 52px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
@@ -222,7 +213,7 @@ footer em{font-family:var(--ff-h);color:var(--rose)}
   nav{padding-left:16px}.nav-links a:not(.nav-cta){display:none}
   .hero{padding:120px 16px 70px}
   .wrap{padding:76px 16px}
-  .stage{height:330px}.stage{--pw:96px;--r:205px;--pt:-34px;--ps:160px;--ds:520px}.hint{display:none}
+  .stage{height:330px}.stage{--pw:120px;--r:190px;--pt:-42px}.hint{display:none}
   .sticker{display:none}
   .stats{gap:22px}
   .grid{grid-template-columns:1fr;gap:18px}
@@ -270,20 +261,17 @@ footer em{font-family:var(--ff-h);color:var(--rose)}
     </div>
     <div class="stage" id="stage" aria-hidden="true">
       <div class="tilt" id="tilt">
-        <div class="disc"></div>
-        <div class="planet"></div>
         <div class="ring">
-          <div class="panel" style="--i:0"><img src="previews/07_Digital_marketing.jpg" alt=""><span>Marketing Hub</span></div>
-          <div class="panel" style="--i:1"><img src="previews/09_ProductHub.jpg" alt=""><span>Product Hub</span></div>
-          <div class="panel" style="--i:2"><img src="previews/02_SalesDashboard.jpg" alt=""><span>Sales</span></div>
-          <div class="panel" style="--i:3"><img src="previews/01_SupplierPortal.jpg" alt=""><span>Supplier</span></div>
-          <div class="panel" style="--i:4"><img src="previews/05_CreatorDashboard.jpg" alt=""><span>Creator</span></div>
-          <div class="panel" style="--i:5"><img src="previews/08_WisteriaHollow.jpg" alt=""><span>Wisteria</span></div>
-          <div class="panel" style="--i:6"><img src="previews/03_ContentManager.jpg" alt=""><span>Content</span></div>
-          <div class="panel" style="--i:7"><img src="previews/06_InfluencerApplicationForm.jpg" alt=""><span>Application</span></div>
-          <div class="panel" style="--i:8"><img src="previews/04_InfluencerProfileForm.jpg" alt=""><span>Profile</span></div>
+          <div class="panel" style="--i:0"><div class="face"><img src="previews/07_Digital_marketing.jpg" alt=""><span>Marketing Hub</span></div></div>
+          <div class="panel" style="--i:1"><div class="face"><img src="previews/09_ProductHub.jpg" alt=""><span>Product Hub</span></div></div>
+          <div class="panel" style="--i:2"><div class="face"><img src="previews/02_SalesDashboard.jpg" alt=""><span>Sales</span></div></div>
+          <div class="panel" style="--i:3"><div class="face"><img src="previews/01_SupplierPortal.jpg" alt=""><span>Supplier</span></div></div>
+          <div class="panel" style="--i:4"><div class="face"><img src="previews/05_CreatorDashboard.jpg" alt=""><span>Creator</span></div></div>
+          <div class="panel" style="--i:5"><div class="face"><img src="previews/08_WisteriaHollow.jpg" alt=""><span>Wisteria</span></div></div>
+          <div class="panel" style="--i:6"><div class="face"><img src="previews/03_ContentManager.jpg" alt=""><span>Content</span></div></div>
+          <div class="panel" style="--i:7"><div class="face"><img src="previews/06_InfluencerApplicationForm.jpg" alt=""><span>Application</span></div></div>
+          <div class="panel" style="--i:8"><div class="face"><img src="previews/04_InfluencerProfileForm.jpg" alt=""><span>Profile</span></div></div>
         </div>
-        <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
         <div class="sticker"><b>New ✦</b>Marketing Hub<br>&amp; Product Hub</div>
       </div>
     </div>
@@ -517,8 +505,8 @@ if(fine){
   const stage=document.getElementById('stage'),hero=document.getElementById('top');
   hero.addEventListener('pointermove',e=>{const r=stage.getBoundingClientRect();
     const x=(e.clientX-(r.left+r.width/2))/r.width,y=(e.clientY-(r.top+r.height/2))/r.height;
-    stage.style.setProperty('--ry',(x*12)+'deg');stage.style.setProperty('--rx',(-22-y*8)+'deg');});
-  hero.addEventListener('pointerleave',()=>{stage.style.setProperty('--ry','0deg');stage.style.setProperty("--rx","-22deg")});
+    stage.style.setProperty('--ry',(x*12)+'deg');stage.style.setProperty('--rx',(-20-y*8)+'deg');});
+  hero.addEventListener('pointerleave',()=>{stage.style.setProperty('--ry','0deg');stage.style.setProperty("--rx","-20deg")});
   document.querySelectorAll('.card').forEach(c=>{
     c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
       const k=c.classList.contains('full')?4:9;
